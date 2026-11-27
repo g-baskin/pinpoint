@@ -2,12 +2,12 @@
 import PackageDescription
 
 let package = Package(
-    name: "Zoomies",
+    name: "Pinpoint",
     platforms: [.macOS(.v14)],
-    products: [.executable(name: "Zoomies", targets: ["Zoomies"])],
+    products: [.executable(name: "Pinpoint", targets: ["Pinpoint"])],
     targets: [
-        .target(name: "ZoomiesCore"),
-        .executableTarget(name: "Zoomies", dependencies: ["ZoomiesCore"]),
-        .testTarget(name: "ZoomiesCoreTests", dependencies: ["ZoomiesCore"]),
+        .target(name: "PinpointCore"),
+        .executableTarget(name: "Pinpoint", dependencies: ["PinpointCore"]),
+        .testTarget(name: "PinpointCoreTests", dependencies: ["PinpointCore"]),
     ]
 )

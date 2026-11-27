@@ -1,6 +1,6 @@
 import AppKit
 import SwiftUI
-import ZoomiesCore
+import PinpointCore
 
 struct SettingsView: View {
     @ObservedObject var settings = AppSettings.shared

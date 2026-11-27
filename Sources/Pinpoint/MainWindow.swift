@@ -1,6 +1,6 @@
 import AppKit
 import SwiftUI
-import ZoomiesCore
+import PinpointCore
 
 /// The single Pinpoint window: editor + library + recent-captures tray. One capture is open at a time.
 @MainActor
@@ -17,7 +17,7 @@ final class Workspace: ObservableObject {
     init(store: LibraryStore) {
         self.store = store
         self.library = LibraryModel(store: store)
-        observer = NotificationCenter.default.addObserver(forName: .zoomiesLibraryChanged, object: nil, queue: .main) { [weak self] _ in
+        observer = NotificationCenter.default.addObserver(forName: .pinpointLibraryChanged, object: nil, queue: .main) { [weak self] _ in
             Task { @MainActor in self?.closeIfDeleted() }
         }
     }
@@ -37,7 +37,7 @@ final class Workspace: ObservableObject {
     func saveCurrent() {
         guard let e = editor else { return }
         if e.dirty || e.meta.annotations != e.annotations || e.meta.crop != e.crop { e.save() }
-        else { try? store.writeMeta(e.meta); NotificationCenter.default.post(name: .zoomiesLibraryChanged, object: nil) }
+        else { try? store.writeMeta(e.meta); NotificationCenter.default.post(name: .pinpointLibraryChanged, object: nil) }
     }
 
     /// Called when the open capture is deleted from the library.
@@ -424,8 +424,8 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
         window.title = "Pinpoint"
         window.isReleasedWhenClosed = false
         window.contentView = NSHostingView(rootView: MainView(ws: ws))
-        window.setFrameAutosaveName("ZoomiesMain")
-        if !window.setFrameUsingName("ZoomiesMain") { window.center() }
+        window.setFrameAutosaveName("PinpointMain")
+        if !window.setFrameUsingName("PinpointMain") { window.center() }
         super.init(window: window)
         window.delegate = self
     }
