@@ -70,6 +70,24 @@
         "Scope: re-check of the 2 medium findings recorded earlier today; the 3 low findings moved to accepted",
         "Not checked: the new files are not committed; main branch"
       ]
+    },
+    "quality-tools": {
+      "checkedAt": "2026-11-27T22:22:59.572Z",
+      "commit": "513cd29",
+      "uncommittedChanges": true,
+      "result": "pass",
+      "summary": "Build with warnings as errors, tests, shellcheck and a swift-format report all run from scripts/check.sh and pass; the formatter gate is accepted as report-only by the owner.",
+      "findings": [],
+      "accepted": [
+        "Medium: swift-format reports 746 style findings with the project config; owner chose to keep it report-only and not reformat (keeps doc line citations valid)."
+      ],
+      "evidence": [
+        "scripts/check.sh: exit 0 (warnings-as-errors build OK, 45/45 tests, shellcheck clean, swift-format 746 findings reported)",
+        "All 12 earlier compiler warnings fixed (ChatGPTPlan.swift, DictationSources.swift, AppDelegate.swift)",
+        ".swift-format config and scripts/check.sh committed with AGENTS.md pointing to check.sh",
+        "Scope: re-check of the 5 findings recorded earlier today",
+        "Not checked: ChatGPT sign-in and dictation exercised in the running app"
+      ]
     }
   }
 }

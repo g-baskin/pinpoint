@@ -92,7 +92,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
                      mi("Open Image…", #selector(openImage), "o", target: self),
                      mi("Library", #selector(showLibraryAction), "l", [.control, .shift], target: self),
                      .separator(),
-                     mi("Save to Library", Selector(("saveDocument:")), "s"),
+                     mi("Save to Library", #selector(NSDocument.save(_:)), "s"),
                      mi("Export…", Selector(("exportDocument:")), "e", [.command, .shift]),
                      mi("Close", #selector(NSWindow.performClose(_:)), "w")])
         sub("Edit", [mi("Undo", Selector(("undo:")), "z"), mi("Redo", Selector(("redo:")), "z", [.command, .shift]),

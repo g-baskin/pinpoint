@@ -264,15 +264,15 @@ Source ledger:
 | Settings button and status | `Sources/Pinpoint/SettingsView.swift:168-186`, `:135-142` |
 | PKCE, state, nonce, listener start | `Sources/PinpointCore/ChatGPTPlan.swift:150-157`, `:42-46`, `:259-265` |
 | Authorize URL and browser open | `ChatGPTPlan.swift:158-160`, `:48-68` |
-| Callback handling | `ChatGPTPlan.swift:295-316`, `:327-341` |
+| Callback handling | `ChatGPTPlan.swift:299-320`, `:327-341` |
 | Error, code and client id checks | `ChatGPTPlan.swift:161-170` |
 | Token exchange, nonce and scope checks | `ChatGPTPlan.swift:171-182`, `:89-103` |
 | Keychain storage | `ChatGPTPlan.swift:127-139`, `:187-188`, `Sources/PinpointCore/Assistants.swift:155-175` |
-| Model list | `ChatGPTPlan.swift:233-243`, `:542-552` |
+| Model list | `ChatGPTPlan.swift:232-242`, `:542-552` |
 | Client creation for the first request | `Sources/Pinpoint/AppSettings.swift:80-86`, `Sources/PinpointCore/LLM.swift:275-279` |
-| Auto model, token refresh, request | `ChatGPTPlan.swift:443-458`, `:193-223`, `:460-489`, `:554-558` |
+| Auto model, token refresh, request | `ChatGPTPlan.swift:447-462`, `:193-223`, `:460-489`, `:554-558` |
 
-A concurrent refresh is shared: `accessToken()` reuses one in-flight `refreshTask` under a lock (`ChatGPTPlan.swift:196-204`). A failed refresh surfaces as "Your ChatGPT sign-in expired" and does not clear the stored credentials (`ChatGPTPlan.swift:220-222`). The JWT is decoded without a signature check, as its doc comment states (`ChatGPTPlan.swift:70-78`).
+A concurrent refresh is shared: `accessToken()` reuses one in-flight `refreshTask` under a lock (`ChatGPTPlan.swift:196-203`). A failed refresh surfaces as "Your ChatGPT sign-in expired" and does not clear the stored credentials (`ChatGPTPlan.swift:219-221`). The JWT is decoded without a signature check, as its doc comment states (`ChatGPTPlan.swift:70-78`).
 
 ## What these flows leave out
 

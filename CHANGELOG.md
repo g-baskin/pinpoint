@@ -10,6 +10,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - Project docs now live in one place, the [`library/`](library/) folder: the glossary is at `library/knowledge/private/glossary/glossary.md` and the decision records are in `library/knowledge/private/architecture/`. The app itself is unchanged.
+- `scripts/check.sh` runs every check in one go: a build that treats warnings as errors, the tests, shellcheck and a swift-format style report.
+
+### Fixed
+
+- ChatGPT sign-in no longer shares state unsafely between threads while it waits for the browser callback or refreshes a token.
+- Reading microphone names for built-in dictation no longer passes an unsafe pointer to CoreAudio.
 
 ## [0.1.0] - 2026-11-27
 

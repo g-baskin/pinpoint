@@ -52,7 +52,7 @@ public struct LLMError: LocalizedError, Sendable {
 ## Behaviour
 
 - `errorDescription` returns `message` (`Sources/PinpointCore/LLM.swift:48`).
-- [[ChatGPTPlanClient]] inspects `message` for "HTTP 404" or "HTTP 400" to decide whether to try another model (`ChatGPTPlan.swift:453`).
+- [[ChatGPTPlanClient]] inspects `message` for "HTTP 404" or "HTTP 400" to decide whether to try another model (`ChatGPTPlan.swift:457`).
 
 ## Called by
 

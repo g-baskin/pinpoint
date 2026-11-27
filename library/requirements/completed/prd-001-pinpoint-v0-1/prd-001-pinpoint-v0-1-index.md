@@ -114,7 +114,7 @@ No network API of its own. Outbound calls go only to the AI provider the user pi
 
 Points the code leaves unclear. None of them block anything.
 
-- [ ] `ChatGPTPlanClient` sends `User-Agent: Pinpoint/0.3 (macOS)` (`Sources/PinpointCore/ChatGPTPlan.swift:468`), but `Resources/Info.plist` says version `0.1.0`. Which is intended?
+- [ ] `ChatGPTPlanClient` sends `User-Agent: Pinpoint/0.3 (macOS)` (`Sources/PinpointCore/ChatGPTPlan.swift:472`), but `Resources/Info.plist` says version `0.1.0`. Which is intended?
 - [ ] Agent changes to name and tags are applied outside the single undo checkpoint (`Sources/Pinpoint/EditorModel.swift:353-355`; the checkpoint is at line 349). Undo restores markup and crop but not the name. Is that intended?
 
 ---

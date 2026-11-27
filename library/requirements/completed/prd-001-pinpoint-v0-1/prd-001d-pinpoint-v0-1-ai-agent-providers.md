@@ -34,13 +34,13 @@ AI features are optional. Everything in [prd-001a](./prd-001a-pinpoint-v0-1-capt
 
 ### ChatGPT sign-in
 
-`ChatGPTAccount` (`Sources/PinpointCore/ChatGPTPlan.swift:106-244`):
+`ChatGPTAccount` (`Sources/PinpointCore/ChatGPTPlan.swift:106-243`):
 
 - Browser OAuth with PKCE, state and nonce against `auth.openai.com`. A one-shot loopback server on `127.0.0.1` catches the redirect, preferring port 1455, with a 180-second timeout (`ChatGPTPlan.swift:19-31`, `150-190`, `246-344`).
 - The app registers as "Pinpoint" (`agentName`, `ChatGPTPlan.swift:25`; see [ADR-3](../../../knowledge/private/architecture/ADR-3-chatgpt-app-registration-name.md)). Sign-in fails unless the user allows the `chatgpt.tokens.use.direct` scope (`ChatGPTPlan.swift:27`, `177-179`).
 - Credentials and the registration are stored in the Keychain; the access token is refreshed within a minute of expiry (`ChatGPTPlan.swift:117-147`, `192-223`).
-- `ChatGPTPlanClient` streams the OpenAI Responses API, with tools in a `pinpoint` namespace (`ChatGPTPlan.swift:346-490`).
-- Model `auto` picks the best model on the plan with `ModelPicker`, which drops audio, image, embedding and similar models and prefers newer GPT versions; `auto-fast` prefers "mini" models for background naming. On a 404 or a model-related 400 it tries up to 3 models. The plan's model list is cached for a day (`ChatGPTPlan.swift:443-458`, `492-559`, `Sources/Pinpoint/AppSettings.swift:79-86`).
+- `ChatGPTPlanClient` streams the OpenAI Responses API, with tools in a `pinpoint` namespace (`ChatGPTPlan.swift:350-494`).
+- Model `auto` picks the best model on the plan with `ModelPicker`, which drops audio, image, embedding and similar models and prefers newer GPT versions; `auto-fast` prefers "mini" models for background naming. On a 404 or a model-related 400 it tries up to 3 models. The plan's model list is cached for a day (`ChatGPTPlan.swift:447-462`, `492-559`, `Sources/Pinpoint/AppSettings.swift:79-86`).
 
 ### Codex CLI
 

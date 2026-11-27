@@ -193,14 +193,13 @@ public final class ChatGPTAccount: @unchecked Sendable {
     public func accessToken() async throws -> String {
         guard let c = credentials else { throw LLMError("Sign in with ChatGPT in Pinpoint Settings first.") }
         if c.expiresAt.timeIntervalSinceNow > 60 { return c.accessToken }
-        let task: Task<ChatGPTCredentials, Error>
-        lock.lock()
-        if let t = refreshTask { task = t } else {
-            task = Task { try await self.refresh(c) }
-            refreshTask = task
+        let task: Task<ChatGPTCredentials, Error> = lock.withLock {
+            if let t = refreshTask { return t }
+            let t = Task { try await self.refresh(c) }
+            refreshTask = t
+            return t
         }
-        lock.unlock()
-        defer { lock.lock(); refreshTask = nil; lock.unlock() }
+        defer { lock.withLock { refreshTask = nil } }
         return try await task.value.accessToken
     }
 
@@ -264,6 +263,12 @@ final class LoopbackListener: @unchecked Sendable {
         throw LLMError("Port 1455 is busy (another sign-in may be open, e.g. in GG Coder or Codex). Close it and try again. \(lastError.localizedDescription)")
     }
 
+    /// Startup state for `make`; only touched from the listener's serial queue.
+    private final class StartState: @unchecked Sendable {
+        var resumed = false
+        var holder: LoopbackListener?
+    }
+
     private static func make(port: UInt16, expectedState: String) async throws -> LoopbackListener {
         let params = NWParameters.tcp
         params.requiredLocalEndpoint = .hostPort(host: "127.0.0.1", port: NWEndpoint.Port(rawValue: port) ?? .any)
@@ -271,19 +276,18 @@ final class LoopbackListener: @unchecked Sendable {
         let l = try NWListener(using: params)
         let queue = DispatchQueue(label: "pinpoint.oauth")
         return try await withCheckedThrowingContinuation { cont in
-            var resumed = false
-            var holder: LoopbackListener?
+            let start = StartState()
             l.stateUpdateHandler = { state in
                 switch state {
                 case .ready:
-                    guard !resumed, let actual = l.port?.rawValue else { return }
-                    resumed = true
+                    guard !start.resumed, let actual = l.port?.rawValue else { return }
+                    start.resumed = true
                     let ll = LoopbackListener(listener: l, port: actual, expectedState: expectedState)
-                    holder = ll
+                    start.holder = ll
                     l.newConnectionHandler = { conn in ll.handle(conn, queue: queue) }
                     cont.resume(returning: ll)
                 case .failed(let e):
-                    if !resumed { resumed = true; cont.resume(throwing: e) } else { holder?.finish(.failure(e)) }
+                    if !start.resumed { start.resumed = true; cont.resume(throwing: e) } else { start.holder?.finish(.failure(e)) }
                 default: break
                 }
             }

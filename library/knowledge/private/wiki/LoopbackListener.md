@@ -33,7 +33,7 @@ related:
 
 ## Purpose
 
-A minimal one-shot HTTP server on 127.0.0.1 that captures the OAuth redirect (`Sources/PinpointCore/ChatGPTPlan.swift:246`). Internal to PinpointCore.
+A minimal one-shot HTTP server on 127.0.0.1 that captures the OAuth redirect (`Sources/PinpointCore/ChatGPTPlan.swift:245`). Internal to PinpointCore.
 
 ## API (internal)
 
@@ -49,9 +49,9 @@ final class LoopbackListener: @unchecked Sendable {
 
 ## Behaviour
 
-- `start` binds port 1455; when `allowAnyPort` is true (a returning user with a registration) it falls back to any port. If binding fails it throws an [[LLMError]] saying port 1455 is busy (`ChatGPTPlan.swift:259-265`).
-- Each connection reads the request line; only `ChatGPTOAuth.callbackPath` with a matching `state` resolves the wait with the query parameters, otherwise 400 or 404 (`ChatGPTPlan.swift:295-316`).
-- `waitForCallback` fails with a timeout error after `timeout` seconds and with a cancellation error if the task is cancelled (`ChatGPTPlan.swift:327-341`).
+- `start` binds port 1455; when `allowAnyPort` is true (a returning user with a registration) it falls back to any port. If binding fails it throws an [[LLMError]] saying port 1455 is busy (`ChatGPTPlan.swift:258-264`).
+- Each connection reads the request line; only `ChatGPTOAuth.callbackPath` with a matching `state` resolves the wait with the query parameters, otherwise 400 or 404 (`ChatGPTPlan.swift:299-320`).
+- `waitForCallback` fails with a timeout error after `timeout` seconds and with a cancellation error if the task is cancelled (`ChatGPTPlan.swift:331-345`).
 
 ## Called by
 

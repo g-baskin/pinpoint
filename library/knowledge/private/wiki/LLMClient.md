@@ -67,7 +67,7 @@ Grouped internal helper: `func perform(_ req: URLRequest, session: URLSession) a
 
 ## Implementations
 
-- [[AnthropicClient]] (`LLM.swift:77`), [[OpenAICompatibleClient]] (`LLM.swift:139`), [[ChatGPTPlanClient]] (`ChatGPTPlan.swift:347`), [[CodexClient]] (`CodexClient.swift:6`).
+- [[AnthropicClient]] (`LLM.swift:77`), [[OpenAICompatibleClient]] (`LLM.swift:139`), [[ChatGPTPlanClient]] (`ChatGPTPlan.swift:351`), [[CodexClient]] (`CodexClient.swift:6`).
 
 ## Called by
 

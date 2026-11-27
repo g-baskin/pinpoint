@@ -57,7 +57,7 @@ enum AudioInputs {
                                     scope: AudioObjectPropertyScope = kAudioObjectPropertyScopeGlobal, _ value: inout T) -> Bool {
         var addr = AudioObjectPropertyAddress(mSelector: selector, mScope: scope, mElement: kAudioObjectPropertyElementMain)
         var size = UInt32(MemoryLayout<T>.size)
-        return AudioObjectGetPropertyData(obj, &addr, 0, nil, &size, &value) == noErr
+        return withUnsafeMutableBytes(of: &value) { AudioObjectGetPropertyData(obj, &addr, 0, nil, &size, $0.baseAddress!) } == noErr
     }
 
     private static func string(_ obj: AudioObjectID, _ selector: AudioObjectPropertySelector) -> String {

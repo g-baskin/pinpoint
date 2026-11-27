@@ -80,13 +80,13 @@ Grouped internal type: `struct Registration: Codable { var clientId: String; var
 
 - Credentials and registration are JSON strings in the [[Keychain]] under `chatgpt.credentials` and `chatgpt.registration`, cached behind an `NSLock` (`ChatGPTPlan.swift:109-139`). A stable `urn:uuid:` host id lives in UserDefaults key `chatgptHostId` (`:141-147`).
 - `signIn` starts a [[LoopbackListener]], opens the authorize URL via the `open` callback, waits up to 180 s, exchanges the code, checks the nonce, and requires the `planScope` scope before saving (`ChatGPTPlan.swift:150-190`).
-- `accessToken` refreshes when within 60 s of expiry; concurrent callers share one refresh task (`ChatGPTPlan.swift:193-205`).
-- `signOut` revokes the refresh token (errors ignored) and clears storage (`ChatGPTPlan.swift:225-230`).
-- `models` lists the plan's models; `cachedModels` caches the list for a day in UserDefaults; `autoModel` picks via [[ModelPicker]] (`ChatGPTPlan.swift:233-243`, `:542-558`).
+- `accessToken` refreshes when within 60 s of expiry; concurrent callers share one refresh task (`ChatGPTPlan.swift:193-204`).
+- `signOut` revokes the refresh token (errors ignored) and clears storage (`ChatGPTPlan.swift:224-229`).
+- `models` lists the plan's models; `cachedModels` caches the list for a day in UserDefaults; `autoModel` picks via [[ModelPicker]] (`ChatGPTPlan.swift:232-242`, `:542-558`).
 
 ## Called by
 
-- [[ChatGPTPlanClient]] `accessToken()` and `autoModel(...)` (`ChatGPTPlan.swift:450`, `:461`).
+- [[ChatGPTPlanClient]] `accessToken()` and `autoModel(...)` (`ChatGPTPlan.swift:454`, `:461`).
 - [[ProviderSettings]] `makeClient` and `listModels` (`Sources/PinpointCore/LLM.swift:276`, `:296`).
 - [[AppSettings]] `isAIConfigured` and `makeClient(fast:)` (`Sources/Pinpoint/AppSettings.swift:70`, `:82`).
 - [[SettingsView]] sign-in, sign-out and model rows (`Sources/Pinpoint/SettingsView.swift:128-172`).
