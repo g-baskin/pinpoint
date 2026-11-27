@@ -1,5 +1,9 @@
 # Pinpoint
 
+## Name
+
+The app is called Pinpoint. Its former name is retired: don't use it anywhere, including code, identifiers, file and folder names, docs, commit messages, PR titles and replies. `NameGuardTests` fails `swift test` if it shows up in a tracked file.
+
 ## Branches: only `main` and `dev`
 
 This overrides the feature-branch workflow in parent AGENTS.md files for this repository.
@@ -14,9 +18,7 @@ Pinpoint: a macOS screenshot and markup app with a built-in AI agent (Swift Pack
 
 - This is Swift, not Python: the parent AGENTS.md `pytest`/`src/` notes don't apply. Tests: `swift test`. Lint: `shellcheck scripts/*.sh`. App bundle: `scripts/build-app.sh` (`--install` copies it to ~/Applications).
 - Put logic in `PinpointCore`; the `Pinpoint` app target has no tests.
-- The app was renamed from Zoomies. The `zoomies` strings left in `Sources/PinpointCore/LegacyMigration.swift` and `scripts/build-app.sh` are old identifiers needed to carry over existing installs; don't rename them.
-- Changing the bundle id, `Keychain.service` or `LibraryStore.defaultRoot` orphans users' saved keys, settings and captures; add a step to `LegacyMigration` when you do.
-- Keep `LegacyMigration.run()` before `AppDelegate()` in `Sources/Pinpoint/main.swift`: AppDelegate creates the library store when it is initialised.
+- Changing the bundle id, `Keychain.service` or `LibraryStore.defaultRoot` orphans users' saved keys, settings and captures; it needs a launch-time migration (see `docs/adr/0002-stored-data-identifiers.md`).
 - `CFBundleIdentifier` in `Resources/Info.plist` is repeated in the ad-hoc `codesign -r` line of `scripts/build-app.sh`; change both, or Screen Recording permission resets on every rebuild.
 - GitHub push protection rejects secret-shaped literals, even fake test fixtures; build them by concatenation (see `SensitiveTests` in `Tests/PinpointCoreTests/CoreTests.swift`).
 <!-- gg:init:end -->

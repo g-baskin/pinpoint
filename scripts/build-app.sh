@@ -16,10 +16,6 @@ IDENTITY="$(security find-identity -v -p codesigning 2>/dev/null | awk -F'"' '/A
 if [ -z "$IDENTITY" ]; then
   IDENTITY="$(security find-identity -p codesigning 2>/dev/null | awk '/"Pinpoint Local Signing"/ {print $2; exit}')"
 fi
-if [ -z "$IDENTITY" ]; then
-  # Certificate made before the rename; re-run scripts/setup-signing.sh to replace it.
-  IDENTITY="$(security find-identity -p codesigning 2>/dev/null | awk '/"Zoomies Local Signing"/ {print $2; exit}')"
-fi
 if [ -n "$IDENTITY" ]; then
   codesign --force --deep --sign "$IDENTITY" "$APP"
 else
@@ -31,8 +27,6 @@ echo "Built $APP (signed with: ${IDENTITY:-ad-hoc})"
 du -sh "$APP"
 if [ "${1:-}" = "--install" ]; then
   mkdir -p "$HOME/Applications"
-  # The app used to be called Zoomies: move the old copy to the Trash so there's only one.
-  if [ -d "$HOME/Applications/Zoomies.app" ]; then mv "$HOME/Applications/Zoomies.app" "$HOME/.Trash/Zoomies-old-$(date +%s).app"; fi
   rm -rf "$HOME/Applications/Pinpoint.app"
   cp -R "$APP" "$HOME/Applications/"
   echo "Installed to ~/Applications/Pinpoint.app"

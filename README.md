@@ -1,85 +1,71 @@
 # Pinpoint
 
-Your own screenshot and markup tool for macOS, with a built-in AI agent. Native Swift, so it's fast and small. No subscription.
+A native macOS screenshot and markup tool with a built-in AI agent. Capture, annotate, redact and hand off screenshots, and ask the agent to do the markup for you in plain English. Written in Swift: fast, small, no subscription.
 
-## Build & run
+## Features
+
+- **Capture** an area, a window (including parts hidden behind other windows), one screen or all screens.
+- **Mark up** with arrows, lines, shapes, text, callouts, highlights, numbered steps, voice-note pins, blur and black-box redaction.
+- **Auto-redact** emails, API keys, phone and card numbers, IP addresses, SSNs, faces and your own words. This runs on your Mac, with no AI or internet needed.
+- **AI agent**: type "point an arrow at the Save button" or "blur the faces", and it edits the image. Each run undoes in one step.
+- **Library** of every capture, searchable by name, tag and the text inside the screenshot. Turn several captures into a step-by-step guide.
+- **Handoff**: copy or export a capture with its notes, ready for a coding agent or a teammate.
+
+## Install
 
 Requires macOS 14 or later and Swift 5.10 or later (Xcode, or Apple's Command Line Tools: `xcode-select --install`).
 
 ```bash
 git clone https://github.com/g-baskin/pinpoint.git
 cd pinpoint
-scripts/build-app.sh            # -> build/Pinpoint.app
+scripts/build-app.sh            # builds build/Pinpoint.app
 open build/Pinpoint.app
 scripts/build-app.sh --install  # optional: copies it to ~/Applications
-swift test                      # core test suite
 ```
 
 On first launch, macOS asks for **Screen Recording** permission (System Settings → Privacy & Security → Screen & System Audio Recording). Turn on Pinpoint, then quit and reopen it.
-Ad-hoc signed builds can lose this permission when you rebuild. If captures stop working after a rebuild, toggle Pinpoint off and on again in that same settings pane.
-To avoid that, run `scripts/setup-signing.sh` once: it creates a local signing certificate that `build-app.sh` then uses for every build.
 
-## Using it
+If captures stop working after a rebuild, macOS has dropped that permission: toggle Pinpoint off and on again in the same pane. To stop it happening, run `scripts/setup-signing.sh` once. It creates a local signing certificate that every later build uses.
 
-Pinpoint is one app with one window, like Snagit's editor. A Capture button sits at the top left, with the tools next to it. On the right is a sidebar with **Properties** (Quick Styles, colour, fill, width, size, shadow) and **Assistant** (AI) tabs. Along the bottom is a tray of recent captures with search and zoom (Fit / 100% / pinch). The **Editor / Library** switch at the top swaps the canvas for the full library grid.
-Close the window and Pinpoint stays in the menu bar (camera icon), ready for the shortcuts.
+## Usage
+
+Pinpoint opens one window: tools along the top, a **Properties** / **Assistant** sidebar on the right and recent captures along the bottom. The **Editor / Library** switch swaps the canvas for the full library. Close the window and Pinpoint stays in the menu bar.
 
 | Shortcut | Action |
 |---|---|
-| ⌃⇧1 | Capture: drag an area, or click a window (Return = whole screen, Esc = cancel) |
-| ⌃⇧2 | Capture a window cleanly (includes parts hidden behind other windows) |
-| ⌃⇧3 | Capture the full screen under the mouse |
+| ⌃⇧1 | Capture an area, or click a window (Return = whole screen, Esc = cancel) |
+| ⌃⇧2 | Capture a window cleanly |
+| ⌃⇧3 | Capture the screen under the mouse |
 | ⌃⇧4 | Capture all screens |
-| ⌃⇧L | Library |
+| ⌃⇧L | Open the library |
 
-**Editor tools** (press the letter key): V select/move, A arrow, L line, R rectangle, E ellipse, T text, O callout, H highlight, N numbered step, B blur, X black-box redact, C crop.
-Hold Shift for squares and 45° lines. Drag the round handles to resize. Arrow keys nudge the selected item, Delete removes it, and double-click edits text.
-⌘Z / ⇧⌘Z undo and redo, ⌘C copies the image, ⌘S saves to the library, ⇧⌘E exports PNG/JPEG/HEIC.
+**Tools** (press the letter): V select, A arrow, L line, R rectangle, E ellipse, T text, O callout, H highlight, N numbered step, M voice note, B blur, X black-box redact, C crop. Hold Shift for squares and 45° lines.
 
-**Assistant panel**
-- *Auto-redact*: finds emails, API keys, phone and card numbers, IPs, SSNs and faces on-device, then blurs or black-boxes them. No AI or internet needed.
-- *Copy text*: on-device OCR copied to the clipboard.
-- *Summarize* and *Name & tag*: uses your chosen AI.
-- Prompt box: plain-English edits like "point an arrow at the Save button", "number the steps in the sidebar", "crop to the dialog" or "blur the faces". The agent sees the screenshot and the OCR text, then edits the image with tools. Each run can be undone in one step.
+**Editing:** ⌘Z / ⇧⌘Z undo and redo, ⌘C copy, ⌘S save to the library, ⇧⌘E export as PNG, JPEG or HEIC.
 
-**Library**: every capture is saved in `~/Pictures/Pinpoint/<id>/` (original, annotated render, thumbnail, metadata).
-You can search names, tags and the text inside screenshots. ⌘-click captures in order, then **Make Guide** writes a step-by-step guide (`guide.md` + `guide.html` + images) to `~/Pictures/Pinpoint/Guides/`.
-**Auto-name** gives un-named captures AI names and tags.
+**Assistant panel:** auto-redact, copy text (on-device OCR), summarize, name and tag, and a prompt box for the agent.
 
-## AI providers (Settings → AI provider)
+**Library:** captures are saved in `~/Pictures/Pinpoint/`. ⌘-click captures in order, then choose **Make Guide** to write `guide.md` and `guide.html` with images to `~/Pictures/Pinpoint/Guides/`.
 
-ChatGPT (sign in with your plan, no API key), ChatGPT via the Codex CLI, Anthropic (Claude), OpenAI API, OpenRouter, Google Gemini, Ollama (local/offline, no key) or any other OpenAI-compatible server (LM Studio…).
-Keys are stored in the macOS Keychain. Use **Fetch models** to pick from the provider's current list, and **Test connection** to check it works.
-For agent edits, use a model that supports both images and tool calling.
+## AI providers
 
-## Architecture
+Choose one in **Settings → AI provider**: ChatGPT (sign in with your plan, no API key), ChatGPT via the Codex CLI, Anthropic (Claude), OpenAI API, OpenRouter, Google Gemini, Ollama (local, no key) or any OpenAI-compatible server such as LM Studio.
 
-```
-Sources/PinpointCore  (no UI, unit-tested)
-  Annotation.swift    markup model (image-pixel coords, top-left origin)
-  Renderer.swift      draws markup for both the live canvas and exports
-  Analyzer.swift      Apple Vision OCR, sensitive-text boxes, face detection
-  Sensitive.swift     PII / secret patterns
-  Library.swift       folder-per-capture store + search
-  LLM.swift           provider-neutral chat + Anthropic and OpenAI-compatible clients
-  Agent.swift         tool definitions, AgentToolbox (pure), EditAgent loop
-  Assistants.swift    summarize / name & tag / guide writing, guide export, Keychain
-Sources/Pinpoint      (AppKit + SwiftUI app)
-  AppDelegate         menu bar, hotkeys, capture flow, windows
-  CaptureService      ScreenCaptureKit screen/window capture
-  SelectionOverlay    frozen-screen area/window picker
-  CanvasView          drawing surface and editing interactions
-  EditorModel/View    editor state, undo, assistant panel
-  LibraryView, SettingsView
-```
+Keys are stored in the macOS Keychain. Use **Fetch models** to pick a model and **Test connection** to check it. For agent edits, pick a model that supports both images and tool calling.
 
-**Adding an agent tool:** add a `ToolSpec` to `AgentToolbox.tools`, handle it in `execute`, and add a test in `Tests/PinpointCoreTests`.
-**Adding a markup kind:** add a case to `AnnotationKind`, draw it in `Renderer.draw`, and add a `Tool` case in `EditorModel.swift`.
+## Contributing
 
-Built from scratch on public Apple frameworks. It contains no TechSmith code or assets.
+Contributions are welcome. Work happens on the `dev` branch, so open pull requests against `dev`.
+
+- Run the tests with `swift test`. App logic lives in `Sources/PinpointCore` (unit-tested), and the AppKit/SwiftUI app in `Sources/Pinpoint`.
+- [`CONTEXT.md`](CONTEXT.md) defines the project's terms, and [`docs/adr/`](docs/adr/) records the key decisions.
+- **Adding an agent tool:** add a `ToolSpec` to `AgentToolbox.tools`, handle it in `execute`, and add a test in `Tests/PinpointCoreTests`.
+- **Adding a markup kind:** add a case to `AnnotationKind`, draw it in `Renderer.draw`, and add a `Tool` case in `EditorModel.swift`.
 
 ## License
 
 Copyright 2026 AutomationGod. Licensed under the [Apache License 2.0](LICENSE).
 
-If you redistribute Pinpoint or build on it, keep the [`NOTICE`](NOTICE) file crediting the original author, and mark the files you changed. Contributions are welcome: anything you submit is accepted under the same license (Apache 2.0, section 5).
+If you redistribute Pinpoint or build on it, keep the [`NOTICE`](NOTICE) file crediting the original author, and mark the files you changed. Anything you contribute is accepted under the same licence (Apache 2.0, section 5).
+
+Pinpoint is built from scratch on public Apple frameworks and contains no third-party screenshot-app code or assets.

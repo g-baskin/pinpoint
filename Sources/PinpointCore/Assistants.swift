@@ -172,12 +172,4 @@ public enum Keychain {
         add[kSecValueData as String] = Data(value.utf8)
         return SecItemAdd(add as CFDictionary, nil) == errSecSuccess
     }
-    /// Account names stored under a service (no secrets are read).
-    public static func accounts(service: String) -> [String] {
-        let q: [String: Any] = [kSecClass as String: kSecClassGenericPassword, kSecAttrService as String: service,
-                                kSecReturnAttributes as String: true, kSecMatchLimit as String: kSecMatchLimitAll]
-        var out: CFTypeRef?
-        guard SecItemCopyMatching(q as CFDictionary, &out) == errSecSuccess, let items = out as? [[String: Any]] else { return [] }
-        return items.compactMap { $0[kSecAttrAccount as String] as? String }
-    }
 }
