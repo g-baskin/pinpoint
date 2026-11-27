@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>CFBundleName</key><string>Pinpoint</string>
+    <key>CFBundleDisplayName</key><string>Pinpoint</string>
+    <key>CFBundleIdentifier</key><string>app.zoomies.Zoomies</string>
+    <key>CFBundleExecutable</key><string>Pinpoint</string>
+    <key>CFBundleIconFile</key><string>AppIcon</string>
+    <key>CFBundlePackageType</key><string>APPL</string>
+    <key>CFBundleShortVersionString</key><string>0.1.0</string>
+    <key>CFBundleVersion</key><string>1</string>
+    <key>LSMinimumSystemVersion</key><string>14.0</string>
+    <key>LSUIElement</key><true/>
+    <key>LSApplicationCategoryType</key><string>public.app-category.productivity</string>
+    <key>NSHighResolutionCapable</key><true/>
+    <key>NSMicrophoneUsageDescription</key><string>Pinpoint listens only while you record a voice note.</string>
+    <key>NSSpeechRecognitionUsageDescription</key><string>Pinpoint turns your voice notes into text on this Mac.</string>
+    <key>NSScreenCaptureUsageDescription</key><string>Pinpoint captures your screen when you ask it to.</string>
+    <key>NSHumanReadableCopyright</key><string>Copyright © 2026 AutomationGod. Licensed under the Apache License 2.0.</string>
+</dict>
+</plist>
