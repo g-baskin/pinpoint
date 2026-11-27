@@ -107,13 +107,16 @@ public enum GuideBuilder {
 public enum Markdown {
     public static func escape(_ s: String) -> String {
         s.replacingOccurrences(of: "&", with: "&amp;").replacingOccurrences(of: "<", with: "&lt;").replacingOccurrences(of: ">", with: "&gt;")
+            .replacingOccurrences(of: "\"", with: "&quot;")
     }
 
     static func inline(_ s: String) -> String {
         var t = escape(s)
+        // Guide text comes from the model, so links may only be relative, http(s) or mailto (no javascript: etc.).
+        let url = #"((?:https?://|mailto:|(?![\w+.-]+:))[^)\s]+)"#
         let rules: [(String, String)] = [
-            (#"!\[([^\]]*)\]\(([^)\s]+)\)"#, "<img alt=\"$1\" src=\"$2\">"),
-            (#"\[([^\]]+)\]\(([^)\s]+)\)"#, "<a href=\"$2\">$1</a>"),
+            (#"!\[([^\]]*)\]\("# + url + #"\)"#, "<img alt=\"$1\" src=\"$2\">"),
+            (#"\[([^\]]+)\]\("# + url + #"\)"#, "<a href=\"$2\">$1</a>"),
             (#"\*\*([^*]+)\*\*"#, "<strong>$1</strong>"),
             (#"(?<![*\w])\*([^*]+)\*(?![*\w])"#, "<em>$1</em>"),
             (#"`([^`]+)`"#, "<code>$1</code>"),

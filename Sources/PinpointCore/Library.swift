@@ -103,8 +103,11 @@ public final class LibraryStore: @unchecked Sendable {
         fm.fileExists(atPath: renderedURL(id).path) ? ImageFiles.load(renderedURL(id)) : original(id)
     }
 
-    public func delete(_ id: UUID) throws {
-        try fm.trashItem(at: folder(id), resultingItemURL: nil)
+    @discardableResult
+    public func delete(_ id: UUID) throws -> URL? {
+        var trashed: NSURL?
+        try fm.trashItem(at: folder(id), resultingItemURL: &trashed)
+        return trashed as URL?
     }
 
     /// Every word in the query must appear in the name, tags, app, summary or recognised text.

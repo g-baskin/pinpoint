@@ -63,7 +63,7 @@ public final class LibraryStore: @unchecked Sendable {
     public func loadAll() -> [CaptureMeta]
     public func original(_ id: UUID) -> CGImage?
     public func bestImage(_ id: UUID) -> CGImage?
-    public func delete(_ id: UUID) throws
+    @discardableResult public func delete(_ id: UUID) throws -> URL?
     public static func search(_ metas: [CaptureMeta], query: String) -> [CaptureMeta]
 }
 ```
@@ -75,7 +75,7 @@ Internal: `func writeThumb(_ image: CGImage, id: UUID) throws` (480 px JPEG at q
 - `defaultRoot` is `~/Pictures/Pinpoint` (`Library.swift:36-38`).
 - `create` writes the original, a thumbnail and `meta.json` (`Library.swift:57-64`). `save` bumps `modified` and, if given, writes the rendered image and refreshes the thumbnail (`:67-76`).
 - `writeMeta` is serialised with a lock and written atomically (`Library.swift:78-81`).
-- `loadAll` reads every UUID-named folder, newest first (`Library.swift:93-97`). `bestImage` prefers the rendered image (`:102-104`). `delete` moves the folder to the Trash (`:106-108`).
+- `loadAll` reads every UUID-named folder, newest first (`Library.swift:93-97`). `bestImage` prefers the rendered image (`:102-104`). `delete` moves the folder to the Trash and returns where it went (`:106-111`).
 - `search` requires every query word to appear in name, tags (also as `#tag`), app, summary or OCR text (`Library.swift:111-119`).
 
 > [!warning] Stored-data identifier

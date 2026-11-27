@@ -10,6 +10,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - **Errors no longer fail silently.** Deleting captures, saving an API key, signing in with ChatGPT, opening image files, sharing, saving name and tag changes, Auto-name and Restart Pinpoint now say when something goes wrong instead of carrying on or reporting success. Background naming and OCR failures are written to the system log.
+- **Guides can't carry script links.** `guide.html` now escapes quotes and only turns relative, web and mailto addresses into links or images, so text from the AI can't add `javascript:` links or extra HTML attributes.
+
+### Tests
+
+- Added tests for provider network calls and HTTP error messages, deleting a capture, the agent's step limit and error exits, and safe guide HTML.
 
 ## [0.1.0] - 2026-11-27
 

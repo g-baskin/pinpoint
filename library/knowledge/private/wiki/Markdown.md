@@ -16,7 +16,8 @@ updated: 2026-11-27
 depends_on: []
 used_by:
   - "[[GuideBuilder]]"
-tested_by: []
+tested_by:
+  - "[[MarkdownSafetyTests]]"
 tags:
   - entity
   - pinpointcore
@@ -44,7 +45,8 @@ Internal: `static func inline(_ s: String) -> String` applies regex rules for im
 
 ## Behaviour
 
-- `escape` replaces `&`, `<`, `>` (`Assistants.swift:108-110`).
+- `escape` replaces `&`, `<`, `>` and `"` (`Assistants.swift:108-111`).
+- Image and link URLs must be relative, `http(s)://` or `mailto:`; anything else (such as `javascript:`) stays as plain text, because guide text comes from the model.
 - `toHTML` walks lines: `#` headings, `-`/`*` bullet lists, `1.`/`1)` ordered lists, everything else joined into paragraphs; blank lines close paragraphs and lists (`Assistants.swift:125-150`).
 
 ## Called by
