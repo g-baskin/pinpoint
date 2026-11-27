@@ -21,7 +21,8 @@ if [ -n "$IDENTITY" ]; then
 else
   # Ad-hoc, but with a fixed designated requirement (bundle id) instead of the per-build hash,
   # so macOS keeps Screen Recording permission across rebuilds.
-  codesign --force --deep --sign - -r='designated => identifier "app.pinpoint.Pinpoint"' "$APP"
+  BUNDLE_ID="$(/usr/libexec/PlistBuddy -c 'Print CFBundleIdentifier' Resources/Info.plist)"
+  codesign --force --deep --sign - -r="designated => identifier \"$BUNDLE_ID\"" "$APP"
 fi
 echo "Built $APP (signed with: ${IDENTITY:-ad-hoc})"
 du -sh "$APP"

@@ -32,6 +32,6 @@ Pinpoint: a macOS screenshot and markup app with a built-in AI agent (Swift Pack
 - This is Swift, not Python: the parent AGENTS.md `pytest`/`src/` notes don't apply. All checks: `scripts/check.sh` (warnings are errors; its swift-format count is a report, not a gate, until the code is reformatted). Tests alone: `swift test`. App bundle: `scripts/build-app.sh` (`--install` copies it to ~/Applications).
 - Put logic in `PinpointCore`; the `Pinpoint` app target has no tests.
 - Changing the bundle id, `Keychain.service` or `LibraryStore.defaultRoot` orphans users' saved keys, settings and captures; it needs a launch-time migration (see `library/knowledge/private/architecture/ADR-2-stored-data-identifiers.md`).
-- `CFBundleIdentifier` in `Resources/Info.plist` is repeated in the ad-hoc `codesign -r` line of `scripts/build-app.sh`; change both, or Screen Recording permission resets on every rebuild.
+- Downloads from `scripts/release.sh` are ad-hoc signed and not notarized; its designated requirement (bundle id read from `Resources/Info.plist`) is what keeps Screen Recording permission across updates, so don't switch it to the per-build hash.
 - GitHub push protection rejects secret-shaped literals, even fake test fixtures; build them by concatenation (see `SensitiveTests` in `Tests/PinpointCoreTests/CoreTests.swift`).
 <!-- gg:init:end -->

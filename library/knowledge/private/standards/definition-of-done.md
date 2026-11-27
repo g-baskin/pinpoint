@@ -28,7 +28,7 @@ A change is done only when every item below that applies to it is true. A PRD ma
 ## 4. Stored data and signing stay intact
 
 - [ ] The bundle id (`CFBundleIdentifier` in `Resources/Info.plist`), `Keychain.service` (`Sources/PinpointCore/Assistants.swift`) and `LibraryStore.defaultRoot` (`Sources/PinpointCore/Library.swift`) are unchanged, or the change ships with a launch-time migration ([ADR-2](../architecture/ADR-2-stored-data-identifiers.md)).
-- [ ] If `CFBundleIdentifier` changes, the ad-hoc `codesign -r` line in `scripts/build-app.sh` changes with it. Otherwise macOS resets Screen Recording permission on every rebuild.
+- [ ] If `CFBundleIdentifier` changes, a launch-time data migration exists (ADR-2). The build scripts read the id from `Resources/Info.plist`, so the signature follows automatically.
 - [ ] `scripts/build-app.sh` still builds `build/Pinpoint.app` when the change touches the app target, resources or build script.
 
 ## 5. Docs are updated

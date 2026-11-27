@@ -85,7 +85,7 @@ enum CaptureService {
 [[AppDelegate]] · [[SelectionOverlay]] · [[Renderer]] · [[UIRegionDetector]]
 
 > [!note] Build coupling
-> Screen Recording permission is tied to the code signature; `CFBundleIdentifier` is repeated in `scripts/build-app.sh` (project AGENTS.md).
+> Screen Recording permission is tied to the code signature; `scripts/build-app.sh` and `scripts/release.sh` read `CFBundleIdentifier` from `Resources/Info.plist` for the ad-hoc signature.
 
 ## Sources
 

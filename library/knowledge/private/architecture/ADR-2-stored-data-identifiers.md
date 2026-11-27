@@ -6,4 +6,4 @@ Status: accepted (2026-11-27)
 
 **Why:** changing any of them makes existing captures, settings or keys invisible to the app.
 
-**Consequences:** a change needs a migration that moves or copies the old data at launch, before `AppDelegate` creates the library. A bundle id change also resets Screen Recording permission, and the id is repeated in the ad-hoc `codesign -r` line of `scripts/build-app.sh`.
+**Consequences:** a change needs a migration that moves or copies the old data at launch, before `AppDelegate` creates the library. A bundle id change also resets Screen Recording permission, and `scripts/build-app.sh` and `scripts/release.sh` read it from `Resources/Info.plist` for their ad-hoc signature.

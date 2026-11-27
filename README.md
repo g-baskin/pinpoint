@@ -1,3 +1,5 @@
+<p align="center"><img src="assets/readme-banner.png" alt="Pinpoint: screenshot, mark up and redact on your Mac, with a built-in AI agent" width="800"></p>
+
 # Pinpoint
 
 A native macOS screenshot and markup tool with a built-in AI agent. Capture, annotate, redact and hand off screenshots, and ask the agent to do the markup for you in plain English. Written in Swift: fast, small, no subscription.
@@ -12,6 +14,18 @@ A native macOS screenshot and markup tool with a built-in AI agent. Capture, ann
 - **Handoff**: copy or export a capture with its notes, ready for a coding agent or a teammate.
 
 ## Install
+
+### Download
+
+Requires macOS 14 or later, on Apple silicon or Intel.
+
+1. Download `Pinpoint-<version>.zip` from the [latest release](https://github.com/g-baskin/pinpoint/releases/latest) and double-click it to unzip.
+2. Drag `Pinpoint.app` into your Applications folder and open it.
+3. Pinpoint isn't notarized by Apple yet, so macOS blocks the first launch. Open **System Settings → Privacy & Security**, scroll down and click **Open Anyway** next to the Pinpoint message, then confirm. You only need to do this once.
+
+Each release lists a SHA-256 checksum. To check your download, run `shasum -a 256 Pinpoint-<version>.zip` and compare.
+
+### Build from source
 
 Requires macOS 14 or later and Swift 5.10 or later (Xcode, or Apple's Command Line Tools: `xcode-select --install`).
 
@@ -57,7 +71,7 @@ Keys are stored in the macOS Keychain. Use **Fetch models** to pick a model and 
 
 Contributions are welcome. Work happens on the `dev` branch, so open pull requests against `dev`.
 
-- Run the tests with `swift test`. App logic lives in `Sources/PinpointCore` (unit-tested), and the AppKit/SwiftUI app in `Sources/Pinpoint`.
+- Run every check with `scripts/check.sh`, or just the tests with `swift test`. `scripts/release.sh` builds the universal download zip into `dist/`. App logic lives in `Sources/PinpointCore` (unit-tested), and the AppKit/SwiftUI app in `Sources/Pinpoint`.
 - Project docs live in [`library/`](library/): the [glossary](library/knowledge/private/glossary/glossary.md), [decision records](library/knowledge/private/architecture/) and in-depth guides.
 - **Adding an agent tool:** add a `ToolSpec` to `AgentToolbox.tools`, handle it in `execute`, and add a test in `Tests/PinpointCoreTests`.
 - **Adding a markup kind:** add a case to `AnnotationKind`, draw it in `Renderer.draw`, and add a `Tool` case in `EditorModel.swift`.

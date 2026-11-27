@@ -7,19 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### Changed
-
-- Project docs now live in one place, the [`library/`](library/) folder: the glossary is at `library/knowledge/private/glossary/glossary.md` and the decision records are in `library/knowledge/private/architecture/`. The app itself is unchanged.
-- `scripts/check.sh` runs every check in one go: a build that treats warnings as errors, the tests, shellcheck and a swift-format style report.
-
-### Fixed
-
-- ChatGPT sign-in no longer shares state unsafely between threads while it waits for the browser callback or refreshes a token.
-- Reading microphone names for built-in dictation no longer passes an unsafe pointer to CoreAudio.
-
 ## [0.1.0] - 2026-11-27
 
-The first public release of Pinpoint: a native macOS screenshot and markup app with a built-in AI agent. Requires macOS 14 or later. There is no prebuilt download yet: build it from source with `scripts/build-app.sh`.
+The first public release of Pinpoint: a native macOS screenshot and markup app with a built-in AI agent. Requires macOS 14 or later. Download `Pinpoint-0.1.0.zip` from the release page (it runs on Apple silicon and Intel Macs). It is not notarized by Apple yet, so the first launch needs **Open Anyway** in System Settings → Privacy & Security; the README has the steps.
 
 ### Added
 
@@ -35,6 +25,9 @@ The first public release of Pinpoint: a native macOS screenshot and markup app w
 - **One-window layout** with tools along the top, a Properties and Assistant sidebar, and recent captures along the bottom. Pinpoint keeps running in the menu bar when the window is closed.
 - `scripts/setup-signing.sh` creates a local signing certificate so macOS keeps the Screen Recording permission across rebuilds.
 - A project glossary and decision records explaining key choices, such as where your data is stored and why the licence is Apache 2.0.
+- A bullseye app icon, plus a README banner and a social preview image in `assets/`, all drawn by `scripts/make-icon.swift`.
+- A downloadable universal app: `scripts/release.sh` builds it, zips it and writes a SHA-256 checksum for each release.
+- `scripts/check.sh` runs every check in one go: a build that treats warnings as errors, the tests, shellcheck and a swift-format style report.
 
 ### Changed
 
@@ -42,9 +35,12 @@ The first public release of Pinpoint: a native macOS screenshot and markup app w
 - Where your data lives is fixed so future updates find it: settings under the bundle id `app.pinpoint.Pinpoint`, saved keys and ChatGPT sign-in under the Keychain service `app.pinpoint.apikeys`, and captures in `~/Pictures/Pinpoint`.
 - Pinpoint is licensed under the Apache License 2.0. If you redistribute or build on it, keep the `NOTICE` file and mark the files you changed.
 - The README is rewritten around what Pinpoint does, how to install it, shortcuts, AI providers and how to contribute.
+- Project docs live in one place, the [`library/`](library/) folder, including the glossary and the decision records.
 
-<!-- No git tags exist yet. When v0.1.0 is tagged, link [0.1.0] to
-     https://github.com/g-baskin/pinpoint/releases/tag/v0.1.0 and change
-     [Unreleased] to compare/v0.1.0...dev. -->
-[Unreleased]: https://github.com/g-baskin/pinpoint/compare/main...dev
-[0.1.0]: https://github.com/g-baskin/pinpoint/tree/main
+### Fixed
+
+- ChatGPT sign-in no longer shares state unsafely between threads while it waits for the browser callback or refreshes a token.
+- Reading microphone names for built-in dictation no longer passes an unsafe pointer to CoreAudio.
+
+[Unreleased]: https://github.com/g-baskin/pinpoint/compare/v0.1.0...dev
+[0.1.0]: https://github.com/g-baskin/pinpoint/releases/tag/v0.1.0

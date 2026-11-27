@@ -5,3 +5,6 @@ build/
 .swiftpm/
 DerivedData/
 xcuserdata/
+dist/
+.gg/uploads/
+.gg/generated/
