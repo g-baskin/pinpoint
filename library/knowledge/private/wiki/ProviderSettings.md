@@ -66,8 +66,8 @@ public struct ProviderSettings: Codable, Equatable, Sendable {
 
 ## Called by
 
-- [[AppSettings]] stores one per kind in `providers` and calls `current.makeClient(apiKey:)` (`Sources/Pinpoint/AppSettings.swift:11`, `:63`, `:85`).
-- [[SettingsView]] edits it through a binding and calls `listModels` for "Fetch models" (`Sources/Pinpoint/SettingsView.swift:15-17`, `:192`).
+- [[AppSettings]] stores one per kind in `providers` and calls `current.makeClient(apiKey:)` (`Sources/Pinpoint/AppSettings.swift:11`, `:63`, `:89`).
+- [[SettingsView]] edits it through a binding and calls `listModels` for "Fetch models" (`Sources/Pinpoint/SettingsView.swift:15-17`, `:196`).
 
 ## Related
 

@@ -60,7 +60,13 @@ enum CaptureService {
         let p = Process()
         p.executableURL = URL(fileURLWithPath: "/bin/sh")
         p.arguments = ["-c", "sleep 1.5; /usr/bin/open \"$0\"", path]
-        try? p.run()
+        do { try p.run() } catch {
+            let a = NSAlert()
+            a.messageText = "Couldn't restart Pinpoint"
+            a.informativeText = "Quit and reopen Pinpoint yourself. (\(error.localizedDescription))"
+            a.runModal()
+            return
+        }
         NSApp.terminate(nil)
     }
 

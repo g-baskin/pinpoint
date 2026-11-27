@@ -52,7 +52,7 @@ grep -nE '^(public |private |fileprivate |internal )?(func|let|var) ' Sources/*/
 grep -n 'extension' Sources/*/*.swift
 ```
 
-This adds `extractJSONObject` (`JSONValue.swift:99`), `perform(_:session:)` (`LLM.swift:62`) and the notification name `pinpointLibraryChanged` (`EditorModel.swift:378-379`).
+This adds `extractJSONObject` (`JSONValue.swift:99`), `perform(_:session:)` (`LLM.swift:62`) and the notification name `pinpointLibraryChanged` (`EditorModel.swift:379-380`).
 
 **2. Match every name against every other file.** This script strips comments and string literals, keeps only unindented (top-level) declarations so nested names such as `Coordinator`, `Options` or `Node` cannot create false edges, then reports which files use which names with word-boundary matching. Run it from the repository root with `python3 -I deps.py`:
 

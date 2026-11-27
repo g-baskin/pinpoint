@@ -7,7 +7,7 @@ entity_type: class
 target: PinpointCore
 visibility: internal
 path: "Sources/PinpointCore/ChatGPTPlan.swift"
-lines: "246-344"
+lines: "252-350"
 language: swift
 status: developing
 partial_scan: false
@@ -33,7 +33,7 @@ related:
 
 ## Purpose
 
-A minimal one-shot HTTP server on 127.0.0.1 that captures the OAuth redirect (`Sources/PinpointCore/ChatGPTPlan.swift:245`). Internal to PinpointCore.
+A minimal one-shot HTTP server on 127.0.0.1 that captures the OAuth redirect (`Sources/PinpointCore/ChatGPTPlan.swift:251`). Internal to PinpointCore.
 
 ## API (internal)
 
@@ -49,13 +49,13 @@ final class LoopbackListener: @unchecked Sendable {
 
 ## Behaviour
 
-- `start` binds port 1455; when `allowAnyPort` is true (a returning user with a registration) it falls back to any port. If binding fails it throws an [[LLMError]] saying port 1455 is busy (`ChatGPTPlan.swift:258-264`).
-- Each connection reads the request line; only `ChatGPTOAuth.callbackPath` with a matching `state` resolves the wait with the query parameters, otherwise 400 or 404 (`ChatGPTPlan.swift:299-320`).
-- `waitForCallback` fails with a timeout error after `timeout` seconds and with a cancellation error if the task is cancelled (`ChatGPTPlan.swift:331-345`).
+- `start` binds port 1455; when `allowAnyPort` is true (a returning user with a registration) it falls back to any port. If binding fails it throws an [[LLMError]] saying port 1455 is busy (`ChatGPTPlan.swift:264-270`).
+- Each connection reads the request line; only `ChatGPTOAuth.callbackPath` with a matching `state` resolves the wait with the query parameters, otherwise 400 or 404 (`ChatGPTPlan.swift:305-326`).
+- `waitForCallback` fails with a timeout error after `timeout` seconds and with a cancellation error if the task is cancelled (`ChatGPTPlan.swift:337-351`).
 
 ## Called by
 
-- [[ChatGPTAccount]] `signIn` (`Sources/PinpointCore/ChatGPTPlan.swift:155-161`).
+- [[ChatGPTAccount]] `signIn` (`Sources/PinpointCore/ChatGPTPlan.swift:158-164`).
 
 ## Related
 
@@ -63,4 +63,4 @@ final class LoopbackListener: @unchecked Sendable {
 
 ## Sources
 
-- `Sources/PinpointCore/ChatGPTPlan.swift` (lines 246-344)
+- `Sources/PinpointCore/ChatGPTPlan.swift` (lines 252-350)

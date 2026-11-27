@@ -55,9 +55,9 @@ public enum Keychain {
 
 ## Called by
 
-- [[AppSettings]] `apiKey(_:)` and `setAPIKey(_:for:)`, using the [[ProviderKind]] raw value as the account (`Sources/Pinpoint/AppSettings.swift:65-66`).
-- [[ChatGPTAccount]] for `chatgpt.credentials` and `chatgpt.registration` (`Sources/PinpointCore/ChatGPTPlan.swift:110-111`, `:119-137`).
-- [[SettingsView]] indirectly, through [[AppSettings]] (`Sources/Pinpoint/SettingsView.swift:51-52`).
+- [[AppSettings]] `apiKey(_:)` and `setAPIKey(_:for:)`, using the [[ProviderKind]] raw value as the account (`Sources/Pinpoint/AppSettings.swift:65-70`); `setAPIKey` passes `set`'s Bool result back to its caller.
+- [[ChatGPTAccount]] for `chatgpt.credentials` and `chatgpt.registration` (`Sources/PinpointCore/ChatGPTPlan.swift:110-111`, `:119-142`); its `save(_:)` and `saveRegistration(_:)` return `set`'s result.
+- [[SettingsView]] indirectly, through [[AppSettings]] (`Sources/Pinpoint/SettingsView.swift:51-56`), which reports a failed save in its status line.
 
 ## Related
 

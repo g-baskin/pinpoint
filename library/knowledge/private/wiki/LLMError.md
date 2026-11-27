@@ -52,11 +52,11 @@ public struct LLMError: LocalizedError, Sendable {
 ## Behaviour
 
 - `errorDescription` returns `message` (`Sources/PinpointCore/LLM.swift:48`).
-- [[ChatGPTPlanClient]] inspects `message` for "HTTP 404" or "HTTP 400" to decide whether to try another model (`ChatGPTPlan.swift:457`).
+- [[ChatGPTPlanClient]] inspects `message` for "HTTP 404" or "HTTP 400" to decide whether to try another model (`ChatGPTPlan.swift:463`).
 
 ## Called by
 
-- Thrown across PinpointCore: `perform` in [[LLMClient]], [[ProviderSettings]], [[ChatGPTOAuth]], [[ChatGPTAccount]], [[LoopbackListener]], [[ChatGPTPlanClient]], [[CodexClient]], [[Assistants]]; and by [[AppSettings]] `makeClient(fast:)` (`Sources/Pinpoint/AppSettings.swift:82`).
+- Thrown across PinpointCore: `perform` in [[LLMClient]], [[ProviderSettings]], [[ChatGPTOAuth]], [[ChatGPTAccount]], [[LoopbackListener]], [[ChatGPTPlanClient]], [[CodexClient]], [[Assistants]]; and by [[AppSettings]] `makeClient(fast:)` (`Sources/Pinpoint/AppSettings.swift:86`).
 
 ## Related
 

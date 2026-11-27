@@ -6,7 +6,7 @@ kind: class
 entity_type: class
 target: Pinpoint
 path: "Sources/Pinpoint/AppDelegate.swift"
-lines: "1-303"
+lines: "1-314"
 language: swift
 status: developing
 partial_scan: false
@@ -96,12 +96,13 @@ app.run()
 - Launch: accessory activation policy, menus, then hotkeys via [[HotKeyCenter]]: Control-Shift-1 area, -2 window, -3 screen, -4 all screens, -L library (`AppDelegate.swift:20-35`). It does not prompt for Screen Recording at launch; it only asks after a capture fails (`:31`, `:149-150`).
 - `capture(_:)`: screen and all-screens capture directly through [[CaptureService]]; area and window freeze every display and show a [[SelectionOverlay]] on each, with keyboard focus on the screen under the mouse (`AppDelegate.swift:118-153`). Window mode grabs the window itself; area mode crops the frozen image (`:155-172`).
 - `finishCapture` creates the capture in [[LibraryStore]], posts `pinpointLibraryChanged`, optionally copies the PNG, opens the editor and triggers auto-redact once [[EditorModel]] has its analysis (polls up to 40 times every 0.25 s) (`AppDelegate.swift:174-194`).
-- `postProcess` runs off the main actor: OCR without faces, the offline name from `Analyzer.suggestedName`, then optional AI name and tags via [[Assistants]]; it avoids overwriting edits made meanwhile in an open editor (`AppDelegate.swift:197-224`).
-- Shows in the Dock only while a window is open (`AppDelegate.swift:288-296`).
+- `postProcess` runs off the main actor: OCR without faces, the offline name from `Analyzer.suggestedName`, then optional AI name and tags via [[Assistants]]; it avoids overwriting edits made meanwhile in an open editor, merging into the editor's meta and saving the result with a single `writeMeta` (`AppDelegate.swift:197-232`). `makeClient`, AI naming and `writeMeta` failures are logged with `NSLog` rather than ignored; the offline name still applies when AI fails (`:201-203`, `:210-214`, `:227-228`).
+- `openImage` imports each chosen file; unreadable images and failed `library.create` calls are collected and reported in one error alert ("Couldn't open N files:" plus a line per file) after the rest open (`AppDelegate.swift:261-278`).
+- Shows in the Dock only while a window is open (`AppDelegate.swift:299-307`).
 
 ## Called by
 
-- `main.swift`; [[MainView]] (`TopBar`, `EmptyEditor`) and [[AssistantPanel]] through `AppDelegate.shared` (`Sources/Pinpoint/MainWindow.swift:79-88`, `:212`, `Sources/Pinpoint/EditorView.swift:71`); [[MainWindowController]] `windowWillClose` (`MainWindow.swift:436`).
+- `main.swift`; [[MainView]] (`TopBar`, `EmptyEditor`) and [[AssistantPanel]] through `AppDelegate.shared` (`Sources/Pinpoint/MainWindow.swift:82-91`, `:215`, `Sources/Pinpoint/EditorView.swift:71`); [[MainWindowController]] `windowWillClose` (`MainWindow.swift:439`).
 
 ## Related
 
@@ -109,5 +110,5 @@ app.run()
 
 ## Sources
 
-- `Sources/Pinpoint/AppDelegate.swift` (lines 1-303)
+- `Sources/Pinpoint/AppDelegate.swift` (lines 1-314)
 - `Sources/Pinpoint/main.swift` (lines 1-6)

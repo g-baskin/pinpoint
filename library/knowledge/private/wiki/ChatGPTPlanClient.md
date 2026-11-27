@@ -6,7 +6,7 @@ kind: struct
 entity_type: service
 target: PinpointCore
 path: "Sources/PinpointCore/ChatGPTPlan.swift"
-lines: "346-490"
+lines: "352-496"
 language: swift
 status: developing
 partial_scan: false
@@ -44,7 +44,7 @@ related:
 
 ## Purpose
 
-The [[LLMClient]] for the "ChatGPT (sign in with your plan)" **provider**: talks to the OpenAI Responses API with the ChatGPT-plan access token, streaming, with tools in a namespace (`Sources/PinpointCore/ChatGPTPlan.swift:350`).
+The [[LLMClient]] for the "ChatGPT (sign in with your plan)" **provider**: talks to the OpenAI Responses API with the ChatGPT-plan access token, streaming, with tools in a namespace (`Sources/PinpointCore/ChatGPTPlan.swift:356`).
 
 ## API
 
@@ -61,19 +61,19 @@ public struct ChatGPTPlanClient: LLMClient {
 }
 ```
 
-Internal: `static func usesLite(_ m: String) -> Bool` and `func send(model: String, system: String, messages: [ChatMessage], tools: [ToolSpec]) async throws -> ChatResponse` (`ChatGPTPlan.swift:358`, `:460`).
+Internal: `static func usesLite(_ m: String) -> Bool` and `func send(model: String, system: String, messages: [ChatMessage], tools: [ToolSpec]) async throws -> ChatResponse` (`ChatGPTPlan.swift:364`, `:466`).
 
 ## Behaviour
 
-- `makeBody` maps [[ChatMessage]] parts to Responses API input items (`input_text`, `input_image`, `function_call`, `function_call_output`), sets `store: false`, `stream: true`, and wraps tools in a `namespace` tool named `pinpoint`. "Lite" models get low reasoning effort and low verbosity (`ChatGPTPlan.swift:360-403`).
-- `collect` folds stream events into a [[ChatResponse]], de-duplicating calls by id and stripping the `pinpoint.` prefix; `response.failed` or `error` events throw (`ChatGPTPlan.swift:406-445`).
-- `send` with an "auto" model asks [[ChatGPTAccount]] `autoModel` and retries up to 3 models when the plan rejects one with HTTP 404, or HTTP 400 mentioning the model (`ChatGPTPlan.swift:447-462`).
-- The HTTP path reads SSE `data:` lines; 404 and 429 errors get friendlier messages (`ChatGPTPlan.swift:464-493`).
+- `makeBody` maps [[ChatMessage]] parts to Responses API input items (`input_text`, `input_image`, `function_call`, `function_call_output`), sets `store: false`, `stream: true`, and wraps tools in a `namespace` tool named `pinpoint`. "Lite" models get low reasoning effort and low verbosity (`ChatGPTPlan.swift:366-409`).
+- `collect` folds stream events into a [[ChatResponse]], de-duplicating calls by id and stripping the `pinpoint.` prefix; `response.failed` or `error` events throw (`ChatGPTPlan.swift:412-451`).
+- `send` with an "auto" model asks [[ChatGPTAccount]] `autoModel` and retries up to 3 models when the plan rejects one with HTTP 404, or HTTP 400 mentioning the model (`ChatGPTPlan.swift:453-468`).
+- The HTTP path reads SSE `data:` lines; 404 and 429 errors get friendlier messages (`ChatGPTPlan.swift:470-499`).
 
 ## Called by
 
 - [[ProviderSettings]] `makeClient(apiKey:)` for `.chatgpt` (`Sources/PinpointCore/LLM.swift:278`).
-- [[AppSettings]] `makeClient(fast:)` with `ModelPicker.autoFast` (`Sources/Pinpoint/AppSettings.swift:83`).
+- [[AppSettings]] `makeClient(fast:)` with `ModelPicker.autoFast` (`Sources/Pinpoint/AppSettings.swift:87`).
 
 ## Related
 
@@ -85,4 +85,4 @@ Internal: `static func usesLite(_ m: String) -> Bool` and `func send(model: Stri
 
 ## Sources
 
-- `Sources/PinpointCore/ChatGPTPlan.swift` (lines 346-490)
+- `Sources/PinpointCore/ChatGPTPlan.swift` (lines 352-496)

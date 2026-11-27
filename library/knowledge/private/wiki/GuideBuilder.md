@@ -60,7 +60,7 @@ public enum GuideBuilder {
 
 ## Called by
 
-- [[LibraryModel]] `makeGuide()` builds `GuideStep`s from the selected captures in pick order and calls both functions; guides go to `<library root>/Guides` (`Sources/Pinpoint/LibraryView.swift:85-103`).
+- [[LibraryModel]] `makeGuide()` builds `GuideStep`s from the selected captures in pick order and calls both functions; guides go to `<library root>/Guides` (`Sources/Pinpoint/LibraryView.swift:92-110`).
 - [[Assistants]] `writeGuide(steps:title:)` takes `[GuideStep]` (`Sources/PinpointCore/Assistants.swift:38`).
 
 ## Related

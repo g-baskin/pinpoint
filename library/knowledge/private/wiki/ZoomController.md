@@ -57,7 +57,7 @@ final class ZoomController: ObservableObject {
 
 ## Called by
 
-- Owned by [[EditorModel]] as `zoom` (`Sources/Pinpoint/EditorModel.swift:68`); wired and refit by `CanvasScrollView` in [[CanvasView]] (`CanvasView.swift:346-365`); driven by `ZoomControls` in [[TrayView]] (`Sources/Pinpoint/MainWindow.swift:401-414`).
+- Owned by [[EditorModel]] as `zoom` (`Sources/Pinpoint/EditorModel.swift:68`); wired and refit by `CanvasScrollView` in [[CanvasView]] (`CanvasView.swift:346-365`); driven by `ZoomControls` in [[TrayView]] (`Sources/Pinpoint/MainWindow.swift:404-417`).
 
 ## Related
 

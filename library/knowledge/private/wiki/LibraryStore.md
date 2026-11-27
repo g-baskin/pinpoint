@@ -83,11 +83,11 @@ Internal: `func writeThumb(_ image: CGImage, id: UUID) throws` (480 px JPEG at q
 
 ## Called by
 
-- [[AppDelegate]] owns the single instance (`library`) and calls `create`, `meta`, `writeMeta` (`Sources/Pinpoint/AppDelegate.swift:12`, `:178`, `:202-219`, `:261`).
-- [[Workspace]] `open(id:)`, `saveCurrent()`, `closeIfDeleted()` (`Sources/Pinpoint/MainWindow.swift:33-46`).
-- [[LibraryModel]] `loadAll`, `search`, `thumbURL`, `bestImage`, `delete`, `meta`, `original`, `writeMeta` (`Sources/Pinpoint/LibraryView.swift:24-103`).
+- [[AppDelegate]] owns the single instance (`library`) and calls `create`, `meta`, `writeMeta` (`Sources/Pinpoint/AppDelegate.swift:12`, `:178`, `:206-228`, `:271`).
+- [[Workspace]] `open(id:)`, `saveCurrent()`, `closeIfDeleted()` (`Sources/Pinpoint/MainWindow.swift:33-49`).
+- [[LibraryModel]] `loadAll`, `search`, `thumbURL`, `bestImage`, `delete`, `meta`, `original`, `writeMeta` (`Sources/Pinpoint/LibraryView.swift:24-110`).
 - [[EditorModel]] `save`, `writeMeta`, `renderedURL` (`Sources/Pinpoint/EditorModel.swift:93`, `:251`, `:280`).
-- [[SettingsView]] shows `defaultRoot.path` (`Sources/Pinpoint/SettingsView.swift:106`).
+- [[SettingsView]] shows `defaultRoot.path` (`Sources/Pinpoint/SettingsView.swift:110`).
 
 ## Related
 

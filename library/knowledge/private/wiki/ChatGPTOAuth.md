@@ -79,9 +79,9 @@ Internal: `static func formBody(_ fields: [String: String]) -> Data` and `static
 
 ## Called by
 
-- [[ChatGPTAccount]] `signIn`, `refresh`, `signOut`, `models` (`ChatGPTPlan.swift:152-242`).
-- [[LoopbackListener]] uses `preferredPort` and `callbackPath` (`ChatGPTPlan.swift:260`, `:304`).
-- [[ChatGPTPlanClient]] uses `apiBase` (`ChatGPTPlan.swift:466`).
+- [[ChatGPTAccount]] `signIn`, `refresh`, `signOut`, `models` (`ChatGPTPlan.swift:155-248`).
+- [[LoopbackListener]] uses `preferredPort` and `callbackPath` (`ChatGPTPlan.swift:266`, `:310`).
+- [[ChatGPTPlanClient]] uses `apiBase` (`ChatGPTPlan.swift:472`).
 
 ## Related
 

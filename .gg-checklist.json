@@ -33,6 +33,23 @@
         "Not checked: a fresh-machine install; the changes are not committed or pushed, and main still has the pre-rename README"
       ]
     },
+    "errors-logging": {
+      "checkedAt": "2026-11-27T23:29:25.947Z",
+      "commit": "ff89769",
+      "uncommittedChanges": true,
+      "result": "pass",
+      "summary": "All 8 findings from today's review are fixed: the flagged silent try? sites now show an error or write to the system log (uncommitted on dev).",
+      "findings": [],
+      "evidence": [
+        "scripts/check.sh after fixes: build clean (warnings as errors), swift test 45/45 pass, shellcheck clean, All checks passed",
+        "grep of flagged try? patterns: none left; only LibraryView.swift:102 (Make Guide AI client with basic fallback, not a finding)",
+        "Read fixes: LibraryView delete/autoTag, setAPIKey->Bool + Settings message, ChatGPTPlan save/saveRegistration + sign-in throw",
+        "Read fixes: AppDelegate openImage alert + postProcess NSLog, Workspace save alert, share early return, EditorModel NSLog, relaunch alert",
+        "CHANGELOG Unreleased entry added; wiki/domain guides updated by wiki-wasp-drone",
+        "Scope: re-check of the 8 findings recorded earlier today only",
+        "Not checked: real failures in the running app (Keychain denied, disk full); app target has no test suite, so no regression tests"
+      ]
+    },
     "git-github": {
       "checkedAt": "2026-11-27T22:04:36.840Z",
       "commit": "5e6e068",

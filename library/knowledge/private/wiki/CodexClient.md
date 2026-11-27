@@ -68,7 +68,7 @@ public struct CodexClient: LLMClient {
 ## Called by
 
 - [[ProviderSettings]] `makeClient` (`.codex`) and `listModels` (`suggestedModels`) (`Sources/PinpointCore/LLM.swift:281-284`, `:297`).
-- [[AppSettings]] `isAIConfigured` calls `locate` (`Sources/Pinpoint/AppSettings.swift:71`).
+- [[AppSettings]] `isAIConfigured` calls `locate` (`Sources/Pinpoint/AppSettings.swift:75`).
 
 ## Related
 

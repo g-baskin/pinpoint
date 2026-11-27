@@ -103,10 +103,10 @@ Source ledger:
 | Errors and permission help | `AppDelegate.swift:147-151`, `Sources/Pinpoint/CaptureService.swift:29-55` |
 | Selection handling | `AppDelegate.swift:155-172`, `Sources/Pinpoint/SelectionOverlay.swift:4-9` |
 | Save to library and notify | `AppDelegate.swift:174-179`, `Sources/PinpointCore/Library.swift:57-64`, `:78-86` |
-| Copy, open editor, auto-redact | `AppDelegate.swift:180-186`, `:190-194`, `:230-234`, `Sources/Pinpoint/MainWindow.swift:25-30`, `Sources/Pinpoint/EditorModel.swift:136-147`, `:271-284` |
-| Background naming and tagging | `AppDelegate.swift:197-223` |
+| Copy, open editor, auto-redact | `AppDelegate.swift:180-186`, `:190-194`, `:238-242`, `Sources/Pinpoint/MainWindow.swift:25-30`, `Sources/Pinpoint/EditorModel.swift:136-147`, `:271-285` |
+| Background naming and tagging | `AppDelegate.swift:197-231` |
 
-Who hears `.pinpointLibraryChanged`: `LibraryModel` reloads its list (`Sources/Pinpoint/LibraryView.swift:19-21`) and `Workspace` closes the editor if its capture was deleted (`MainWindow.swift:20-22`, `:44-46`). A failure in `create` shows an alert and nothing is saved (`AppDelegate.swift:187`). Failures in the background task are swallowed with `try?`, so a capture keeps its placeholder name if OCR or AI naming fails.
+Who hears `.pinpointLibraryChanged`: `LibraryModel` reloads its list (`Sources/Pinpoint/LibraryView.swift:19-21`) and `Workspace` closes the editor if its capture was deleted (`MainWindow.swift:20-22`, `:47-49`). A failure in `create` shows an alert and nothing is saved (`AppDelegate.swift:187`). In the background task, an OCR failure is still absorbed with `try?` (empty analysis); a failed `makeClient`, AI naming call or final `writeMeta` is logged with `NSLog` (`AppDelegate.swift:201-203`, `:210-214`, `:227-228`). The capture keeps its offline or placeholder name when AI naming fails. `openImage` collects unreadable or uncreatable files and shows one error alert listing them (`AppDelegate.swift:261-278`).
 
 ## 2. Agent edit: prompt to undoable markup
 
@@ -171,15 +171,15 @@ Source ledger:
 | Step | Evidence |
 |---|---|
 | Panel submit | `Sources/Pinpoint/EditorView.swift:77-81` |
-| Guard, client creation | `Sources/Pinpoint/EditorModel.swift:306-309`, `:331-333`, `Sources/Pinpoint/AppSettings.swift:80-86`, `Sources/PinpointCore/LLM.swift:274-293` |
-| runAI busy guard and error handling | `EditorModel.swift:362-372` |
-| Analysis fallback | `EditorModel.swift:335-342` |
+| Guard, client creation | `Sources/Pinpoint/EditorModel.swift:307-310`, `:332-334`, `Sources/Pinpoint/AppSettings.swift:84-90`, `Sources/PinpointCore/LLM.swift:274-293` |
+| runAI busy guard and error handling | `EditorModel.swift:363-373` |
+| Analysis fallback | `EditorModel.swift:336-343` |
 | Agent loop | `Sources/PinpointCore/Agent.swift:211-252` (`run`; `EditAgent` declared at `:205`) |
 | Tool execution | `Agent.swift:83` (`AgentToolbox.execute`), tool specs at `Agent.swift:44` |
-| Apply as one undoable step | `EditorModel.swift:348-356`, `:152-162` |
-| Undo entry points | `Sources/Pinpoint/CanvasView.swift:272`, `Sources/Pinpoint/MainWindow.swift:135`, `:442` |
+| Apply as one undoable step | `EditorModel.swift:349-357`, `:152-162` |
+| Undo entry points | `Sources/Pinpoint/CanvasView.swift:272`, `Sources/Pinpoint/MainWindow.swift:138`, `:445` |
 
-Cancellation: the stop button calls `cancelAI()` (`EditorModel.swift:360`), which cancels `agentTask`; the loop's `Task.checkCancellation()` throws `CancellationError`, which `runAI` swallows without logging an error. Name and tag changes from the agent are not part of the undo snapshot, which stores only `(annotations, crop)` (`EditorModel.swift:132-133`).
+Cancellation: the stop button calls `cancelAI()` (`EditorModel.swift:361`), which cancels `agentTask`; the loop's `Task.checkCancellation()` throws `CancellationError`, which `runAI` swallows without logging an error. Name and tag changes from the agent are not part of the undo snapshot, which stores only `(annotations, crop)` (`EditorModel.swift:132-133`).
 
 ## 3. ChatGPT sign-in to first request
 
@@ -231,7 +231,11 @@ sequenceDiagram
     alt nonce claim differs, or scope lacks chatgpt.tokens.use.direct
         account-->>settingsView: throws LLMError
     end
-    account->>keychain: save registration and credentials
+    account->>keychain: saveRegistration(...) and save(creds)
+    alt either Keychain write fails
+        account->>keychain: save(nil)
+        account-->>settingsView: throws LLMError (couldn't save the sign-in)
+    end
     account->>listener: stop() (defer)
     account-->>settingsView: ChatGPTCredentials
     settingsView->>account: cachedModels(refresh: true) via loadAutoPicks
@@ -246,7 +250,7 @@ sequenceDiagram
     opt expires within 60 s
         account->>oauth: postForm(tokenURL, refresh_token)
         oauth->>authServer: POST token
-        account->>keychain: save refreshed credentials
+        account->>keychain: save refreshed credentials (failure logged with NSLog, token still used)
     end
     account-->>planClient: access token
     planClient->>api: POST /v1/responses, stream true, tools in the "pinpoint" namespace
@@ -261,18 +265,18 @@ Source ledger:
 
 | Step | Evidence |
 |---|---|
-| Settings button and status | `Sources/Pinpoint/SettingsView.swift:168-186`, `:135-142` |
-| PKCE, state, nonce, listener start | `Sources/PinpointCore/ChatGPTPlan.swift:150-157`, `:42-46`, `:259-265` |
-| Authorize URL and browser open | `ChatGPTPlan.swift:158-160`, `:48-68` |
-| Callback handling | `ChatGPTPlan.swift:299-320`, `:327-341` |
-| Error, code and client id checks | `ChatGPTPlan.swift:161-170` |
-| Token exchange, nonce and scope checks | `ChatGPTPlan.swift:171-182`, `:89-103` |
-| Keychain storage | `ChatGPTPlan.swift:127-139`, `:187-188`, `Sources/PinpointCore/Assistants.swift:155-175` |
-| Model list | `ChatGPTPlan.swift:232-242`, `:542-552` |
-| Client creation for the first request | `Sources/Pinpoint/AppSettings.swift:80-86`, `Sources/PinpointCore/LLM.swift:275-279` |
-| Auto model, token refresh, request | `ChatGPTPlan.swift:447-462`, `:193-223`, `:460-489`, `:554-558` |
+| Settings button and status | `Sources/Pinpoint/SettingsView.swift:172-190`, `:139-146` |
+| PKCE, state, nonce, listener start | `Sources/PinpointCore/ChatGPTPlan.swift:153-160`, `:42-46`, `:265-271` |
+| Authorize URL and browser open | `ChatGPTPlan.swift:161-163`, `:48-68` |
+| Callback handling | `ChatGPTPlan.swift:305-326`, `:333-347` |
+| Error, code and client id checks | `ChatGPTPlan.swift:164-173` |
+| Token exchange, nonce and scope checks | `ChatGPTPlan.swift:174-185`, `:89-103` |
+| Keychain storage | `ChatGPTPlan.swift:127-142`, `:190-193`, `Sources/PinpointCore/Assistants.swift:155-175` |
+| Model list | `ChatGPTPlan.swift:238-248`, `:548-558` |
+| Client creation for the first request | `Sources/Pinpoint/AppSettings.swift:84-90`, `Sources/PinpointCore/LLM.swift:275-279` |
+| Auto model, token refresh, request | `ChatGPTPlan.swift:453-468`, `:198-229`, `:466-495`, `:560-564` |
 
-A concurrent refresh is shared: `accessToken()` reuses one in-flight `refreshTask` under a lock (`ChatGPTPlan.swift:196-203`). A failed refresh surfaces as "Your ChatGPT sign-in expired" and does not clear the stored credentials (`ChatGPTPlan.swift:219-221`). The JWT is decoded without a signature check, as its doc comment states (`ChatGPTPlan.swift:70-78`).
+A concurrent refresh is shared: `accessToken()` reuses one in-flight `refreshTask` under a lock (`ChatGPTPlan.swift:201-208`). A failed refresh surfaces as "Your ChatGPT sign-in expired" and does not clear the stored credentials (`ChatGPTPlan.swift:225-227`). The JWT is decoded without a signature check, as its doc comment states (`ChatGPTPlan.swift:70-78`).
 
 ## What these flows leave out
 

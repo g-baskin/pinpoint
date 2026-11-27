@@ -61,8 +61,8 @@ public struct Analysis: Sendable {
 ## Called by
 
 - Produced by `Analyzer.analyze` (`Sources/PinpointCore/Analyzer.swift:20`, `:53`).
-- [[EditorModel]] stores it as `analysis` and uses `lines` for handoffs and `sensitive` for auto-redact (`Sources/Pinpoint/EditorModel.swift:93`, `:127`, `:286-293`).
-- [[AppDelegate]] background post-processing uses `fullText` for the capture's OCR text (`Sources/Pinpoint/AppDelegate.swift:203-204`).
+- [[EditorModel]] stores it as `analysis` and uses `lines` for handoffs and `sensitive` for auto-redact (`Sources/Pinpoint/EditorModel.swift:93`, `:127`, `:287-294`).
+- [[AppDelegate]] background post-processing uses `fullText` for the capture's OCR text (`Sources/Pinpoint/AppDelegate.swift:207-208`).
 - [[AgentToolbox]] and [[EditAgent]] read `lines` and `sensitive` (`Sources/PinpointCore/Agent.swift:145`, `:196`, `:215-217`).
 - [[Handoff]] takes `[OCRLine]` to describe what markup points at (`Sources/PinpointCore/Handoff.swift:7`, `:31`).
 

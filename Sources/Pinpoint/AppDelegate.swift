@@ -197,27 +197,35 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     private func postProcess(meta: CaptureMeta, image: CGImage) {
         let store = library
         let useAI = AppSettings.shared.autoNameWithAI && AppSettings.shared.isAIConfigured
-        let client = useAI ? try? AppSettings.shared.makeClient(fast: true) : nil
+        var aiClient: LLMClient?
+        if useAI {
+            do { aiClient = try AppSettings.shared.makeClient(fast: true) } catch { NSLog("Pinpoint: AI naming unavailable: \(error.localizedDescription)") }
+        }
+        let client = aiClient
         Task.detached(priority: .utility) {
             guard var m = store.meta(meta.id) else { return }
             let analysis = (try? Analyzer.analyze(image, faces: false)) ?? Analysis(lines: [], sensitive: [])
             m.ocrText = analysis.fullText
             m.name = Analyzer.suggestedName(from: analysis.lines, app: meta.sourceApp)
-            if let client, let r = try? await Assistants(client: client).nameAndTags(image: image, ocrText: m.ocrText, app: m.sourceApp) {
-                m.name = r.name; m.tags = r.tags; m.aiNamed = true
+            if let client {
+                do {
+                    let r = try await Assistants(client: client).nameAndTags(image: image, ocrText: m.ocrText, app: m.sourceApp)
+                    m.name = r.name; m.tags = r.tags; m.aiNamed = true
+                } catch { NSLog("Pinpoint: AI naming failed: \(error.localizedDescription)") }
             }
             let final = m
             await MainActor.run {
                 // Don't clobber edits the user made in an open editor meanwhile.
+                var toWrite = final
                 if let ed = self.workspace.editor, ed.meta.id == final.id {
                     if ed.meta.name == meta.name { ed.meta.name = final.name }
                     if ed.meta.tags.isEmpty { ed.meta.tags = final.tags }
                     ed.meta.ocrText = final.ocrText
                     ed.meta.aiNamed = final.aiNamed
-                    try? store.writeMeta(ed.meta)
-                } else {
-                    try? store.writeMeta(final)
+                    toWrite = ed.meta
                 }
+                do { try store.writeMeta(toWrite) }
+                catch { NSLog("Pinpoint: couldn't save capture info: \(error.localizedDescription)") }
                 NotificationCenter.default.post(name: .pinpointLibraryChanged, object: nil)
             }
         }
@@ -256,14 +264,17 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         panel.allowsMultipleSelection = true
         activate()
         guard panel.runModal() == .OK else { return }
+        var failed: [String] = []
         for url in panel.urls {
-            guard let img = ImageFiles.load(url) else { continue }
-            if let meta = try? library.create(image: img, name: url.deletingPathExtension().lastPathComponent, sourceApp: nil) {
+            guard let img = ImageFiles.load(url) else { failed.append("\(url.lastPathComponent): not a readable image"); continue }
+            do {
+                let meta = try library.create(image: img, name: url.deletingPathExtension().lastPathComponent, sourceApp: nil)
                 openEditor(meta: meta, image: img)
                 postProcess(meta: meta, image: img)
-            }
+            } catch { failed.append("\(url.lastPathComponent): \(error.localizedDescription)") }
         }
         NotificationCenter.default.post(name: .pinpointLibraryChanged, object: nil)
+        if !failed.isEmpty { showError(LLMError("Couldn't open \(failed.count == 1 ? "1 file" : "\(failed.count) files"):\n" + failed.joined(separator: "\n"))) }
     }
 
     func showLibrary() { showMain(mode: .library) }

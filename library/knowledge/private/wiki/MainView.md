@@ -6,7 +6,7 @@ kind: struct
 entity_type: class
 target: Pinpoint
 path: "Sources/Pinpoint/MainWindow.swift"
-lines: "49-220"
+lines: "52-223"
 language: swift
 status: developing
 partial_scan: false
@@ -87,19 +87,19 @@ struct EmptyEditor: View {
 }
 ```
 
-Every struct here except `ShareButton` also declares `var body: some View` (`Sources/Pinpoint/MainWindow.swift:49-220`).
+Every struct here except `ShareButton` also declares `var body: some View` (`Sources/Pinpoint/MainWindow.swift:52-223`).
 
 ## Behaviour
 
-- `MainView` switches on `ws.mode`; the editor body is keyed by capture id so each capture gets fresh view state (`MainWindow.swift:53-69`).
-- `TopBar`: Capture menu (area, window, full screen, all screens, Open Image) calling `AppDelegate.shared`, an Editor/Library segmented picker, and for the editor the [[Tool]] strip and actions (`MainWindow.swift:76-112`).
-- `EditorActions`: undo, redo, Reset Crop, Copy, the Handoff menu (copy for AI agent, copy image with or without notes panel, export handoff folder), Share, Export and Save (`MainWindow.swift:133-153`).
-- `ShareButton` writes the flattened image to a temp PNG and shows the macOS share picker (`MainWindow.swift:157-177`).
-- `EditorBody`: [[CanvasView]] (via `CanvasScrollView`) beside a Properties or Assistant sidebar, with [[TrayView]] below (`MainWindow.swift:183-202`).
+- `MainView` switches on `ws.mode`; the editor body is keyed by capture id so each capture gets fresh view state (`MainWindow.swift:56-72`).
+- `TopBar`: Capture menu (area, window, full screen, all screens, Open Image) calling `AppDelegate.shared`, an Editor/Library segmented picker, and for the editor the [[Tool]] strip and actions (`MainWindow.swift:79-115`).
+- `EditorActions`: undo, redo, Reset Crop, Copy, the Handoff menu (copy for AI agent, copy image with or without notes panel, export handoff folder), Share, Export and Save (`MainWindow.swift:136-156`).
+- `ShareButton` writes the flattened image to a temp PNG and shows the macOS share picker; if the write fails it reports "Share failed: <reason>" through `model.fail` and does not show the picker (`MainWindow.swift:160-180`, `:176`).
+- `EditorBody`: [[CanvasView]] (via `CanvasScrollView`) beside a Properties or Assistant sidebar, with [[TrayView]] below (`MainWindow.swift:186-205`).
 
 ## Called by
 
-- [[MainWindowController]] sets `MainView(ws:)` as window content (`MainWindow.swift:426`).
+- [[MainWindowController]] sets `MainView(ws:)` as window content (`MainWindow.swift:429`).
 
 ## Related
 
@@ -107,4 +107,4 @@ Every struct here except `ShareButton` also declares `var body: some View` (`Sou
 
 ## Sources
 
-- `Sources/Pinpoint/MainWindow.swift` (lines 49-220)
+- `Sources/Pinpoint/MainWindow.swift` (lines 52-223)

@@ -65,7 +65,7 @@ public final class EditAgent: @unchecked Sendable {
 
 ## Called by
 
-- [[EditorModel]] `runAgent(_:)` (`Sources/Pinpoint/EditorModel.swift:344-345`), driven from the [[AssistantPanel]] prompt field.
+- [[EditorModel]] `runAgent(_:)` (`Sources/Pinpoint/EditorModel.swift:345-346`), driven from the [[AssistantPanel]] prompt field.
 
 ## Related
 

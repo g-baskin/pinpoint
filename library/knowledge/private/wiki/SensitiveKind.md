@@ -54,7 +54,7 @@ public enum SensitiveKind: String, Codable, CaseIterable, Sendable {
 
 - [[SensitiveDetector]] tags each match; [[SensitiveRegion]] holds it; [[Analyzer]] adds `.face` (`Sources/PinpointCore/Analyzer.swift:50`).
 - [[AgentToolbox]] lists all raw values in the `redact_sensitive` schema and filters by kind (`Sources/PinpointCore/Agent.swift:65`, `:195`).
-- [[EditorModel]] `autoRedact(style:)` and [[EditAgent]] summarise counts by `label` (`Sources/Pinpoint/EditorModel.swift:291`, `Agent.swift:217`).
+- [[EditorModel]] `autoRedact(style:)` and [[EditAgent]] summarise counts by `label` (`Sources/Pinpoint/EditorModel.swift:292`, `Agent.swift:217`).
 
 ## Related
 

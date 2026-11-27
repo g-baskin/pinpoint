@@ -277,7 +277,8 @@ final class EditorModel: ObservableObject {
                 self.analysis = result
                 if self.meta.ocrText.isEmpty && !result.lines.isEmpty {
                     self.meta.ocrText = result.fullText
-                    try? self.library.writeMeta(self.meta)
+                    do { try self.library.writeMeta(self.meta) }
+                    catch { NSLog("Pinpoint: couldn't save recognised text: \(error.localizedDescription)") }
                 }
             }
         }

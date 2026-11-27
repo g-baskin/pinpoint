@@ -124,18 +124,21 @@ public final class ChatGPTAccount: @unchecked Sendable {
     public var isSignedIn: Bool { credentials != nil }
     public var email: String? { credentials?.email }
 
-    private func save(_ c: ChatGPTCredentials?) {
+    @discardableResult
+    private func save(_ c: ChatGPTCredentials?) -> Bool {
         lock.lock(); cached = c; lock.unlock()
-        if let c, let d = try? JSONEncoder().encode(c) { Keychain.set(String(decoding: d, as: UTF8.self), for: credsKey) }
-        else { Keychain.set("", for: credsKey) }
+        guard let c else { return Keychain.set("", for: credsKey) }
+        guard let d = try? JSONEncoder().encode(c) else { return false }
+        return Keychain.set(String(decoding: d, as: UTF8.self), for: credsKey)
     }
 
     private var registration: Registration? {
-        get { Keychain.get(regKey).data(using: .utf8).flatMap { try? JSONDecoder().decode(Registration.self, from: $0) } }
-        set {
-            if let v = newValue, let d = try? JSONEncoder().encode(v) { Keychain.set(String(decoding: d, as: UTF8.self), for: regKey) }
-            else { Keychain.set("", for: regKey) }
-        }
+        Keychain.get(regKey).data(using: .utf8).flatMap { try? JSONDecoder().decode(Registration.self, from: $0) }
+    }
+
+    private func saveRegistration(_ r: Registration) -> Bool {
+        guard let d = try? JSONEncoder().encode(r) else { return false }
+        return Keychain.set(String(decoding: d, as: UTF8.self), for: regKey)
     }
 
     private var hostId: String {
@@ -184,8 +187,10 @@ public final class ChatGPTAccount: @unchecked Sendable {
                                        expiresAt: Date().addingTimeInterval(tok["expires_in"]?.doubleValue ?? 3600),
                                        clientId: clientId, subject: claims?["sub"]?.stringValue ?? "",
                                        email: claims?["email"]?.stringValue, idToken: idToken)
-        registration = Registration(clientId: clientId, subject: creds.subject, email: creds.email)
-        save(creds)
+        guard saveRegistration(Registration(clientId: clientId, subject: creds.subject, email: creds.email)), save(creds) else {
+            save(nil)
+            throw LLMError("Signed in, but Pinpoint couldn't save the sign-in to your Keychain. Check Keychain Access and try again.")
+        }
         return creds
     }
 
@@ -214,7 +219,8 @@ public final class ChatGPTAccount: @unchecked Sendable {
             n.refreshToken = tok["refresh_token"]?.stringValue ?? c.refreshToken
             n.expiresAt = Date().addingTimeInterval(tok["expires_in"]?.doubleValue ?? 3600)
             if let id = tok["id_token"]?.stringValue { n.idToken = id }
-            save(n)
+            // The refreshed token still works for this session; only the next launch would need a new sign-in.
+            if !save(n) { NSLog("Pinpoint: couldn't save refreshed ChatGPT sign-in to Keychain") }
             return n
         } catch {
             throw LLMError("Your ChatGPT sign-in expired. Sign in again in Settings. (\(error.localizedDescription))")

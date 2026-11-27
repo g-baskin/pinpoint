@@ -6,7 +6,7 @@ kind: class
 entity_type: service
 target: PinpointCore
 path: "Sources/PinpointCore/ChatGPTPlan.swift"
-lines: "9-17, 106-244, 537-559"
+lines: "9-17, 106-250, 543-565"
 language: swift
 status: developing
 partial_scan: false
@@ -78,18 +78,18 @@ Grouped internal type: `struct Registration: Codable { var clientId: String; var
 
 ## Behaviour
 
-- Credentials and registration are JSON strings in the [[Keychain]] under `chatgpt.credentials` and `chatgpt.registration`, cached behind an `NSLock` (`ChatGPTPlan.swift:109-139`). A stable `urn:uuid:` host id lives in UserDefaults key `chatgptHostId` (`:141-147`).
-- `signIn` starts a [[LoopbackListener]], opens the authorize URL via the `open` callback, waits up to 180 s, exchanges the code, checks the nonce, and requires the `planScope` scope before saving (`ChatGPTPlan.swift:150-190`).
-- `accessToken` refreshes when within 60 s of expiry; concurrent callers share one refresh task (`ChatGPTPlan.swift:193-204`).
-- `signOut` revokes the refresh token (errors ignored) and clears storage (`ChatGPTPlan.swift:224-229`).
-- `models` lists the plan's models; `cachedModels` caches the list for a day in UserDefaults; `autoModel` picks via [[ModelPicker]] (`ChatGPTPlan.swift:232-242`, `:542-558`).
+- Credentials and registration are JSON strings in the [[Keychain]] under `chatgpt.credentials` and `chatgpt.registration`, cached behind an `NSLock` (`ChatGPTPlan.swift:109-142`). `save(_:)` (`@discardableResult`) returns whether the Keychain write succeeded, and `nil` clears the item (`:127-133`); `registration` is read-only and `saveRegistration(_:)` returns the write's result (`:135-142`). A stable `urn:uuid:` host id lives in UserDefaults key `chatgptHostId` (`:144-150`).
+- `signIn` starts a [[LoopbackListener]], opens the authorize URL via the `open` callback, waits up to 180 s, exchanges the code, checks the nonce, and requires the `planScope` scope before saving (`ChatGPTPlan.swift:153-195`). If either the registration or credentials write fails, it clears the credentials and throws an [[LLMError]] ("Signed in, but Pinpoint couldn't save the sign-in to your Keychain…") (`:190-193`).
+- `accessToken` refreshes when within 60 s of expiry; concurrent callers share one refresh task (`ChatGPTPlan.swift:198-209`). If saving the refreshed token fails, `refresh` logs it with `NSLog` and still returns the token for this session (`:222-223`).
+- `signOut` revokes the refresh token (errors ignored) and clears storage (`ChatGPTPlan.swift:230-235`).
+- `models` lists the plan's models; `cachedModels` caches the list for a day in UserDefaults; `autoModel` picks via [[ModelPicker]] (`ChatGPTPlan.swift:238-248`, `:548-564`).
 
 ## Called by
 
-- [[ChatGPTPlanClient]] `accessToken()` and `autoModel(...)` (`ChatGPTPlan.swift:454`, `:461`).
+- [[ChatGPTPlanClient]] `accessToken()` and `autoModel(...)` (`ChatGPTPlan.swift:460`, `:467`).
 - [[ProviderSettings]] `makeClient` and `listModels` (`Sources/PinpointCore/LLM.swift:276`, `:296`).
-- [[AppSettings]] `isAIConfigured` and `makeClient(fast:)` (`Sources/Pinpoint/AppSettings.swift:70`, `:82`).
-- [[SettingsView]] sign-in, sign-out and model rows (`Sources/Pinpoint/SettingsView.swift:128-172`).
+- [[AppSettings]] `isAIConfigured` and `makeClient(fast:)` (`Sources/Pinpoint/AppSettings.swift:74`, `:86`).
+- [[SettingsView]] sign-in, sign-out and model rows (`Sources/Pinpoint/SettingsView.swift:132-176`).
 
 ## Related
 
@@ -97,4 +97,4 @@ Grouped internal type: `struct Registration: Codable { var clientId: String; var
 
 ## Sources
 
-- `Sources/PinpointCore/ChatGPTPlan.swift` (lines 9-17, 106-244, 537-559)
+- `Sources/PinpointCore/ChatGPTPlan.swift` (lines 9-17, 106-250, 543-565)

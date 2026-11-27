@@ -53,11 +53,11 @@ public struct AgentState: Equatable, Sendable {
 
 ## Behaviour
 
-- Plain value type; `Equatable` lets [[EditorModel]] skip a checkpoint when the agent changed nothing (`Sources/Pinpoint/EditorModel.swift:348`).
+- Plain value type; `Equatable` lets [[EditorModel]] skip a checkpoint when the agent changed nothing (`Sources/Pinpoint/EditorModel.swift:349`).
 
 ## Called by
 
-- [[EditorModel]] builds one from the open capture in `runAgent(_:)` (`Sources/Pinpoint/EditorModel.swift:343`).
+- [[EditorModel]] builds one from the open capture in `runAgent(_:)` (`Sources/Pinpoint/EditorModel.swift:344`).
 - [[AgentToolbox]] holds and mutates it as `state` (`Sources/PinpointCore/Agent.swift:19`).
 - [[EditAgent]] takes it in `run(...)` and returns the edited copy (`Sources/PinpointCore/Agent.swift:211-212`).
 

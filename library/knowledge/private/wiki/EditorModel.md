@@ -6,7 +6,7 @@ kind: class
 entity_type: class
 target: Pinpoint
 path: "Sources/Pinpoint/EditorModel.swift"
-lines: "37-380"
+lines: "37-381"
 language: swift
 status: developing
 partial_scan: false
@@ -145,8 +145,8 @@ extension Notification.Name {
 - `newAnnotation` makes redact black, notes orange and numbers **steps** automatically (`EditorModel.swift:215-221`).
 - `copyImage` puts one picture (PNG and TIFF) on the clipboard, with the notes panel when there are notes (`EditorModel.swift:229-245`). `save()` writes meta and the rendered image to [[LibraryStore]] and posts `pinpointLibraryChanged` (`:247-255`).
 - Handoff: `copyHandoff()` saves and copies `Handoff.markdown` with the rendered image path; `exportHandoff()` writes `screenshot.png`, `screenshot-with-notes.png` and `notes.md` to a chosen folder (`EditorModel.swift:92-126`).
-- `startAnalysis()` runs [[Analyzer]] off the main actor with the user's redact terms, and fills empty OCR text in the meta (`EditorModel.swift:271-284`). `autoRedact` adds blur or redact markup for every sensitive region in one undo step (`:286-293`).
-- `runAgent` waits for or runs analysis, runs [[EditAgent]] with an [[AgentState]], logs each tool event, and applies the result as one checkpoint (`EditorModel.swift:331-358`). `runAI` allows one AI job at a time and `cancelAI()` cancels it (`:360-372`).
+- `startAnalysis()` runs [[Analyzer]] off the main actor with the user's redact terms, and fills empty OCR text in the meta, logging a failed save with `NSLog` (`EditorModel.swift:271-285`). `autoRedact` adds blur or redact markup for every sensitive region in one undo step (`:287-294`).
+- `runAgent` waits for or runs analysis, runs [[EditAgent]] with an [[AgentState]], logs each tool event, and applies the result as one checkpoint (`EditorModel.swift:332-359`). `runAI` allows one AI job at a time and `cancelAI()` cancels it (`:361-373`).
 
 ## Called by
 
@@ -160,4 +160,4 @@ extension Notification.Name {
 
 ## Sources
 
-- `Sources/Pinpoint/EditorModel.swift` (lines 37-380)
+- `Sources/Pinpoint/EditorModel.swift` (lines 37-381)

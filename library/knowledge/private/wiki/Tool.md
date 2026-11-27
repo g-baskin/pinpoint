@@ -58,7 +58,7 @@ enum Tool: String, CaseIterable, Identifiable {
 
 ## Called by
 
-- [[EditorModel]] `tool` (`EditorModel.swift:54`); [[CanvasView]] `mouseDown` and `keyDown` (`Sources/Pinpoint/CanvasView.swift:105`, `:258-259`); `ToolStrip` in [[MainView]] (`Sources/Pinpoint/MainWindow.swift:119`); [[PropertiesPanel]] (`MainWindow.swift:228`).
+- [[EditorModel]] `tool` (`EditorModel.swift:54`); [[CanvasView]] `mouseDown` and `keyDown` (`Sources/Pinpoint/CanvasView.swift:105`, `:258-259`); `ToolStrip` in [[MainView]] (`Sources/Pinpoint/MainWindow.swift:122`); [[PropertiesPanel]] (`MainWindow.swift:231`).
 
 ## Related
 

@@ -98,11 +98,11 @@ sequenceDiagram
 
 Details that matter when changing this flow:
 
-- **Registration.** On first sign-in the authorize request uses the client id `dynamic_agent_client` and hints the agent name; the issued `client_id` comes back on the callback and is stored as a `Registration` in the Keychain. Later sign-ins reuse it. Sign-in fails if no real client id was issued.
+- **Registration.** On first sign-in the authorize request uses the client id `dynamic_agent_client` and hints the agent name; the issued `client_id` comes back on the callback and is stored as a `Registration` in the Keychain. Later sign-ins reuse it. Sign-in fails if no real client id was issued. If the registration or credentials can't be written to the Keychain, sign-in clears the credentials and throws "Signed in, but Pinpoint couldn't save the sign-in to your Keychain".
 - **Host id.** A stable `urn:uuid:` host id is kept in UserDefaults under `chatgptHostId` and sent as `ext_agent_host_id`.
 - **Loopback listener.** `LoopbackListener` binds `127.0.0.1` with Network.framework, answers only `/auth/callback`, rejects a mismatched `state` with 400, and finishes once. First-time sign-in requires port 1455; if it is busy the error says another sign-in may be open. Cancelling the task or 180 seconds without a callback ends the wait.
 - **Checks.** A denied request gives a specific message. The id token's `nonce` claim must match (the JWT payload is decoded without a signature check, as the code notes it came straight from the issuer over TLS), and the granted scopes must include `chatgpt.tokens.use.direct`.
-- **Refresh.** `accessToken()` returns the stored token unless it expires within 60 seconds; otherwise one shared refresh task posts a `refresh_token` grant, so concurrent callers do not refresh twice. A failed refresh asks the user to sign in again.
+- **Refresh.** `accessToken()` returns the stored token unless it expires within 60 seconds; otherwise one shared refresh task posts a `refresh_token` grant, so concurrent callers do not refresh twice. A failed refresh asks the user to sign in again. If the refreshed token can't be saved to the Keychain, the failure is logged and the token is still used for this session.
 - **Sign-out** revokes the refresh token (best effort) and clears the stored credentials.
 
 **ChatGPTPlanClient** posts to `v1/responses` with the bearer token and `stream: true`, `store: false`, and the agent's tools wrapped in a `pinpoint` namespace. It reads server-sent events and folds text deltas, completed function calls and final output into a `ChatResponse` (`collect(events:)`), stripping the namespace prefix from tool names. A 404 for an unknown model and a 429 plan limit get friendlier messages.
@@ -181,6 +181,6 @@ The Assistant panel also has Auto-redact and Copy text, which are on-device and 
 
 ## Key and token storage
 
-`Keychain` stores generic passwords under the service `app.pinpoint.apikeys`. API keys use the provider's raw value as the account (`AppSettings.apiKey(_:)` and `setAPIKey`); ChatGPT credentials and registration are JSON strings under `chatgpt.credentials` and `chatgpt.registration`. Setting an empty value deletes the item. The service name is a fixed identifier: changing it orphans saved keys and sign-ins ([ADR-2](../architecture/ADR-2-stored-data-identifiers.md)).
+`Keychain` stores generic passwords under the service `app.pinpoint.apikeys`. API keys use the provider's raw value as the account (`AppSettings.apiKey(_:)` and `setAPIKey`); ChatGPT credentials and registration are JSON strings under `chatgpt.credentials` and `chatgpt.registration`. Setting an empty value deletes the item. Writes report success: `setAPIKey` returns a Bool so Settings can show "Couldn't save the key to Keychain", and `ChatGPTAccount`'s `save(_:)`/`saveRegistration(_:)` return the write's result. The service name is a fixed identifier: changing it orphans saved keys and sign-ins ([ADR-2](../architecture/ADR-2-stored-data-identifiers.md)).
 
 Provider choice, per-provider model and base URL live in UserDefaults; see [`../storage/library-and-handoff.md`](../storage/library-and-handoff.md).

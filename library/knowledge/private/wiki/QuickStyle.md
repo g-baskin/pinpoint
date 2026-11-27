@@ -64,7 +64,7 @@ struct QuickStyle: Hashable, Identifiable {
 
 ## Called by
 
-- [[PropertiesPanel]] lists `QuickStyle.presets(for:)` for the current kind (`Sources/Pinpoint/MainWindow.swift:236`).
+- [[PropertiesPanel]] lists `QuickStyle.presets(for:)` for the current kind (`Sources/Pinpoint/MainWindow.swift:239`).
 - [[EditorModel]] `apply(_:)` sets the current style from a preset (`Sources/Pinpoint/EditorModel.swift:192`).
 
 ## Related

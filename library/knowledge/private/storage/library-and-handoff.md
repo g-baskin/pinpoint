@@ -86,7 +86,7 @@ Image files go through `ImageFiles.write` (`Sources/PinpointCore/ImageIO.swift`)
 
 `LibraryStore.search(_:query:)` splits the query on spaces and keeps captures where **every** word appears, case-insensitively, in a combined text of name, source app, summary, OCR text and tags (each tag included both as `#tag` and `tag`). OCR text comes from on-device analysis ([`../analysis/analysis-and-redaction.md`](../analysis/analysis-and-redaction.md)), so words inside screenshots are searchable.
 
-`LibraryModel` (`Sources/Pinpoint/LibraryView.swift`) is the main-actor view model. It reloads all metas on a background task, filters with `search`, caches thumbnails in an `NSCache`, and reloads whenever `pinpointLibraryChanged` is posted. Its `selection` is an ordered list: the order captures are picked in becomes the step order of a guide.
+`LibraryModel` (`Sources/Pinpoint/LibraryView.swift`) is the main-actor view model. It reloads all metas on a background task, filters with `search`, caches thumbnails in an `NSCache`, and reloads whenever `pinpointLibraryChanged` is posted. Its `selection` is an ordered list: the order captures are picked in becomes the step order of a guide. Move to Trash counts failed `delete` calls and reports "Moved N to Trash; M couldn't be moved: <reason>"; Auto-name skips a capture whose AI call or `writeMeta` fails and appends "Last error: …" to its final status.
 
 ---
 

@@ -6,7 +6,7 @@ kind: class
 entity_type: class
 target: Pinpoint
 path: "Sources/Pinpoint/LibraryView.swift"
-lines: "5-111"
+lines: "5-118"
 language: swift
 status: developing
 partial_scan: false
@@ -76,14 +76,14 @@ final class LibraryModel: ObservableObject {
 - `thumb(_:)` reads `thumbURL` once and caches the `NSImage` (`LibraryView.swift:34-39`).
 - `toggle(_:extend:)` appends or removes an ID when extending (Command or Shift click), otherwise selects only that capture or clears it (`LibraryView.swift:41-44`).
 - `copy(_:)` puts the PNG of `bestImage` on the clipboard (`LibraryView.swift:46-50`).
-- `delete(_:)` moves each capture to the Trash through `store.delete`, updates the selection and posts `pinpointLibraryChanged` (`LibraryView.swift:52-57`).
-- `autoTag()` names and tags the selection, or every capture with `aiNamed == false` when nothing is selected, using `AppSettings.shared.makeClient(fast: true)` and `Assistants.nameAndTags`, then writes each meta and reloads (`LibraryView.swift:60-80`).
-- `makeGuide()` builds one `GuideStep` per selected capture in selection order. With AI configured it asks `Assistants.writeGuide`; otherwise, or if AI fails, it uses `GuideBuilder.fallbackMarkdown`. `GuideBuilder.write` saves under `<library root>/Guides`, then the guide opens as `guide.html` and `guide.md` is revealed in Finder (`LibraryView.swift:82-110`).
+- `delete(_:)` moves each capture to the Trash through `store.delete`, counting failures instead of ignoring them, updates the selection and posts `pinpointLibraryChanged`. The status reads "Moved N to Trash.", or "Moved N to Trash; M couldn't be moved: <reason>" with the first failure's message when any move fails (`LibraryView.swift:52-62`).
+- `autoTag()` names and tags the selection, or every capture with `aiNamed == false` when nothing is selected, using `AppSettings.shared.makeClient(fast: true)` and `Assistants.nameAndTags`, then writes each meta and reloads (`LibraryView.swift:65-87`). An AI or `writeMeta` error on one capture is caught and skipped; the final status "Named X of Y." gets " Last error: <message>" appended when any item failed (`:78-84`).
+- `makeGuide()` builds one `GuideStep` per selected capture in selection order. With AI configured it asks `Assistants.writeGuide`; otherwise, or if AI fails, it uses `GuideBuilder.fallbackMarkdown`. `GuideBuilder.write` saves under `<library root>/Guides`, then the guide opens as `guide.html` and `guide.md` is revealed in Finder (`LibraryView.swift:89-117`).
 
 ## Called by
 
 - [[Workspace]] creates it with the shared [[LibraryStore]] (`Sources/Pinpoint/MainWindow.swift:19`).
-- [[LibraryView]] renders it; [[TrayView]] observes it (`Sources/Pinpoint/MainWindow.swift:357`).
+- [[LibraryView]] renders it; [[TrayView]] observes it (`Sources/Pinpoint/MainWindow.swift:360`).
 
 ## Related
 
@@ -91,4 +91,4 @@ final class LibraryModel: ObservableObject {
 
 ## Sources
 
-- `Sources/Pinpoint/LibraryView.swift` (lines 5-111)
+- `Sources/Pinpoint/LibraryView.swift` (lines 5-118)

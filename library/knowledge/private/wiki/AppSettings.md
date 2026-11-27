@@ -6,7 +6,7 @@ kind: class
 entity_type: config-key
 target: Pinpoint
 path: "Sources/Pinpoint/AppSettings.swift"
-lines: "4-87"
+lines: "4-91"
 language: swift
 status: developing
 partial_scan: false
@@ -72,7 +72,7 @@ final class AppSettings: ObservableObject {
     var activeExternalDictation: ExternalDictation?
     var current: ProviderSettings
     func apiKey(_ k: ProviderKind) -> String
-    func setAPIKey(_ v: String, for k: ProviderKind)
+    func setAPIKey(_ v: String, for k: ProviderKind) -> Bool
     var isAIConfigured: Bool
     func touch()
     func makeClient(fast: Bool = false) throws -> LLMClient
@@ -87,8 +87,9 @@ Each `@Published` property saves itself to UserDefaults in `didSet` under a key 
 - One-time migration sets the ChatGPT model to `ModelPicker.auto` (UserDefaults flag `chatgptAutoMigrated`) (`AppSettings.swift:42-46`).
 - `redactTerms` splits `customRedactTerms` on commas and newlines, keeping terms of 2+ characters (`AppSettings.swift:26-28`).
 - `activeExternalDictation` is nil when the source is `"builtin"`, else `ExternalDictation.running()` (`AppSettings.swift:31-33`).
-- `isAIConfigured`: signed in for ChatGPT, Codex found, or key present when needed (`AppSettings.swift:68-74`).
-- `makeClient(fast: true)` with ChatGPT on Auto returns a [[ChatGPTPlanClient]] on `auto-fast`; otherwise `current.makeClient(apiKey:)` (`AppSettings.swift:80-86`).
+- `setAPIKey(_:for:)` trims whitespace, stores the key in the [[Keychain]] and returns whether the Keychain write succeeded (`AppSettings.swift:66-70`).
+- `isAIConfigured`: signed in for ChatGPT, Codex found, or key present when needed (`AppSettings.swift:72-78`).
+- `makeClient(fast: true)` with ChatGPT on Auto returns a [[ChatGPTPlanClient]] on `auto-fast`; otherwise `current.makeClient(apiKey:)` (`AppSettings.swift:84-90`).
 
 ## Called by
 
@@ -100,4 +101,4 @@ Each `@Published` property saves itself to UserDefaults in `didSet` under a key 
 
 ## Sources
 
-- `Sources/Pinpoint/AppSettings.swift` (lines 4-87)
+- `Sources/Pinpoint/AppSettings.swift` (lines 4-91)

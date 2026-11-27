@@ -67,12 +67,12 @@ Grouped internal helper: `func perform(_ req: URLRequest, session: URLSession) a
 
 ## Implementations
 
-- [[AnthropicClient]] (`LLM.swift:77`), [[OpenAICompatibleClient]] (`LLM.swift:139`), [[ChatGPTPlanClient]] (`ChatGPTPlan.swift:351`), [[CodexClient]] (`CodexClient.swift:6`).
+- [[AnthropicClient]] (`LLM.swift:77`), [[OpenAICompatibleClient]] (`LLM.swift:139`), [[ChatGPTPlanClient]] (`ChatGPTPlan.swift:357`), [[CodexClient]] (`CodexClient.swift:6`).
 
 ## Called by
 
 - [[EditAgent]] `send` (`Agent.swift:239`); [[Assistants]] `ask` (`Assistants.swift:12`, `:20`, `:41`).
-- Created by [[ProviderSettings]] `makeClient(apiKey:)` and [[AppSettings]] `makeClient(fast:)`; obtained by [[EditorModel]], [[LibraryModel]], [[AppDelegate]] and [[SettingsView]] (`Test connection` uses `ask`, `Sources/Pinpoint/SettingsView.swift:203`).
+- Created by [[ProviderSettings]] `makeClient(apiKey:)` and [[AppSettings]] `makeClient(fast:)`; obtained by [[EditorModel]], [[LibraryModel]], [[AppDelegate]] and [[SettingsView]] (`Test connection` uses `ask`, `Sources/Pinpoint/SettingsView.swift:207`).
 
 ## Related
 

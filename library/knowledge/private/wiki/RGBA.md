@@ -72,7 +72,7 @@ Named colours: `Sources/PinpointCore/Annotation.swift:9-16`; `presets`: `:17`.
 - [[AgentToolbox]] parses the model's `color` argument (`Sources/PinpointCore/Agent.swift:132`, `:151`).
 - [[Renderer]] uses `cgColor`, `nsColor`, `with(alpha:)` and its own luminance helper (`Sources/PinpointCore/Renderer.swift:80-81`, `:144`, `:202`).
 - [[EditorModel]] keeps the current `color` and `fillColor` (`Sources/Pinpoint/EditorModel.swift:55`, `:58`).
-- [[QuickStyle]] presets and [[PropertiesPanel]] `ColorRow` (`Sources/Pinpoint/QuickStyles.swift:6-7`, `Sources/Pinpoint/MainWindow.swift:328-345`).
+- [[QuickStyle]] presets and [[PropertiesPanel]] `ColorRow` (`Sources/Pinpoint/QuickStyles.swift:6-7`, `Sources/Pinpoint/MainWindow.swift:331-348`).
 
 ## Related
 

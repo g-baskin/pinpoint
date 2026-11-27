@@ -64,7 +64,7 @@ struct LogRow: View {
 
 ## Called by
 
-- [[MainView]] shows it when the sidebar's Assistant tab is selected (`Sources/Pinpoint/MainWindow.swift:195`).
+- [[MainView]] shows it when the sidebar's Assistant tab is selected (`Sources/Pinpoint/MainWindow.swift:198`).
 
 ## Related
 

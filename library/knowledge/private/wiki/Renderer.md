@@ -77,8 +77,8 @@ Internal helpers: `drawBadge`, `setShadow`, `luminance`, `drawText`, `withNSCont
 
 - [[EditorModel]] `init` (`pixelated`), `flattened()`, `copyImage`, `exportHandoff` (`Sources/Pinpoint/EditorModel.swift:119`, `:145`, `:225`, `:231`, `:243`).
 - [[CanvasView]] `draw(_:)` (`Sources/Pinpoint/CanvasView.swift:50`, `:56`).
-- [[CaptureService]] `captureAllScreens()` uses `drawImage` (`Sources/Pinpoint/CaptureService.swift:121`).
-- [[Handoff]] `markdown` and `NotesList` in [[PropertiesPanel]] use `noteNumbers` (`Handoff.swift:46`, `Sources/Pinpoint/MainWindow.swift:450`).
+- [[CaptureService]] `captureAllScreens()` uses `drawImage` (`Sources/Pinpoint/CaptureService.swift:127`).
+- [[Handoff]] `markdown` and `NotesList` in [[PropertiesPanel]] use `noteNumbers` (`Handoff.swift:46`, `Sources/Pinpoint/MainWindow.swift:453`).
 - [[QuickStyle]] `preview(for:size:)` (`Sources/Pinpoint/QuickStyles.swift:65`).
 
 ## Related

@@ -49,7 +49,11 @@ struct SettingsView: View {
                 if settings.provider.needsKey || settings.provider == .custom {
                     HStack {
                         SecureField(settings.apiKey(settings.provider).isEmpty ? "API key" : "API key saved in Keychain — paste to replace", text: $keyDraft)
-                        Button("Save") { settings.setAPIKey(keyDraft, for: settings.provider); keyDraft = ""; status = "Key saved to Keychain." }
+                        Button("Save") { 
+                            status = settings.setAPIKey(keyDraft, for: settings.provider)
+                                ? "Key saved to Keychain." : "Couldn't save the key to Keychain. Check Keychain Access and try again."
+                            keyDraft = ""
+                        }
                             .disabled(keyDraft.isEmpty)
                     }
                 }

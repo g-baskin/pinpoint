@@ -86,7 +86,7 @@ struct CanvasScrollView: NSViewRepresentable {
 
 ## Called by
 
-- `EditorBody` in [[MainView]] via `CanvasScrollView(model:zoom:)` (`Sources/Pinpoint/MainWindow.swift:186`); [[EditorModel]] holds a weak `canvas` and calls `showNotePrompt` from `promptNote` (`EditorModel.swift:70`, `:88`).
+- `EditorBody` in [[MainView]] via `CanvasScrollView(model:zoom:)` (`Sources/Pinpoint/MainWindow.swift:189`); [[EditorModel]] holds a weak `canvas` and calls `showNotePrompt` from `promptNote` (`EditorModel.swift:70`, `:88`).
 
 ## Related
 

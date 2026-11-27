@@ -6,7 +6,7 @@ kind: enum
 entity_type: service
 target: Pinpoint
 path: "Sources/Pinpoint/CaptureService.swift"
-lines: "5-155"
+lines: "5-161"
 language: swift
 status: developing
 partial_scan: false
@@ -69,11 +69,11 @@ enum CaptureService {
 ## Behaviour
 
 - `isPermissionError` treats any `CaptureError`, code -3801 (user declined) or a failed preflight as a permission problem (`CaptureService.swift:29-32`).
-- `showPermissionHelp` asks macOS once, never resets an existing grant, and offers Restart Pinpoint, Open System Settings or Cancel, since macOS applies a new grant only after a restart (`CaptureService.swift:34-55`). `relaunch` reopens the bundle after 1.5 s (`:58-65`).
-- `captureScreen` captures one display at its backing scale, excluding Pinpoint's own windows, without the cursor (`CaptureService.swift:88-101`).
-- `captureAllScreens` stitches every display into one image laid out as arranged in System Settings, at the highest backing scale (`CaptureService.swift:104-125`).
-- `captureWindow` captures one window independent of what covers it, without its shadow (`CaptureService.swift:127-138`).
-- `visibleWindows` lists normal layer-0 windows of other apps, larger than 40 px, front to back (`CaptureService.swift:141-154`).
+- `showPermissionHelp` asks macOS once, never resets an existing grant, and offers Restart Pinpoint, Open System Settings or Cancel, since macOS applies a new grant only after a restart (`CaptureService.swift:34-55`). `relaunch` reopens the bundle after 1.5 s through a `/bin/sh` helper, then quits; if the helper can't be launched it shows a "Couldn't restart Pinpoint" alert and does not quit (`:58-71`).
+- `captureScreen` captures one display at its backing scale, excluding Pinpoint's own windows, without the cursor (`CaptureService.swift:94-107`).
+- `captureAllScreens` stitches every display into one image laid out as arranged in System Settings, at the highest backing scale (`CaptureService.swift:110-131`).
+- `captureWindow` captures one window independent of what covers it, without its shadow (`CaptureService.swift:133-144`).
+- `visibleWindows` lists normal layer-0 windows of other apps, larger than 40 px, front to back (`CaptureService.swift:147-160`).
 
 ## Called by
 
@@ -89,4 +89,4 @@ enum CaptureService {
 
 ## Sources
 
-- `Sources/Pinpoint/CaptureService.swift` (lines 5-155)
+- `Sources/Pinpoint/CaptureService.swift` (lines 5-161)

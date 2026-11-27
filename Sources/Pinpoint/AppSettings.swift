@@ -63,7 +63,11 @@ final class AppSettings: ObservableObject {
     var current: ProviderSettings { providers[provider] ?? ProviderSettings(kind: provider) }
 
     func apiKey(_ k: ProviderKind) -> String { Keychain.get(k.rawValue) }
-    func setAPIKey(_ v: String, for k: ProviderKind) { Keychain.set(v.trimmingCharacters(in: .whitespacesAndNewlines), for: k.rawValue); objectWillChange.send() }
+    func setAPIKey(_ v: String, for k: ProviderKind) -> Bool {
+        let ok = Keychain.set(v.trimmingCharacters(in: .whitespacesAndNewlines), for: k.rawValue)
+        objectWillChange.send()
+        return ok
+    }
 
     var isAIConfigured: Bool {
         switch current.kind {

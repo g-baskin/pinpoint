@@ -37,7 +37,10 @@ final class Workspace: ObservableObject {
     func saveCurrent() {
         guard let e = editor else { return }
         if e.dirty || e.meta.annotations != e.annotations || e.meta.crop != e.crop { e.save() }
-        else { try? store.writeMeta(e.meta); NotificationCenter.default.post(name: .pinpointLibraryChanged, object: nil) }
+        else {
+            do { try store.writeMeta(e.meta) } catch { NSAlert(error: error).runModal() }
+            NotificationCenter.default.post(name: .pinpointLibraryChanged, object: nil)
+        }
     }
 
     /// Called when the open capture is deleted from the library.
@@ -170,7 +173,7 @@ struct ShareButton: NSViewRepresentable {
         @objc func share(_ sender: NSButton) {
             guard let img = model.flattened() else { return }
             let url = FileManager.default.temporaryDirectory.appendingPathComponent("\(model.meta.name).png")
-            try? ImageFiles.write(img, to: url)
+            do { try ImageFiles.write(img, to: url) } catch { model.fail("Share failed: \(error.localizedDescription)"); return }
             NSSharingServicePicker(items: [url]).show(relativeTo: sender.bounds, of: sender, preferredEdge: .minY)
         }
     }

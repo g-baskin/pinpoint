@@ -62,8 +62,8 @@ public enum Analyzer {
 
 ## Called by
 
-- [[EditorModel]] `startAnalysis()` and `runAgent(_:)` call `analyze` with the user's redact terms; `autoRedact(style:)` calls `redactions` (`Sources/Pinpoint/EditorModel.swift:275`, `:290`, `:340`).
-- [[AppDelegate]] `postProcess` calls `analyze(image, faces: false)` and `suggestedName` (`Sources/Pinpoint/AppDelegate.swift:203-205`).
+- [[EditorModel]] `startAnalysis()` and `runAgent(_:)` call `analyze` with the user's redact terms; `autoRedact(style:)` calls `redactions` (`Sources/Pinpoint/EditorModel.swift:275`, `:291`, `:341`).
+- [[AppDelegate]] `postProcess` calls `analyze(image, faces: false)` and `suggestedName` (`Sources/Pinpoint/AppDelegate.swift:207-209`).
 - [[AgentToolbox]] uses `find` for `mark_text` and `redactions` for `redact_sensitive` (`Sources/PinpointCore/Agent.swift:145`, `:198`).
 
 ## Related

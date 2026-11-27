@@ -123,7 +123,7 @@ sequenceDiagram
     end
 ```
 
-The alert explains that macOS only applies a new grant after the app restarts, so the first button is "Restart Pinpoint". `relaunch()` starts a shell that waits 1.5 seconds and reopens the bundle, then terminates the app, avoiding a race with the quitting process. The request call never resets an existing grant. Permission is tied to the bundle id and the signing requirement in `scripts/build-app.sh` (see [ADR-2](../architecture/ADR-2-stored-data-identifiers.md)).
+The alert explains that macOS only applies a new grant after the app restarts, so the first button is "Restart Pinpoint". `relaunch()` starts a shell that waits 1.5 seconds and reopens the bundle, then terminates the app, avoiding a race with the quitting process. If that helper can't be launched, it shows a "Couldn't restart Pinpoint" alert asking the user to quit and reopen, and does not quit. The request call never resets an existing grant. Permission is tied to the bundle id and the signing requirement in `scripts/build-app.sh` (see [ADR-2](../architecture/ADR-2-stored-data-identifiers.md)).
 
 Other errors show a standard `NSAlert`.
 
@@ -131,7 +131,7 @@ Other errors show a standard `NSAlert`.
 
 ## After a capture
 
-Every successful path ends in `finishCapture(_:app:)`. Opening an image file from disk (`openImage`) follows nearly the same steps, without the clipboard and auto-redact settings.
+Every successful path ends in `finishCapture(_:app:)`. Opening an image file from disk (`openImage`) follows nearly the same steps, without the clipboard and auto-redact settings. Files that aren't readable images or can't be added to the library are collected and reported together in one error alert after the others open.
 
 ```mermaid
 sequenceDiagram
@@ -164,6 +164,6 @@ sequenceDiagram
 1. **Save.** `LibraryStore.create` writes the original, a thumbnail and `meta.json` immediately, with a provisional name of the source app (or "Screen") plus the date and time.
 2. **Copy.** If "copy after capture" is on, the PNG goes on the general pasteboard.
 3. **Edit.** If "open editor after capture" is on, the capture opens in the main window. Creating the `EditorModel` starts on-device analysis. If auto-redact on capture is on, the delegate waits for that analysis (polling every 0.25 seconds, giving up after 40 tries) and then adds blur markup items.
-4. **Background naming.** `postProcess` runs a detached utility-priority task: OCR without face detection, an offline name from the first meaningful text line, and optionally an AI name and tags. When it finishes on the main actor it does not clobber edits: if the capture is open, it only replaces the name if the user has not changed it and only sets tags if there are none, then writes the editor's meta.
+4. **Background naming.** `postProcess` runs a detached utility-priority task: OCR without face detection, an offline name from the first meaningful text line, and optionally an AI name and tags. When it finishes on the main actor it does not clobber edits: if the capture is open, it only replaces the name if the user has not changed it and only sets tags if there are none, then writes the editor's meta (otherwise its own result) with a single `writeMeta`. A client, AI naming or write failure is logged with `NSLog` instead of being dropped silently; OCR failure still yields an empty analysis.
 
 Settings and their defaults live in `Sources/Pinpoint/AppSettings.swift`; see [`../storage/library-and-handoff.md`](../storage/library-and-handoff.md). Editing the capture is covered in [`../editor/markup-and-rendering.md`](../editor/markup-and-rendering.md).

@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- **Errors no longer fail silently.** Deleting captures, saving an API key, signing in with ChatGPT, opening image files, sharing, saving name and tag changes, Auto-name and Restart Pinpoint now say when something goes wrong instead of carrying on or reporting success. Background naming and OCR failures are written to the system log.
+
 ## [0.1.0] - 2026-11-27
 
 The first public release of Pinpoint: a native macOS screenshot and markup app with a built-in AI agent. Requires macOS 14 or later. Download `Pinpoint-0.1.0.zip` from the release page (it runs on Apple silicon and Intel Macs). It is not notarized by Apple yet, so the first launch needs **Open Anyway** in System Settings → Privacy & Security; the README has the steps.

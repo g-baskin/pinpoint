@@ -6,7 +6,7 @@ kind: class
 entity_type: class
 target: Pinpoint
 path: "Sources/Pinpoint/MainWindow.swift"
-lines: "5-47"
+lines: "5-50"
 language: swift
 status: developing
 partial_scan: false
@@ -64,13 +64,13 @@ final class Workspace: ObservableObject {
 
 - `open(meta:image:)` switches to the editor; if a different capture is open it saves it first and creates a new [[EditorModel]] (`MainWindow.swift:25-30`).
 - `open(id:)` loads meta and original from [[LibraryStore]] (`MainWindow.swift:32-35`).
-- `saveCurrent()` does a full save when there are unsaved markup or crop changes, otherwise only rewrites `meta.json` (name and tags may have changed) and posts `pinpointLibraryChanged` (`MainWindow.swift:37-41`).
-- Listens for `pinpointLibraryChanged` and closes the editor if its capture was deleted (`MainWindow.swift:20-22`, `:44-46`).
+- `saveCurrent()` does a full save when there are unsaved markup or crop changes, otherwise only rewrites `meta.json` (name and tags may have changed) and posts `pinpointLibraryChanged`; a failed `writeMeta` is shown in an `NSAlert` (`MainWindow.swift:37-44`).
+- Listens for `pinpointLibraryChanged` and closes the editor if its capture was deleted (`MainWindow.swift:20-22`, `:47-49`).
 
 ## Called by
 
-- [[AppDelegate]] owns it (`workspace`), calls `open`, `saveCurrent`, sets `mode` (`Sources/Pinpoint/AppDelegate.swift:14`, `:38`, `:231-244`).
-- [[MainWindowController]] `windowWillClose` saves (`MainWindow.swift:435`); [[MainView]] and [[TrayView]] read and switch it.
+- [[AppDelegate]] owns it (`workspace`), calls `open`, `saveCurrent`, sets `mode` (`Sources/Pinpoint/AppDelegate.swift:14`, `:38`, `:239-252`).
+- [[MainWindowController]] `windowWillClose` saves (`MainWindow.swift:438`); [[MainView]] and [[TrayView]] read and switch it.
 
 ## Related
 
@@ -78,4 +78,4 @@ final class Workspace: ObservableObject {
 
 ## Sources
 
-- `Sources/Pinpoint/MainWindow.swift` (lines 5-47)
+- `Sources/Pinpoint/MainWindow.swift` (lines 5-50)

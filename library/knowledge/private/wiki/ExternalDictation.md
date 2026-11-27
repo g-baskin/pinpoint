@@ -71,7 +71,7 @@ enum AudioInputs {
 
 - [[AppSettings]] `activeExternalDictation` returns nil for the `"builtin"` source, else `ExternalDictation.running()` (`Sources/Pinpoint/AppSettings.swift:31-33`).
 - [[NotePromptView]] reads it on appear (`Sources/Pinpoint/NotePrompt.swift:69`).
-- [[SettingsView]] shows the running app and the microphone picker (`Sources/Pinpoint/SettingsView.swift:82`, `:91-92`).
+- [[SettingsView]] shows the running app and the microphone picker (`Sources/Pinpoint/SettingsView.swift:86`, `:95-96`).
 - [[SpeechDictation]] uses `AudioInputs.device(uid:)` (`Sources/Pinpoint/SpeechDictation.swift:61`).
 
 ## Related

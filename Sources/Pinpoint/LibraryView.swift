@@ -50,9 +50,14 @@ final class LibraryModel: ObservableObject {
     }
 
     func delete(_ ids: [UUID]) {
-        for id in ids { try? store.delete(id) }
+        var failed: [String] = []
+        for id in ids {
+            do { try store.delete(id) } catch { failed.append(error.localizedDescription) }
+        }
         selection.removeAll { ids.contains($0) }
-        status = "Moved \(ids.count) to Trash."
+        let moved = ids.count - failed.count
+        status = failed.isEmpty ? "Moved \(moved) to Trash."
+            : "Moved \(moved) to Trash; \(failed.count) couldn't be moved: \(failed[0])"
         NotificationCenter.default.post(name: .pinpointLibraryChanged, object: nil)
     }
 
@@ -65,16 +70,18 @@ final class LibraryModel: ObservableObject {
         busy = true
         Task {
             var done = 0
+            var lastError: String?
             for id in targets {
                 guard var m = store.meta(id), let img = store.original(id) else { continue }
                 status = "Naming \(done + 1) of \(targets.count)…"
-                if let r = try? await Assistants(client: client).nameAndTags(image: img, ocrText: m.ocrText, app: m.sourceApp) {
+                do {
+                    let r = try await Assistants(client: client).nameAndTags(image: img, ocrText: m.ocrText, app: m.sourceApp)
                     m.name = r.name; m.tags = r.tags; m.aiNamed = true
-                    try? store.writeMeta(m); done += 1
-                }
+                    try store.writeMeta(m); done += 1
+                } catch { lastError = error.localizedDescription }
             }
             busy = false
-            status = "Named \(done) of \(targets.count)."
+            status = "Named \(done) of \(targets.count)." + (lastError.map { " Last error: \($0)" } ?? "")
             reload()
         }
     }

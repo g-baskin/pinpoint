@@ -60,10 +60,10 @@ public enum AnnotationKind: String, Codable, CaseIterable, Sendable {
 
 ## Called by
 
-- [[Tool]] `kind` (`Sources/Pinpoint/EditorModel.swift:34`); [[EditorModel]] `newAnnotation(kind:at:)` and `autoRedact(style:)` (`EditorModel.swift:217`, `:286`).
+- [[Tool]] `kind` (`Sources/Pinpoint/EditorModel.swift:34`); [[EditorModel]] `newAnnotation(kind:at:)` and `autoRedact(style:)` (`EditorModel.swift:217`, `:287`).
 - [[AgentToolbox]] parses the model's `kind` string (`Sources/PinpointCore/Agent.swift:126`).
 - [[Analyzer]] `redactions(..., style:)` (`Sources/PinpointCore/Analyzer.swift:71`).
-- [[QuickStyle]] `presets(for:)` and `preview(for:size:)`; [[PropertiesPanel]] picks controls per kind (`Sources/Pinpoint/QuickStyles.swift:13`, `:49`, `Sources/Pinpoint/MainWindow.swift:228`).
+- [[QuickStyle]] `presets(for:)` and `preview(for:size:)`; [[PropertiesPanel]] picks controls per kind (`Sources/Pinpoint/QuickStyles.swift:13`, `:49`, `Sources/Pinpoint/MainWindow.swift:231`).
 - [[Renderer]] and [[Handoff]] switch on it (`Sources/PinpointCore/Renderer.swift:84`, `Sources/PinpointCore/Handoff.swift:9`).
 
 ## Related

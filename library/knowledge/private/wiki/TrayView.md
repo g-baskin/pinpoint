@@ -6,7 +6,7 @@ kind: struct
 entity_type: class
 target: Pinpoint
 path: "Sources/Pinpoint/MainWindow.swift"
-lines: "352-414"
+lines: "355-417"
 language: swift
 status: developing
 partial_scan: false
@@ -34,7 +34,7 @@ related:
 
 ## Purpose
 
-The strip along the bottom of the main window: recent captures from the **library**, a search field, and zoom controls (`Sources/Pinpoint/MainWindow.swift:354`).
+The strip along the bottom of the main window: recent captures from the **library**, a search field, and zoom controls (`Sources/Pinpoint/MainWindow.swift:357`).
 
 ## API (internal)
 
@@ -52,12 +52,12 @@ struct ZoomControls: View {
 
 ## Behaviour
 
-- Shows up to 150 filtered thumbnails, outlining the open capture; click opens it; the context menu offers Copy Image, Show in Finder and Move to Trash (`MainWindow.swift:370-393`).
-- `ZoomControls`: zoom out and in by 1.25, percent label, Fit and 100% (`MainWindow.swift:401-414`).
+- Shows up to 150 filtered thumbnails, outlining the open capture; click opens it; the context menu offers Copy Image, Show in Finder and Move to Trash (`MainWindow.swift:373-396`).
+- `ZoomControls`: zoom out and in by 1.25, percent label, Fit and 100% (`MainWindow.swift:404-417`).
 
 ## Called by
 
-- `EditorBody` and `EmptyEditor` in [[MainView]] (`MainWindow.swift:200`, `:217`).
+- `EditorBody` and `EmptyEditor` in [[MainView]] (`MainWindow.swift:203`, `:220`).
 
 ## Related
 
@@ -65,4 +65,4 @@ struct ZoomControls: View {
 
 ## Sources
 
-- `Sources/Pinpoint/MainWindow.swift` (lines 352-414)
+- `Sources/Pinpoint/MainWindow.swift` (lines 355-417)

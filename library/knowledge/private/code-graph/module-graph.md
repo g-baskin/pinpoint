@@ -338,4 +338,4 @@ Line numbers are the first line in the From file where the symbol appears outsid
 
 ## What the graph leaves out
 
-System frameworks (AppKit, SwiftUI, Vision, ScreenCaptureKit, Network, CryptoKit and others) are not drawn. One candidate edge was rejected after inspection: the name `perform` in `SelectionOverlay.swift:301` is a private method there, not the internal `perform(_:session:)` in `LLM.swift:62`, which the app could not call anyway. Nested types that share a name across files (two `Coordinator` classes, in `CanvasView.swift:356` and `MainWindow.swift:167`) were excluded from matching so they do not create false edges.
+System frameworks (AppKit, SwiftUI, Vision, ScreenCaptureKit, Network, CryptoKit and others) are not drawn. One candidate edge was rejected after inspection: the name `perform` in `SelectionOverlay.swift:301` is a private method there, not the internal `perform(_:session:)` in `LLM.swift:62`, which the app could not call anyway. Nested types that share a name across files (two `Coordinator` classes, in `CanvasView.swift:356` and `MainWindow.swift:170`) were excluded from matching so they do not create false edges.

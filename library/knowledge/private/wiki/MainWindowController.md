@@ -6,7 +6,7 @@ kind: class
 entity_type: class
 target: Pinpoint
 path: "Sources/Pinpoint/MainWindow.swift"
-lines: "416-444"
+lines: "419-447"
 language: swift
 status: developing
 partial_scan: false
@@ -33,7 +33,7 @@ related:
 
 ## Purpose
 
-Hosts the single main window (`Sources/Pinpoint/MainWindow.swift:416`), a 1280 by 820 titled, resizable window whose content is [[MainView]].
+Hosts the single main window (`Sources/Pinpoint/MainWindow.swift:419`), a 1280 by 820 titled, resizable window whose content is [[MainView]].
 
 ## API (internal)
 
@@ -51,13 +51,13 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
 
 ## Behaviour
 
-- Remembers its frame under autosave name `PinpointMain` (`MainWindow.swift:427-428`).
-- On close: saves the current capture and tells [[AppDelegate]] so it can drop back to a menu-bar-only app (`MainWindow.swift:434-437`).
-- Responder actions forward menu shortcuts (Save, Export, Undo, Redo) to the open [[EditorModel]] when the canvas is not first responder (`MainWindow.swift:439-443`).
+- Remembers its frame under autosave name `PinpointMain` (`MainWindow.swift:430-431`).
+- On close: saves the current capture and tells [[AppDelegate]] so it can drop back to a menu-bar-only app (`MainWindow.swift:437-440`).
+- Responder actions forward menu shortcuts (Save, Export, Undo, Redo) to the open [[EditorModel]] when the canvas is not first responder (`MainWindow.swift:442-446`).
 
 ## Called by
 
-- [[AppDelegate]] `showMain(mode:)` creates it lazily (`Sources/Pinpoint/AppDelegate.swift:242`).
+- [[AppDelegate]] `showMain(mode:)` creates it lazily (`Sources/Pinpoint/AppDelegate.swift:250`).
 
 ## Related
 
@@ -65,4 +65,4 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
 
 ## Sources
 
-- `Sources/Pinpoint/MainWindow.swift` (lines 416-444)
+- `Sources/Pinpoint/MainWindow.swift` (lines 419-447)

@@ -107,7 +107,7 @@ Pinpoint has one main window. `MainWindowController` (`Sources/Pinpoint/MainWind
 
 - `open(meta:image:)` does nothing but switch to editor mode if that capture is already open. Otherwise it saves the current capture and creates a fresh `EditorModel`.
 - `open(id:)` loads the meta and original image from the store first.
-- `saveCurrent()` calls `EditorModel.save()` (which re-renders) only when the editor is dirty or its markup or crop differ from the stored meta. Otherwise it just rewrites `meta.json`, which keeps name and tag edits.
+- `saveCurrent()` calls `EditorModel.save()` (which re-renders) only when the editor is dirty or its markup or crop differ from the stored meta. Otherwise it just rewrites `meta.json`, which keeps name and tag edits. If that `writeMeta` fails, the error is shown in an alert.
 - It observes the `pinpointLibraryChanged` notification and closes the editor if the open capture was deleted.
 
 `MainView` stacks a `TopBar` over either the `LibraryView` or the editor. The top bar has a Capture menu button (primary action is area capture; the menu lists the four capture modes and Open Image), an Editor/Library segmented picker and, in editor mode, the tool strip and editor actions (undo, redo, reset crop, copy, Handoff menu, share, export, save). The editor body is a horizontal split of the canvas and a sidebar, with a tray of recent captures, search and zoom controls underneath. With no capture open, `EmptyEditor` shows a "Capture Now" button above the tray.

@@ -61,9 +61,9 @@ public struct Assistants: Sendable {
 
 ## Called by
 
-- [[EditorModel]] `summarize()` and `nameAndTag()` (`Sources/Pinpoint/EditorModel.swift:314`, `:324`).
-- [[AppDelegate]] `postProcess` for AI naming after a capture (`Sources/Pinpoint/AppDelegate.swift:206`).
-- [[LibraryModel]] `autoTag()` and `makeGuide()` (`Sources/Pinpoint/LibraryView.swift:71`, `:96`).
+- [[EditorModel]] `summarize()` and `nameAndTag()` (`Sources/Pinpoint/EditorModel.swift:315`, `:325`).
+- [[AppDelegate]] `postProcess` for AI naming after a capture (`Sources/Pinpoint/AppDelegate.swift:212`).
+- [[LibraryModel]] `autoTag()` and `makeGuide()` (`Sources/Pinpoint/LibraryView.swift:78`, `:103`).
 
 ## Related
 
