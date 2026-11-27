@@ -1,7 +1,7 @@
 import AppKit
 import CoreGraphics
 import XCTest
-@testable import ZoomiesCore
+@testable import PinpointCore
 
 final class SensitiveTests: XCTestCase {
     func testFindsCommonSecretsAndPII() {
@@ -95,7 +95,7 @@ final class AnalyzerTests: XCTestCase {
 
 final class LibraryTests: XCTestCase {
     func testCreateSaveLoadSearch() throws {
-        let dir = FileManager.default.temporaryDirectory.appendingPathComponent("zoomies-test-\(UUID().uuidString)")
+        let dir = FileManager.default.temporaryDirectory.appendingPathComponent("pinpoint-test-\(UUID().uuidString)")
         defer { try? FileManager.default.removeItem(at: dir) }
         let store = LibraryStore(root: dir)
         var m = try store.create(image: makeImage(), name: "First", sourceApp: "Safari")
@@ -250,7 +250,7 @@ final class ProviderWireTests: XCTestCase {
 
 final class GuideTests: XCTestCase {
     func testWritesGuideWithAllImages() throws {
-        let dir = FileManager.default.temporaryDirectory.appendingPathComponent("zoomies-guide-\(UUID().uuidString)")
+        let dir = FileManager.default.temporaryDirectory.appendingPathComponent("pinpoint-guide-\(UUID().uuidString)")
         defer { try? FileManager.default.removeItem(at: dir) }
         let steps = [GuideStep(image: makeImage(), name: "Open", ocrText: ""), GuideStep(image: makeImage(), name: "Save", ocrText: "")]
         let folder = try GuideBuilder.write(markdown: "# T\n\n## Step 1: **Open**\n\n{{image 1}}\n", steps: steps, title: "T", to: dir)
@@ -288,5 +288,53 @@ final class AccountIDTests: XCTestCase {
     func testCustomTerms() {
         let m = SensitiveDetector.findMatches(in: "Meta Ads connection \"Storewren\" for StoreWren BlackFriday", customTerms: ["storewren"])
         XCTAssertEqual(m.filter { $0.kind == .custom }.count, 2)
+    }
+}
+
+final class LegacyMigrationTests: XCTestCase {
+    private func tempDir() -> URL {
+        FileManager.default.temporaryDirectory.appendingPathComponent("pinpoint-migrate-\(UUID().uuidString)", isDirectory: true)
+    }
+
+    func testMovesWholeLibraryWhenNewFolderMissing() throws {
+        let base = tempDir(); defer { try? FileManager.default.removeItem(at: base) }
+        let old = base.appendingPathComponent("Old"), new = base.appendingPathComponent("New")
+        try FileManager.default.createDirectory(at: old.appendingPathComponent("cap1"), withIntermediateDirectories: true)
+        try Data("x".utf8).write(to: old.appendingPathComponent("cap1/meta.json"))
+        XCTAssertTrue(LegacyMigration.moveLibrary(from: old, to: new))
+        XCTAssertFalse(FileManager.default.fileExists(atPath: old.path))
+        XCTAssertEqual(try Data(contentsOf: new.appendingPathComponent("cap1/meta.json")), Data("x".utf8))
+    }
+
+    func testMergeNeverOverwritesAndKeepsConflicts() throws {
+        let base = tempDir(); defer { try? FileManager.default.removeItem(at: base) }
+        let fm = FileManager.default
+        let old = base.appendingPathComponent("Old"), new = base.appendingPathComponent("New")
+        for d in [old.appendingPathComponent("a"), old.appendingPathComponent("b"), new.appendingPathComponent("b")] {
+            try fm.createDirectory(at: d, withIntermediateDirectories: true)
+        }
+        try Data("old".utf8).write(to: old.appendingPathComponent("b/meta.json"))
+        try Data("new".utf8).write(to: new.appendingPathComponent("b/meta.json"))
+        XCTAssertFalse(LegacyMigration.moveLibrary(from: old, to: new))
+        XCTAssertTrue(fm.fileExists(atPath: new.appendingPathComponent("a").path))
+        XCTAssertEqual(try Data(contentsOf: new.appendingPathComponent("b/meta.json")), Data("new".utf8))
+        XCTAssertEqual(try Data(contentsOf: old.appendingPathComponent("b/meta.json")), Data("old".utf8))
+    }
+
+    func testNoOldLibraryIsANoOp() {
+        let base = tempDir()
+        XCTAssertTrue(LegacyMigration.moveLibrary(from: base.appendingPathComponent("Old"), to: base.appendingPathComponent("New")))
+        XCTAssertFalse(FileManager.default.fileExists(atPath: base.path))
+    }
+
+    func testCopiesSettingsWithoutOverwritingAndRenamesWindowKeys() throws {
+        let suite = "pinpoint-test-\(UUID().uuidString)"
+        let d = try XCTUnwrap(UserDefaults(suiteName: suite)); defer { d.removePersistentDomain(forName: suite) }
+        d.set("openai", forKey: "provider")
+        LegacyMigration.copyDefaults(["provider": "anthropic", "autoRedactOnCapture": true,
+                                      "NSWindow Frame ZoomiesMain": "1 2 3 4"], into: d)
+        XCTAssertEqual(d.string(forKey: "provider"), "openai")
+        XCTAssertTrue(d.bool(forKey: "autoRedactOnCapture"))
+        XCTAssertEqual(d.string(forKey: "NSWindow Frame PinpointMain"), "1 2 3 4")
     }
 }

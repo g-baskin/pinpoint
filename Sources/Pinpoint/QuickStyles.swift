@@ -1,5 +1,5 @@
 import AppKit
-import ZoomiesCore
+import PinpointCore
 
 /// A one-click style preset, shown as a rendered thumbnail in the Properties panel.
 struct QuickStyle: Hashable, Identifiable {

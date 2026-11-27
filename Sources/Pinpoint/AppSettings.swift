@@ -1,5 +1,5 @@
 import Foundation
-import ZoomiesCore
+import PinpointCore
 
 /// User preferences (UserDefaults) + API keys (Keychain).
 @MainActor

@@ -1,6 +1,6 @@
 import AppKit
 import SwiftUI
-import ZoomiesCore
+import PinpointCore
 
 struct AssistantPanel: View {
     @ObservedObject var model: EditorModel

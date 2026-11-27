@@ -88,7 +88,7 @@ public struct CodexClient: LLMClient {
 
     public func send(system: String, messages: [ChatMessage], tools: [ToolSpec], maxTokens: Int) async throws -> ChatResponse {
         let fm = FileManager.default
-        let dir = fm.temporaryDirectory.appendingPathComponent("zoomies-codex-\(UUID().uuidString)")
+        let dir = fm.temporaryDirectory.appendingPathComponent("pinpoint-codex-\(UUID().uuidString)")
         try fm.createDirectory(at: dir, withIntermediateDirectories: true)
         defer { try? fm.removeItem(at: dir) }
 

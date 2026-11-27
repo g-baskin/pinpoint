@@ -1,6 +1,6 @@
 import AppKit
 import SwiftUI
-import ZoomiesCore
+import PinpointCore
 
 @MainActor
 final class LibraryModel: ObservableObject {
@@ -16,7 +16,7 @@ final class LibraryModel: ObservableObject {
     init(store: LibraryStore) {
         self.store = store
         reload()
-        observer = NotificationCenter.default.addObserver(forName: .zoomiesLibraryChanged, object: nil, queue: .main) { [weak self] _ in
+        observer = NotificationCenter.default.addObserver(forName: .pinpointLibraryChanged, object: nil, queue: .main) { [weak self] _ in
             Task { @MainActor in self?.thumbs.removeAllObjects(); self?.reload() }
         }
     }
@@ -53,7 +53,7 @@ final class LibraryModel: ObservableObject {
         for id in ids { try? store.delete(id) }
         selection.removeAll { ids.contains($0) }
         status = "Moved \(ids.count) to Trash."
-        NotificationCenter.default.post(name: .zoomiesLibraryChanged, object: nil)
+        NotificationCenter.default.post(name: .pinpointLibraryChanged, object: nil)
     }
 
     /// AI name & tag for selected captures (or all un-named ones).

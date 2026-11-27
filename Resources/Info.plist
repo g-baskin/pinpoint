@@ -4,7 +4,7 @@
 <dict>
     <key>CFBundleName</key><string>Pinpoint</string>
     <key>CFBundleDisplayName</key><string>Pinpoint</string>
-    <key>CFBundleIdentifier</key><string>app.zoomies.Zoomies</string>
+    <key>CFBundleIdentifier</key><string>app.pinpoint.Pinpoint</string>
     <key>CFBundleExecutable</key><string>Pinpoint</string>
     <key>CFBundleIconFile</key><string>AppIcon</string>
     <key>CFBundlePackageType</key><string>APPL</string>

@@ -269,7 +269,7 @@ final class LoopbackListener: @unchecked Sendable {
         params.requiredLocalEndpoint = .hostPort(host: "127.0.0.1", port: NWEndpoint.Port(rawValue: port) ?? .any)
         params.allowLocalEndpointReuse = true
         let l = try NWListener(using: params)
-        let queue = DispatchQueue(label: "zoomies.oauth")
+        let queue = DispatchQueue(label: "pinpoint.oauth")
         return try await withCheckedThrowingContinuation { cont in
             var resumed = false
             var holder: LoopbackListener?
@@ -347,7 +347,7 @@ final class LoopbackListener: @unchecked Sendable {
 public struct ChatGPTPlanClient: LLMClient {
     public var model: String
     public var account: ChatGPTAccount
-    public static let toolNamespace = "zoomies"
+    public static let toolNamespace = "pinpoint"
 
     public init(model: String, account: ChatGPTAccount = .shared) { self.model = model; self.account = account }
 
@@ -384,7 +384,7 @@ public struct ChatGPTPlanClient: LLMClient {
             "model": .string(model), "store": false, "stream": true, "instructions": .string(system),
             "input": .array(input), "parallel_tool_calls": true, "include": ["reasoning.encrypted_content"],
             "reasoning": ["effort": .string(lite ? "low" : "none"), "summary": "auto"],
-            "prompt_cache_key": "zoomies",
+            "prompt_cache_key": "pinpoint",
         ]
         if lite { body["text"] = ["verbosity": "low"] }
         if !tools.isEmpty {

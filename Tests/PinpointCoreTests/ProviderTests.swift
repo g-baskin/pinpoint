@@ -1,6 +1,6 @@
 import CryptoKit
 import XCTest
-@testable import ZoomiesCore
+@testable import PinpointCore
 
 final class ChatGPTPlanTests: XCTestCase {
     func testPKCEChallengeIsSHA256OfVerifier() {
@@ -10,7 +10,7 @@ final class ChatGPTPlanTests: XCTestCase {
         XCTAssertGreaterThanOrEqual(v.count, 43)
     }
 
-    func testAuthorizeURLForFirstSignInRegistersZoomies() throws {
+    func testAuthorizeURLForFirstSignInRegistersPinpoint() throws {
         let url = ChatGPTOAuth.authorizeRequestURL(clientId: nil, hostId: "urn:uuid:x", email: nil,
                                                    redirectURI: "http://127.0.0.1:1455/auth/callback", state: "s", nonce: "n", challenge: "c")
         let q = Dictionary(uniqueKeysWithValues: URLComponents(url: url, resolvingAgainstBaseURL: false)!.queryItems!.map { ($0.name, $0.value ?? "") })
@@ -54,7 +54,7 @@ final class ChatGPTPlanTests: XCTestCase {
         XCTAssertEqual(input.map { $0["type"]?.stringValue }, ["message", "message", "function_call", "function_call_output"])
         XCTAssertEqual(input[0]["content"]?[0]?["type"]?.stringValue, "input_image")
         XCTAssertEqual(input[1]["content"]?[0]?["type"]?.stringValue, "output_text")
-        XCTAssertEqual(input[2]["namespace"]?.stringValue, "zoomies")
+        XCTAssertEqual(input[2]["namespace"]?.stringValue, "pinpoint")
         XCTAssertEqual(input[2]["arguments"]?.stringValue, #"{"x":1}"#)
         XCTAssertEqual(body["tools"]?[0]?["type"]?.stringValue, "namespace")
         XCTAssertEqual(body["tools"]?[0]?["tools"]?[0]?["name"]?.stringValue, "crop")
@@ -64,7 +64,7 @@ final class ChatGPTPlanTests: XCTestCase {
         let events: [JSONValue] = [
             ["type": "response.output_text.delta", "delta": "Hel"],
             ["type": "response.output_text.delta", "delta": "lo"],
-            ["type": "response.output_item.done", "item": ["type": "function_call", "call_id": "c1", "name": "zoomies.crop", "arguments": #"{"x":5}"#]],
+            ["type": "response.output_item.done", "item": ["type": "function_call", "call_id": "c1", "name": "pinpoint.crop", "arguments": #"{"x":5}"#]],
             ["type": "response.completed", "response": ["output": [["type": "function_call", "call_id": "c1", "name": "crop", "arguments": "{}"]]]],
         ]
         let r = try ChatGPTPlanClient.collect(events: events)
@@ -221,6 +221,6 @@ final class NotesPanelTests: XCTestCase {
         // Sample for eyeballing the layout.
         let flat = Renderer.flatten(base: base, annotations: [a, pin], crop: nil)!
         try? ImageFiles.write(Renderer.withNotesPanel(flat, annotations: [a, pin]),
-                              to: FileManager.default.temporaryDirectory.appendingPathComponent("zoomies-notes-panel-sample.png"))
+                              to: FileManager.default.temporaryDirectory.appendingPathComponent("pinpoint-notes-panel-sample.png"))
     }
 }

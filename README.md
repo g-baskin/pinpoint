@@ -1,26 +1,24 @@
 # Pinpoint
 
-(Project folder and code name: Zoomies.)
-
 Your own screenshot and markup tool for macOS, with a built-in AI agent. Native Swift, so it's fast and small. No subscription.
 
 ## Build & run
 
 ```bash
-cd ~/Projects/Zoomies
+cd ~/Projects/pinpoint
 scripts/build-app.sh            # -> build/Pinpoint.app
 open build/Pinpoint.app
 scripts/build-app.sh --install  # optional: copies it to ~/Applications
 swift test                      # core test suite
 ```
 
-On first launch, macOS asks for **Screen Recording** permission (System Settings → Privacy & Security → Screen & System Audio Recording). Turn on Zoomies, then quit and reopen it.
-Ad-hoc signed builds can lose this permission when you rebuild. If captures stop working after a rebuild, toggle Zoomies off and on again in that same settings pane.
+On first launch, macOS asks for **Screen Recording** permission (System Settings → Privacy & Security → Screen & System Audio Recording). Turn on Pinpoint, then quit and reopen it.
+Ad-hoc signed builds can lose this permission when you rebuild. If captures stop working after a rebuild, toggle Pinpoint off and on again in that same settings pane.
 
 ## Using it
 
-Zoomies is one app with one window, like Snagit's editor. A Capture button sits at the top left, with the tools next to it. On the right is a sidebar with **Properties** (Quick Styles, colour, fill, width, size, shadow) and **Assistant** (AI) tabs. Along the bottom is a tray of recent captures with search and zoom (Fit / 100% / pinch). The **Editor / Library** switch at the top swaps the canvas for the full library grid.
-Close the window and Zoomies stays in the menu bar (camera icon), ready for the shortcuts.
+Pinpoint is one app with one window, like Snagit's editor. A Capture button sits at the top left, with the tools next to it. On the right is a sidebar with **Properties** (Quick Styles, colour, fill, width, size, shadow) and **Assistant** (AI) tabs. Along the bottom is a tray of recent captures with search and zoom (Fit / 100% / pinch). The **Editor / Library** switch at the top swaps the canvas for the full library grid.
+Close the window and Pinpoint stays in the menu bar (camera icon), ready for the shortcuts.
 
 | Shortcut | Action |
 |---|---|
@@ -39,8 +37,8 @@ Hold Shift for squares and 45° lines. Drag the round handles to resize. Arrow k
 - *Summarize* and *Name & tag*: uses your chosen AI.
 - Prompt box: plain-English edits like "point an arrow at the Save button", "number the steps in the sidebar", "crop to the dialog" or "blur the faces". The agent sees the screenshot and the OCR text, then edits the image with tools. Each run can be undone in one step.
 
-**Library**: every capture is saved in `~/Pictures/Zoomies/<id>/` (original, annotated render, thumbnail, metadata).
-You can search names, tags and the text inside screenshots. ⌘-click captures in order, then **Make Guide** writes a step-by-step guide (`guide.md` + `guide.html` + images) to `~/Pictures/Zoomies/Guides/`.
+**Library**: every capture is saved in `~/Pictures/Pinpoint/<id>/` (original, annotated render, thumbnail, metadata).
+You can search names, tags and the text inside screenshots. ⌘-click captures in order, then **Make Guide** writes a step-by-step guide (`guide.md` + `guide.html` + images) to `~/Pictures/Pinpoint/Guides/`.
 **Auto-name** gives un-named captures AI names and tags.
 
 ## AI providers (Settings → AI provider)
@@ -52,7 +50,7 @@ For agent edits, use a model that supports both images and tool calling.
 ## Architecture
 
 ```
-Sources/ZoomiesCore   (no UI, unit-tested)
+Sources/PinpointCore  (no UI, unit-tested)
   Annotation.swift    markup model (image-pixel coords, top-left origin)
   Renderer.swift      draws markup for both the live canvas and exports
   Analyzer.swift      Apple Vision OCR, sensitive-text boxes, face detection
@@ -61,7 +59,7 @@ Sources/ZoomiesCore   (no UI, unit-tested)
   LLM.swift           provider-neutral chat + Anthropic and OpenAI-compatible clients
   Agent.swift         tool definitions, AgentToolbox (pure), EditAgent loop
   Assistants.swift    summarize / name & tag / guide writing, guide export, Keychain
-Sources/Zoomies       (AppKit + SwiftUI app)
+Sources/Pinpoint      (AppKit + SwiftUI app)
   AppDelegate         menu bar, hotkeys, capture flow, windows
   CaptureService      ScreenCaptureKit screen/window capture
   SelectionOverlay    frozen-screen area/window picker
@@ -70,7 +68,7 @@ Sources/Zoomies       (AppKit + SwiftUI app)
   LibraryView, SettingsView
 ```
 
-**Adding an agent tool:** add a `ToolSpec` to `AgentToolbox.tools`, handle it in `execute`, and add a test in `Tests/ZoomiesCoreTests`.
+**Adding an agent tool:** add a `ToolSpec` to `AgentToolbox.tools`, handle it in `execute`, and add a test in `Tests/PinpointCoreTests`.
 **Adding a markup kind:** add a case to `AnnotationKind`, draw it in `Renderer.draw`, and add a `Tool` case in `EditorModel.swift`.
 
 Built from scratch on public Apple frameworks. It contains no TechSmith code or assets.
@@ -79,4 +77,4 @@ Built from scratch on public Apple frameworks. It contains no TechSmith code or 
 
 Copyright 2026 AutomationGod. Licensed under the [Apache License 2.0](LICENSE).
 
-If you redistribute Zoomies or build on it, keep the [`NOTICE`](NOTICE) file crediting the original author, and mark the files you changed. Contributions are welcome: anything you submit is accepted under the same license (Apache 2.0, section 5).
+If you redistribute Pinpoint or build on it, keep the [`NOTICE`](NOTICE) file crediting the original author, and mark the files you changed. Contributions are welcome: anything you submit is accepted under the same license (Apache 2.0, section 5).

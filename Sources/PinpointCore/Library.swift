@@ -2,7 +2,7 @@ import CoreGraphics
 import Foundation
 import UniformTypeIdentifiers
 
-/// Everything Zoomies knows about one capture. Stored as meta.json next to the images.
+/// Everything Pinpoint knows about one capture. Stored as meta.json next to the images.
 public struct CaptureMeta: Codable, Identifiable, Equatable, Sendable {
     public var id: UUID
     public var created: Date
@@ -34,7 +34,7 @@ public final class LibraryStore: @unchecked Sendable {
     private let lock = NSLock()
 
     public static var defaultRoot: URL {
-        FileManager.default.homeDirectoryForCurrentUser.appendingPathComponent("Pictures/Zoomies", isDirectory: true)
+        FileManager.default.homeDirectoryForCurrentUser.appendingPathComponent("Pictures/Pinpoint", isDirectory: true)
     }
 
     public init(root: URL = LibraryStore.defaultRoot) {
