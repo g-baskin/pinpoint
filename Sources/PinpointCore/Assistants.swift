@@ -153,9 +153,9 @@ public enum Markdown {
 // MARK: - Keychain
 
 public enum Keychain {
-    static let service = "app.zoomies.apikeys"
+    public static let service = "app.pinpoint.apikeys"
 
-    public static func get(_ account: String) -> String {
+    public static func get(_ account: String, service: String = Keychain.service) -> String {
         let q: [String: Any] = [kSecClass as String: kSecClassGenericPassword, kSecAttrService as String: service,
                                 kSecAttrAccount as String: account, kSecReturnData as String: true, kSecMatchLimit as String: kSecMatchLimitOne]
         var out: CFTypeRef?
@@ -164,7 +164,7 @@ public enum Keychain {
     }
 
     @discardableResult
-    public static func set(_ value: String, for account: String) -> Bool {
+    public static func set(_ value: String, for account: String, service: String = Keychain.service) -> Bool {
         let base: [String: Any] = [kSecClass as String: kSecClassGenericPassword, kSecAttrService as String: service, kSecAttrAccount as String: account]
         SecItemDelete(base as CFDictionary)
         guard !value.isEmpty else { return true }

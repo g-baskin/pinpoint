@@ -1,7 +1,7 @@
 import AppKit
 import Carbon
 import SwiftUI
-import ZoomiesCore
+import PinpointCore
 
 enum CaptureMode { case area, window, screen, allScreens }
 
@@ -176,7 +176,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         let settings = AppSettings.shared
         do {
             let meta = try library.create(image: image, name: "\(app ?? "Screen") \(Date().formatted(date: .abbreviated, time: .shortened))", sourceApp: app)
-            NotificationCenter.default.post(name: .zoomiesLibraryChanged, object: nil)
+            NotificationCenter.default.post(name: .pinpointLibraryChanged, object: nil)
             if settings.copyAfterCapture, let d = ImageFiles.encode(image) {
                 NSPasteboard.general.clearContents(); NSPasteboard.general.setData(d, forType: .png)
             }
@@ -218,7 +218,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
                 } else {
                     try? store.writeMeta(final)
                 }
-                NotificationCenter.default.post(name: .zoomiesLibraryChanged, object: nil)
+                NotificationCenter.default.post(name: .pinpointLibraryChanged, object: nil)
             }
         }
     }
@@ -263,7 +263,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
                 postProcess(meta: meta, image: img)
             }
         }
-        NotificationCenter.default.post(name: .zoomiesLibraryChanged, object: nil)
+        NotificationCenter.default.post(name: .pinpointLibraryChanged, object: nil)
     }
 
     func showLibrary() { showMain(mode: .library) }

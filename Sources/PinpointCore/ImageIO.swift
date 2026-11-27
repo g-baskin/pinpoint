@@ -20,7 +20,7 @@ public enum ImageFiles {
 
     public static func write(_ image: CGImage, to url: URL, type: UTType = .png, quality: Double = 0.9) throws {
         guard let data = encode(image, type: type, quality: quality) else {
-            throw NSError(domain: "Zoomies", code: 1, userInfo: [NSLocalizedDescriptionKey: "Could not encode image"])
+            throw NSError(domain: "Pinpoint", code: 1, userInfo: [NSLocalizedDescriptionKey: "Could not encode image"])
         }
         try data.write(to: url, options: .atomic)
     }

@@ -1,5 +1,5 @@
 import AppKit
-import ZoomiesCore
+import PinpointCore
 
 enum SelectionResult {
     case region(CGRect)          // pixels in the frozen screen image

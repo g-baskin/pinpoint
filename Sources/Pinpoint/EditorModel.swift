@@ -1,7 +1,7 @@
 import AppKit
 import Combine
 import UniformTypeIdentifiers
-import ZoomiesCore
+import PinpointCore
 
 enum Tool: String, CaseIterable, Identifiable {
     case select, arrow, line, rectangle, ellipse, text, callout, highlight, step, note, blur, redact, crop
@@ -250,7 +250,7 @@ final class EditorModel: ObservableObject {
         do {
             try library.save(meta, rendered: flattened())
             dirty = false
-            NotificationCenter.default.post(name: .zoomiesLibraryChanged, object: nil)
+            NotificationCenter.default.post(name: .pinpointLibraryChanged, object: nil)
         } catch { fail("Save failed: \(error.localizedDescription)") }
     }
 
@@ -376,5 +376,5 @@ final class EditorModel: ObservableObject {
 }
 
 extension Notification.Name {
-    static let zoomiesLibraryChanged = Notification.Name("zoomiesLibraryChanged")
+    static let pinpointLibraryChanged = Notification.Name("pinpointLibraryChanged")
 }

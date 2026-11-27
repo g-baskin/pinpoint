@@ -1,6 +1,6 @@
 import AppKit
 import ScreenCaptureKit
-import ZoomiesCore
+import PinpointCore
 
 struct WindowInfo {
     let id: CGWindowID

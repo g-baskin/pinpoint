@@ -1,6 +1,6 @@
 import AppKit
 import SwiftUI
-import ZoomiesCore
+import PinpointCore
 
 /// "Add more context?" — appears next to new markup. Type right away, say "yes" and talk, or hold ⌥ / the mic to talk.
 struct NotePromptView: View {

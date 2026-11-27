@@ -1,7 +1,7 @@
 import AppKit
 import Combine
 import SwiftUI
-import ZoomiesCore
+import PinpointCore
 
 /// The drawing surface. Shows the capture fitted to the view and handles all mouse/keyboard editing.
 final class CanvasView: NSView {

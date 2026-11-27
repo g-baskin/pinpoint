@@ -1,7 +1,7 @@
 import AppKit
 import CoreGraphics
 import XCTest
-@testable import ZoomiesCore
+@testable import PinpointCore
 
 final class SensitiveTests: XCTestCase {
     func testFindsCommonSecretsAndPII() {
@@ -95,7 +95,7 @@ final class AnalyzerTests: XCTestCase {
 
 final class LibraryTests: XCTestCase {
     func testCreateSaveLoadSearch() throws {
-        let dir = FileManager.default.temporaryDirectory.appendingPathComponent("zoomies-test-\(UUID().uuidString)")
+        let dir = FileManager.default.temporaryDirectory.appendingPathComponent("pinpoint-test-\(UUID().uuidString)")
         defer { try? FileManager.default.removeItem(at: dir) }
         let store = LibraryStore(root: dir)
         var m = try store.create(image: makeImage(), name: "First", sourceApp: "Safari")
@@ -250,7 +250,7 @@ final class ProviderWireTests: XCTestCase {
 
 final class GuideTests: XCTestCase {
     func testWritesGuideWithAllImages() throws {
-        let dir = FileManager.default.temporaryDirectory.appendingPathComponent("zoomies-guide-\(UUID().uuidString)")
+        let dir = FileManager.default.temporaryDirectory.appendingPathComponent("pinpoint-guide-\(UUID().uuidString)")
         defer { try? FileManager.default.removeItem(at: dir) }
         let steps = [GuideStep(image: makeImage(), name: "Open", ocrText: ""), GuideStep(image: makeImage(), name: "Save", ocrText: "")]
         let folder = try GuideBuilder.write(markdown: "# T\n\n## Step 1: **Open**\n\n{{image 1}}\n", steps: steps, title: "T", to: dir)

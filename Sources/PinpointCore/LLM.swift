@@ -152,7 +152,7 @@ public struct OpenAICompatibleClient: LLMClient {
         if !apiKey.isEmpty { req.setValue("Bearer \(apiKey)", forHTTPHeaderField: "authorization") }
         if baseURL.host?.contains("openrouter.ai") == true {
             // Optional OpenRouter attribution headers.
-            req.setValue("https://github.com/zoomies-app", forHTTPHeaderField: "HTTP-Referer")
+            req.setValue("https://github.com/g-baskin/pinpoint", forHTTPHeaderField: "HTTP-Referer")
             req.setValue("Pinpoint", forHTTPHeaderField: "X-Title")
         }
         var msgs: [JSONValue] = []
