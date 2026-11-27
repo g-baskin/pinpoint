@@ -4,8 +4,11 @@ Your own screenshot and markup tool for macOS, with a built-in AI agent. Native 
 
 ## Build & run
 
+Requires macOS 14 or later and Swift 5.10 or later (Xcode, or Apple's Command Line Tools: `xcode-select --install`).
+
 ```bash
-cd ~/Projects/pinpoint
+git clone https://github.com/g-baskin/pinpoint.git
+cd pinpoint
 scripts/build-app.sh            # -> build/Pinpoint.app
 open build/Pinpoint.app
 scripts/build-app.sh --install  # optional: copies it to ~/Applications
@@ -14,6 +17,7 @@ swift test                      # core test suite
 
 On first launch, macOS asks for **Screen Recording** permission (System Settings → Privacy & Security → Screen & System Audio Recording). Turn on Pinpoint, then quit and reopen it.
 Ad-hoc signed builds can lose this permission when you rebuild. If captures stop working after a rebuild, toggle Pinpoint off and on again in that same settings pane.
+To avoid that, run `scripts/setup-signing.sh` once: it creates a local signing certificate that `build-app.sh` then uses for every build.
 
 ## Using it
 
@@ -25,6 +29,7 @@ Close the window and Pinpoint stays in the menu bar (camera icon), ready for the
 | ⌃⇧1 | Capture: drag an area, or click a window (Return = whole screen, Esc = cancel) |
 | ⌃⇧2 | Capture a window cleanly (includes parts hidden behind other windows) |
 | ⌃⇧3 | Capture the full screen under the mouse |
+| ⌃⇧4 | Capture all screens |
 | ⌃⇧L | Library |
 
 **Editor tools** (press the letter key): V select/move, A arrow, L line, R rectangle, E ellipse, T text, O callout, H highlight, N numbered step, B blur, X black-box redact, C crop.
@@ -43,7 +48,7 @@ You can search names, tags and the text inside screenshots. ⌘-click captures i
 
 ## AI providers (Settings → AI provider)
 
-Anthropic (Claude), OpenAI, Google Gemini, Ollama (local/offline, no key) or any OpenAI-compatible server (LM Studio, OpenRouter…).
+ChatGPT (sign in with your plan, no API key), ChatGPT via the Codex CLI, Anthropic (Claude), OpenAI API, OpenRouter, Google Gemini, Ollama (local/offline, no key) or any other OpenAI-compatible server (LM Studio…).
 Keys are stored in the macOS Keychain. Use **Fetch models** to pick from the provider's current list, and **Test connection** to check it works.
 For agent edits, use a model that supports both images and tool calling.
 
