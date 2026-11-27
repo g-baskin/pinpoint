@@ -1,4 +1,4 @@
-# 0004 Apache License 2.0
+# ADR-4 Apache License 2.0
 
 Status: accepted (2026-11-27)
 

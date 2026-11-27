@@ -58,7 +58,7 @@ Keys are stored in the macOS Keychain. Use **Fetch models** to pick a model and 
 Contributions are welcome. Work happens on the `dev` branch, so open pull requests against `dev`.
 
 - Run the tests with `swift test`. App logic lives in `Sources/PinpointCore` (unit-tested), and the AppKit/SwiftUI app in `Sources/Pinpoint`.
-- [`CONTEXT.md`](CONTEXT.md) defines the project's terms, and [`docs/adr/`](docs/adr/) records the key decisions.
+- Project docs live in [`library/`](library/): the [glossary](library/knowledge/private/glossary/glossary.md), [decision records](library/knowledge/private/architecture/) and in-depth guides.
 - **Adding an agent tool:** add a `ToolSpec` to `AgentToolbox.tools`, handle it in `execute`, and add a test in `Tests/PinpointCoreTests`.
 - **Adding a markup kind:** add a case to `AnnotationKind`, draw it in `Renderer.draw`, and add a `Tool` case in `EditorModel.swift`.
 

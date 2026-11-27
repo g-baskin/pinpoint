@@ -1,4 +1,4 @@
-# 0005 Only main and dev branches
+# ADR-5 Only main and dev branches
 
 Status: accepted (2026-11-27)
 

@@ -49,7 +49,7 @@ struct ExternalDictation: Equatable {
     }
 }
 
-/// Microphones (CoreAudio input devices) for Pinpoint' built-in dictation.
+/// Microphones (CoreAudio input devices) for Pinpoint's built-in dictation.
 enum AudioInputs {
     struct Device: Hashable, Identifiable { let id: AudioDeviceID; let uid: String; let name: String }
 

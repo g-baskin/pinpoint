@@ -1,4 +1,4 @@
-# 0002 Fixed identifiers for stored data
+# ADR-2 Fixed identifiers for stored data
 
 Status: accepted (2026-11-27)
 

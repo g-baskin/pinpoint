@@ -12,7 +12,7 @@ final class HotKeyCenter {
         installIfNeeded()
         handlers[id] = handler
         var ref: EventHotKeyRef?
-        let hkID = EventHotKeyID(signature: OSType(0x5A4F4F4D) /* 'ZOOM' */, id: id)
+        let hkID = EventHotKeyID(signature: OSType(0x504E5054) /* 'PNPT' */, id: id)
         let status = RegisterEventHotKey(UInt32(keyCode), UInt32(modifiers), hkID, GetApplicationEventTarget(), 0, &ref)
         if status == noErr { refs.append(ref) } else { NSLog("Pinpoint: hotkey \(id) unavailable (\(status))") }
     }

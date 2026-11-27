@@ -77,7 +77,7 @@ struct SettingsView: View {
                 Toggle("After drawing an arrow or shape, ask “Add more context?”", isOn: $settings.askForContext)
                 Picker("Dictation", selection: $settings.dictationSource) {
                     Text("Auto — use my dictation app if it's running").tag("auto")
-                    Text("Always Pinpoint' built-in dictation").tag("builtin")
+                    Text("Always Pinpoint's built-in dictation").tag("builtin")
                 }
                 if let ext = ExternalDictation.running(), settings.dictationSource != "builtin" {
                     Label("\(ext.name) is running — \(ext.hint.prefix(1).lowercased() + ext.hint.dropFirst()). It types straight into the note box.",

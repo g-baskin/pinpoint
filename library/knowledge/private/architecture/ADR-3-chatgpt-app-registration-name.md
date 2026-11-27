@@ -1,4 +1,4 @@
-# 0003 ChatGPT sign-in registers the app as "Pinpoint"
+# ADR-3 ChatGPT sign-in registers the app as "Pinpoint"
 
 Status: accepted (2026-11-27)
 
