@@ -20,7 +20,12 @@ Every update that reaches users ships as a GitHub release and is recorded in `CH
 - **With each change:** add an entry under `## [Unreleased]` in `CHANGELOG.md` (Keep a Changelog sections, plain words) in the same commit as the code.
 - **After committing user-facing changes to `dev`:** ask whether to release now. Merging into `main` still needs the user's explicit yes.
 - **Whenever `dev` is merged into `main`, cut a release in the same step.** Never leave `main` ahead of the latest release. Follow README → Releasing:
-  1. Pick the version by semver from the Unreleased entries: a fix only is a patch bump, an added feature is a minor bump. Set `CFBundleShortVersionString` and increase `CFBundleVersion` in `Resources/Info.plist`. Edit the two values in place; PlistBuddy reformats the whole file.
+  1. Pick the version from the size of the Unreleased changes, using the owner's scheme (not standard semver). Say which size you picked when asking to release.
+     - **Small** (fixes, small additions): add 1 to the last number. 0.2.1 → 0.2.2 → 0.2.3.
+     - **Medium:** jump the last number to 5; if it's already 5 or more, go to the next 0.x.0. 0.2.3 → 0.2.5, then 0.2.5 → 0.3.0.
+     - **Big:** go to the next 0.x.0. 0.2.1 → 0.3.0, then 0.3.0 → 0.4.0.
+
+     Set `CFBundleShortVersionString` and increase `CFBundleVersion` in `Resources/Info.plist`. Edit the two values in place; PlistBuddy reformats the whole file.
   2. Move the Unreleased entries under `## [x.y.z] - YYYY-MM-DD` with a one-paragraph summary, leave `## [Unreleased]` empty, and update the compare links at the bottom.
   3. Run `scripts/check.sh`, commit to `dev`, push, fast-forward `main` to `dev` and push `main`.
   4. On `main`, run `scripts/release.sh`, then `gh release create vx.y.z dist/Pinpoint-x.y.z.zip dist/Pinpoint-x.y.z.zip.sha256 --target main --title "Pinpoint x.y.z" --notes-file <that version's CHANGELOG section>`.
