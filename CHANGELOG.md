@@ -7,6 +7,10 @@ and versions go up by the size of the release: small changes add 1 to the last n
 
 ## [Unreleased]
 
+## [0.2.3] - 2026-11-27
+
+Small update that makes problems easier to report: the README explains how to send a bug report with Pinpoint's log and a crash report, and Pinpoint's log messages are tagged so they're easy to find. Download `Pinpoint-0.2.3.zip` from the release page and install it over 0.2.2; your permission, settings, keys and captures carry over.
+
 ### Added
 
 - **Reporting a problem.** The README explains how to report a bug, copy Pinpoint's log and attach a crash report, and new GitHub issues get a bug-report form asking for those.
@@ -101,7 +105,8 @@ The first public release of Pinpoint: a native macOS screenshot and markup app w
 - ChatGPT sign-in no longer shares state unsafely between threads while it waits for the browser callback or refreshes a token.
 - Reading microphone names for built-in dictation no longer passes an unsafe pointer to CoreAudio.
 
-[Unreleased]: https://github.com/g-baskin/pinpoint/compare/v0.2.2...dev
+[Unreleased]: https://github.com/g-baskin/pinpoint/compare/v0.2.3...dev
+[0.2.3]: https://github.com/g-baskin/pinpoint/compare/v0.2.2...v0.2.3
 [0.2.2]: https://github.com/g-baskin/pinpoint/compare/v0.2.1...v0.2.2
 [0.2.1]: https://github.com/g-baskin/pinpoint/compare/v0.2.0...v0.2.1
 [0.2.0]: https://github.com/g-baskin/pinpoint/compare/v0.1.0...v0.2.0
