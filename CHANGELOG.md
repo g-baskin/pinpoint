@@ -7,6 +7,10 @@ and versions go up by the size of the release: small changes add 1 to the last n
 
 ## [Unreleased]
 
+## [0.2.2] - 2026-11-27
+
+Small wording update: Pinpoint's messages use broad terms such as "your coding CLI" instead of naming other apps. Download `Pinpoint-0.2.2.zip` from the release page and install it over 0.2.1; your permission, settings, keys and captures carry over.
+
 ### Changed
 
 - Pinpoint's messages no longer name other apps. Copy File Path now says "Paste it into your coding CLI", its Handoff menu item reads **Copy file path (for a coding CLI)**, and the "port 1455 is busy" sign-in error says another app may have a sign-in open.
@@ -85,7 +89,8 @@ The first public release of Pinpoint: a native macOS screenshot and markup app w
 - ChatGPT sign-in no longer shares state unsafely between threads while it waits for the browser callback or refreshes a token.
 - Reading microphone names for built-in dictation no longer passes an unsafe pointer to CoreAudio.
 
-[Unreleased]: https://github.com/g-baskin/pinpoint/compare/v0.2.1...dev
+[Unreleased]: https://github.com/g-baskin/pinpoint/compare/v0.2.2...dev
+[0.2.2]: https://github.com/g-baskin/pinpoint/compare/v0.2.1...v0.2.2
 [0.2.1]: https://github.com/g-baskin/pinpoint/compare/v0.2.0...v0.2.1
 [0.2.0]: https://github.com/g-baskin/pinpoint/compare/v0.1.0...v0.2.0
 [0.1.0]: https://github.com/g-baskin/pinpoint/releases/tag/v0.1.0
