@@ -13,6 +13,19 @@ This overrides the feature-branch workflow in parent AGENTS.md files for this re
 - Run the tests and lint before committing. Ask before each commit and push to `dev`.
 - Merge `dev` into `main` only when the user explicitly says so.
 
+## Releases and the changelog
+
+Every update that reaches users ships as a GitHub release and is recorded in `CHANGELOG.md`.
+
+- **With each change:** add an entry under `## [Unreleased]` in `CHANGELOG.md` (Keep a Changelog sections, plain words) in the same commit as the code.
+- **After committing user-facing changes to `dev`:** ask whether to release now. Merging into `main` still needs the user's explicit yes.
+- **Whenever `dev` is merged into `main`, cut a release in the same step.** Never leave `main` ahead of the latest release. Follow README → Releasing:
+  1. Pick the version by semver from the Unreleased entries: a fix only is a patch bump, an added feature is a minor bump. Set `CFBundleShortVersionString` and increase `CFBundleVersion` in `Resources/Info.plist`. Edit the two values in place; PlistBuddy reformats the whole file.
+  2. Move the Unreleased entries under `## [x.y.z] - YYYY-MM-DD` with a one-paragraph summary, leave `## [Unreleased]` empty, and update the compare links at the bottom.
+  3. Run `scripts/check.sh`, commit to `dev`, push, fast-forward `main` to `dev` and push `main`.
+  4. On `main`, run `scripts/release.sh`, then `gh release create vx.y.z dist/Pinpoint-x.y.z.zip dist/Pinpoint-x.y.z.zip.sha256 --target main --title "Pinpoint x.y.z" --notes-file <that version's CHANGELOG section>`.
+  5. Verify the release is Latest with both files attached, switch back to `dev` and confirm it's level with `origin/dev`.
+
 ## Drone routing
 
 Docs live in `library/` (Library Schema v2). Send each kind of work to its Wasp drone (`~/.gg/agents/<name>.md`, which loads its Stinger skill):
