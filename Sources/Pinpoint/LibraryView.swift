@@ -49,6 +49,13 @@ final class LibraryModel: ObservableObject {
         status = "Copied."
     }
 
+    /// Copies the image's file path as text, for pasting into a terminal agent such as the GG Coder CLI.
+    func copyPath(_ id: UUID) {
+        NSPasteboard.general.clearContents()
+        NSPasteboard.general.setString(store.bestURL(id).path, forType: .string)
+        status = "Copied the file path."
+    }
+
     func delete(_ ids: [UUID]) {
         var failed: [String] = []
         for id in ids {
@@ -188,6 +195,7 @@ struct LibraryView: View {
         .contextMenu {
             Button("Open in Editor") { open(m.id) }
             Button("Copy Image") { model.copy(m.id) }
+            Button("Copy File Path") { model.copyPath(m.id) }
             Button("Show in Finder") { NSWorkspace.shared.activateFileViewerSelecting([model.store.folder(m.id)]) }
             Divider()
             Button("Move to Trash", role: .destructive) { model.delete(model.selection.contains(m.id) ? model.selection : [m.id]) }

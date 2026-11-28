@@ -122,6 +122,9 @@ final class LibraryTests: XCTestCase {
         XCTAssertEqual(LibraryStore.search(all, query: "invoice safari").map(\.name), ["First"])
         XCTAssertEqual(LibraryStore.search(all, query: "#billing").count, 1)
         XCTAssertNotNil(store.bestImage(m.id))
+        XCTAssertEqual(store.bestURL(m.id), store.renderedURL(m.id))
+        let plain = try XCTUnwrap(all.first { $0.name == "Second" })
+        XCTAssertEqual(store.bestURL(plain.id), store.originalURL(plain.id), "no markup saved yet: share the original")
         XCTAssertTrue(FileManager.default.fileExists(atPath: store.thumbURL(m.id).path))
     }
 }

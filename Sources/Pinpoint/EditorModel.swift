@@ -103,6 +103,15 @@ final class EditorModel: ObservableObject {
 
 
 
+    /// Saves, then copies the marked-up image's path as text so a terminal agent (such as the GG Coder CLI) can open it.
+    func copyFilePath() {
+        save()
+        guard !dirty else { return }   // save failed and already said why
+        NSPasteboard.general.clearContents()
+        NSPasteboard.general.setString(library.bestURL(meta.id).path, forType: .string)
+        info("Copied the image's file path. Paste it into a terminal agent such as the GG Coder CLI.")
+    }
+
     func exportHandoff() {
         save()
         guard let img = flattened() else { return }

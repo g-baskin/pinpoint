@@ -54,7 +54,7 @@ Private: `func card(_ m: CaptureMeta) -> some View` (`LibraryView.swift:163`).
 - The status line shows `model.status`, or the capture and selection counts when it is empty (`LibraryView.swift:155-159`).
 - Each card shows the cached thumbnail, the capture name, its created date and up to three `#tags`. A selected card gets an accent border and its selection number, which is its step order in a guide (`LibraryView.swift:163-184`).
 - Double-click calls `open(id)`; a single click calls `model.toggle` with `extend` true when Command or Shift is held (`LibraryView.swift:186-187`).
-- The context menu offers Open in Editor, Copy Image, Show in Finder and Move to Trash (the whole selection when the card is selected) (`LibraryView.swift:188-194`).
+- The context menu offers Open in Editor, Copy Image, Copy File Path, Show in Finder and Move to Trash (the whole selection when the card is selected) (`LibraryView.swift:188-194`).
 - Dragging a card provides the rendered image file if it exists, else the original (`LibraryView.swift:195-198`).
 
 ## Called by

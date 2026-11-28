@@ -143,6 +143,7 @@ struct EditorActions: View {
                 .help("Copy the image with all markup and a notes panel (⌘C) — paste it anywhere")
             Menu {
                 Button("Copy for AI agent (notes + image path)") { model.copyHandoff() }
+                Button("Copy file path (for terminal agents)") { model.copyFilePath() }
                 Button("Copy image with notes panel  (⌘C)") { model.copyImage(includeNotesPanel: true) }
                 Button("Copy image without notes panel") { model.copyImage(includeNotesPanel: false) }
                 Button("Export handoff folder…") { model.exportHandoff() }
@@ -386,6 +387,7 @@ struct TrayView: View {
                         .onTapGesture { ws.open(id: m.id) }
                         .contextMenu {
                             Button("Copy Image") { library.copy(m.id) }
+                            Button("Copy File Path") { library.copyPath(m.id) }
                             Button("Show in Finder") { NSWorkspace.shared.activateFileViewerSelecting([library.store.folder(m.id)]) }
                             Divider()
                             Button("Move to Trash", role: .destructive) { library.delete([m.id]); ws.closeIfDeleted() }

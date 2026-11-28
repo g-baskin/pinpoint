@@ -98,10 +98,12 @@ public final class LibraryStore: @unchecked Sendable {
 
     public func original(_ id: UUID) -> CGImage? { ImageFiles.load(originalURL(id)) }
 
-    /// The best image to share: the annotated render if there is one, else the original.
-    public func bestImage(_ id: UUID) -> CGImage? {
-        fm.fileExists(atPath: renderedURL(id).path) ? ImageFiles.load(renderedURL(id)) : original(id)
+    /// The best file to share: the annotated render if there is one, else the original.
+    public func bestURL(_ id: UUID) -> URL {
+        fm.fileExists(atPath: renderedURL(id).path) ? renderedURL(id) : originalURL(id)
     }
+
+    public func bestImage(_ id: UUID) -> CGImage? { ImageFiles.load(bestURL(id)) }
 
     @discardableResult
     public func delete(_ id: UUID) throws -> URL? {

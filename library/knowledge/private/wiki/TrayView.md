@@ -52,7 +52,7 @@ struct ZoomControls: View {
 
 ## Behaviour
 
-- Shows up to 150 filtered thumbnails, outlining the open capture; click opens it; the context menu offers Copy Image, Show in Finder and Move to Trash (`MainWindow.swift:373-396`).
+- Shows up to 150 filtered thumbnails, outlining the open capture; click opens it; the context menu offers Copy Image, Copy File Path, Show in Finder and Move to Trash (`MainWindow.swift:373-396`).
 - `ZoomControls`: zoom out and in by 1.25, percent label, Fit and 100% (`MainWindow.swift:404-417`).
 
 ## Called by

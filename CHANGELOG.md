@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- **Copy File Path.** Right-click a capture in the Library or the recent-captures strip, or open the editor's **Handoff** menu, and choose **Copy File Path** to copy where the image is saved as text. Paste it into a terminal coding agent, such as the GG Coder CLI, so it can open the image. The editor saves your markup first, so the path points at the marked-up version.
+
+### Tests
+
+- The library test now checks which file is shared: the marked-up image once saved, otherwise the original.
+
 ## [0.2.0] - 2026-11-27
 
 Adds scrolling capture: grab a whole sidebar or long page in one image by scrolling through it. Errors that used to fail silently now tell you what went wrong. Requires macOS 14 or later; download `Pinpoint-0.2.0.zip` from the release page (Apple silicon and Intel). It is still not notarized, so the first launch needs **Open Anyway** in System Settings → Privacy & Security; installing over 0.1.0 keeps your Screen Recording permission, settings, keys and captures.
