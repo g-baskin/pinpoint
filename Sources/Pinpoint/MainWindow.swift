@@ -83,6 +83,7 @@ struct TopBar: View {
                 Button("Window  ⌃⇧2") { AppDelegate.shared?.capture(.window) }
                 Button("Full Screen  ⌃⇧3") { AppDelegate.shared?.capture(.screen) }
                 Button("All Screens  ⌃⇧4") { AppDelegate.shared?.capture(.allScreens) }
+                Button("Scrolling  ⌃⇧5") { AppDelegate.shared?.capture(.scrolling) }
                 Divider()
                 Button("Open Image…") { AppDelegate.shared?.openImage() }
             } label: {

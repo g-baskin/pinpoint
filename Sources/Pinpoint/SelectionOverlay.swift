@@ -5,15 +5,17 @@ enum SelectionResult {
     case region(CGRect)          // pixels in the frozen screen image
     case window(WindowInfo, CGRect) // the window + its rect in frozen-image pixels
     case allScreens                 // every display stitched together
+    case scrolling(CGRect)          // pixels in the frozen screen image, for a scrolling capture
     case cancelled
 }
 
-/// Full-screen overlay over a frozen screenshot. Drag = region; click = window; edge/F/Return = whole screen; A = all screens; Esc or right-click = cancel.
+/// Full-screen overlay over a frozen screenshot. Drag = region; click = window; edge/F/Return = whole screen; A = all screens;
+/// S = scrolling capture of the next pick; Esc or right-click = cancel.
 final class SelectionOverlay: NSWindow {
     private var completion: ((SelectionResult) -> Void)?
     let targetScreen: NSScreen
 
-    init(screen: NSScreen, frozen: CGImage, windows: [WindowInfo], preferWindow: Bool, completion: @escaping (SelectionResult) -> Void) {
+    init(screen: NSScreen, frozen: CGImage, windows: [WindowInfo], preferWindow: Bool, scrolling: Bool = false, completion: @escaping (SelectionResult) -> Void) {
         self.completion = completion
         self.targetScreen = screen
         super.init(contentRect: screen.frame, styleMask: .borderless, backing: .buffered, defer: false)
@@ -25,7 +27,7 @@ final class SelectionOverlay: NSWindow {
         isReleasedWhenClosed = false
         collectionBehavior = [.canJoinAllSpaces, .fullScreenAuxiliary, .stationary]
         let view = SelectionView(frame: CGRect(origin: .zero, size: screen.frame.size), screen: screen, frozen: frozen,
-                                 windows: windows, preferWindow: preferWindow)
+                                 windows: windows, preferWindow: preferWindow, scrolling: scrolling)
         view.onFinish = { [weak self] r in self?.finish(r) }
         contentView = view
         setFrame(screen.frame, display: true)
@@ -65,9 +67,10 @@ private final class SelectionView: NSView {
     /// .part = a panel/toolbar/dialog inside a window found by smart selection (level i of n; 0 would be the whole window).
     private enum Hover { case window(WindowInfo, CGRect), part(WindowInfo, CGRect, Int, Int), screen }
     private enum ToolButton: CaseIterable {
-        case fullScreen, allScreens, cancel
+        case fullScreen, allScreens, scrolling, cancel
         var title: String {
             switch self {
+            case .scrolling: return "Scrolling  (S)"
             case .fullScreen: return "Full Screen  (F)"
             case .allScreens: return "All Screens  (A)"
             case .cancel: return "Cancel  (Esc / right-click)"
@@ -87,9 +90,12 @@ private final class SelectionView: NSView {
     private var levelOffset = 0          // 0 = smallest part under the mouse; scrolling up steps out
     private var lastLeaf: CGRect?
     private var scrollAccum: CGFloat = 0
+    /// The next pick starts a scrolling capture instead of a still one.
+    private var scrollMode: Bool
 
-    init(frame: CGRect, screen: NSScreen, frozen: CGImage, windows: [WindowInfo], preferWindow: Bool) {
+    init(frame: CGRect, screen: NSScreen, frozen: CGImage, windows: [WindowInfo], preferWindow: Bool, scrolling: Bool) {
         self.screen = screen; self.frozen = frozen; self.windows = windows; self.preferWindow = preferWindow
+        self.scrollMode = scrolling
         self.image = NSImage(cgImage: frozen, size: frame.size)
         self.pxScale = CGFloat(frozen.width) / frame.width
         super.init(frame: frame)
@@ -239,7 +245,11 @@ private final class SelectionView: NSView {
                                  : CGPoint(x: s.minX, y: s.minY > 30 ? s.minY - 28 : s.maxY + 6)
             drawLabel(label, at: at)
         }
-        if dragStart == nil {
+        if dragStart == nil && scrollMode {
+            drawLabel("Scrolling capture: click the part that scrolls (such as a sidebar) or drag an area, then scroll down slowly from the top · S to turn off",
+                      at: CGPoint(x: bounds.midX - 420, y: 14))
+            drawToolbar()
+        } else if dragStart == nil {
             drawLabel("Drag an area · Click a panel or window (scroll for bigger/smaller) · Edge = whole screen · Right-click to cancel     \(screenInfo)",
                       at: CGPoint(x: bounds.midX - 420, y: 14))
             drawToolbar()
@@ -256,7 +266,7 @@ private final class SelectionView: NSView {
 
     private func drawToolbar() {
         for (b, r) in toolbarRects() {
-            let hot = hoverButton == b
+            let hot = hoverButton == b || (b == .scrolling && scrollMode)
             (hot ? NSColor.systemBlue : NSColor.black.withAlphaComponent(0.78)).setFill()
             NSBezierPath(roundedRect: r, xRadius: 9, yRadius: 9).fill()
             NSColor.white.withAlphaComponent(0.25).setStroke()
@@ -300,10 +310,18 @@ private final class SelectionView: NSView {
 
     private func perform(_ b: ToolButton) {
         switch b {
-        case .fullScreen: onFinish?(.region(fullPixels))
+        case .fullScreen: pick(fullPixels)
         case .allScreens: onFinish?(.allScreens)
+        case .scrolling: toggleScrollMode()
         case .cancel: onFinish?(.cancelled)
         }
+    }
+
+    private func toggleScrollMode() { scrollMode.toggle(); needsDisplay = true }
+
+    /// Reports a picked area as a still capture, or as the area to follow in scrolling mode.
+    private func pick(_ r: CGRect, window w: WindowInfo? = nil) {
+        if scrollMode { onFinish?(.scrolling(r)) } else if let w { onFinish?(.window(w, r)) } else { onFinish?(.region(r)) }
     }
 
     override func mouseMoved(with event: NSEvent) {
@@ -342,21 +360,22 @@ private final class SelectionView: NSView {
         if pressedButton { pressedButton = false; return }
         guard dragStart != nil else { return }
         if let r = dragRect, Self.isUsable(r), r.width >= 4, r.height >= 4 {
-            onFinish?(.region(toPixels(r)))
+            pick(toPixels(r))
             return
         }
         switch hoverAt(clampToBounds(convert(event.locationInWindow, from: nil))) {
-        case .window(let w, let r)?: onFinish?(.window(w, toPixels(r)))
-        case .part(_, let r, _, _)?: onFinish?(.region(toPixels(r)))
-        default: onFinish?(.region(fullPixels))
+        case .window(let w, let r)?: pick(toPixels(r), window: w)
+        case .part(_, let r, _, _)?: pick(toPixels(r))
+        default: pick(fullPixels)
         }
     }
 
     override func keyDown(with event: NSEvent) {
         switch event.keyCode {
         case 53: onFinish?(.cancelled)                       // Esc
-        case 36, 76, 3: onFinish?(.region(fullPixels))       // Return, Enter, F = this whole screen
+        case 36, 76, 3: pick(fullPixels)                     // Return, Enter, F = this whole screen
         case 0: onFinish?(.allScreens)                       // A = all screens
+        case 1: toggleScrollMode()                           // S = scrolling capture
         case 126: stepLevel(1)                               // ↑ bigger
         case 125: stepLevel(-1)                              // ↓ smaller
         default: super.keyDown(with: event)

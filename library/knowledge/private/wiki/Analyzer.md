@@ -55,7 +55,8 @@ public enum Analyzer {
 
 ## Behaviour
 
-- `analyze` runs `VNRecognizeTextRequest` (accurate, no language correction) and optionally `VNDetectFaceRectanglesRequest`, sorts lines top-to-bottom then left-to-right, and converts Vision's normalised boxes to top-left pixel rects (`Analyzer.swift:20-38`). Each line goes through `SensitiveDetector.findMatches`, with a per-match bounding box when Vision provides one (`:43-46`). Face boxes are padded (`:48-52`).
+- Images taller than `max(1200, 1.5 × width) + 200` px (scrolling captures) are read in strips of that height overlapping by 200 px; each strip keeps only lines, sensitive boxes and faces centred in its own half of the overlap, so nothing is reported twice. Covered by `testTallImageIsReadInStripsWithoutDuplicates`.
+- `analyze` (per strip, via `analyzeWhole`) runs `VNRecognizeTextRequest` (accurate, no language correction) and optionally `VNDetectFaceRectanglesRequest`, sorts lines top-to-bottom then left-to-right, and converts Vision's normalised boxes to top-left pixel rects (`Analyzer.swift:20-38`). Each line goes through `SensitiveDetector.findMatches`, with a per-match bounding box when Vision provides one (`:43-46`). Face boxes are padded (`:48-52`).
 - `find` is a case-insensitive substring match, falling back to word overlap (`Analyzer.swift:57-68`).
 - `redactions` pads each region by `max(3, height * 0.15)`, clips to the image and returns blur or redact markup items (`Analyzer.swift:71-80`).
 - `suggestedName` is the offline name: the first line with at least 4 letters, at most 80 chars and no sensitive match, else "<app> capture" or "Capture" (`Analyzer.swift:83-90`).

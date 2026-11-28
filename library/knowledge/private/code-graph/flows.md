@@ -1,4 +1,4 @@
-# Flows: Capture, Agent Edit and ChatGPT Sign-In
+# Flows: Capture, Scrolling Capture, Agent Edit and ChatGPT Sign-In
 
 > Category: Code Graph | Version: 1.0 | Date: November 2026 | Status: Active
 
@@ -15,7 +15,7 @@ For contributors debugging or extending a user journey; traces three journeys ca
 
 ## Why this exists
 
-The type and module graphs say what can call what. These sequence diagrams say what actually happens, in order, for the three journeys people most often ask about. Each was traced by reading the handlers, not by running the app; line numbers point at the code each step comes from. Solid arrows are calls, dashed arrows are returned values, `alt` blocks are mutually exclusive branches and `opt` blocks are optional steps. Nothing here runs in parallel unless it says `Task.detached`.
+The type and module graphs say what can call what. These sequence diagrams say what actually happens, in order, for the four journeys people most often ask about. Each was traced by reading the handlers, not by running the app; line numbers point at the code each step comes from. Solid arrows are calls, dashed arrows are returned values, `alt` blocks are mutually exclusive branches and `opt` blocks are optional steps. Nothing here runs in parallel unless it says `Task.detached`.
 
 ## 1. Capture: hotkey to saved library entry
 
@@ -96,19 +96,88 @@ Source ledger:
 
 | Step | Evidence |
 |---|---|
-| Hotkey registration and dispatch | `Sources/Pinpoint/AppDelegate.swift:25-30`, `Sources/Pinpoint/HotKeys.swift:11-17`, `:20-32` |
-| Re-entry guard, screen and window lists | `AppDelegate.swift:118-124` |
-| Screen and all-screens shortcut | `AppDelegate.swift:126-133` |
-| Freeze every display, build overlays | `AppDelegate.swift:135-146` |
-| Errors and permission help | `AppDelegate.swift:147-151`, `Sources/Pinpoint/CaptureService.swift:29-55` |
-| Selection handling | `AppDelegate.swift:155-172`, `Sources/Pinpoint/SelectionOverlay.swift:4-9` |
-| Save to library and notify | `AppDelegate.swift:174-179`, `Sources/PinpointCore/Library.swift:57-64`, `:78-86` |
-| Copy, open editor, auto-redact | `AppDelegate.swift:180-186`, `:190-194`, `:238-242`, `Sources/Pinpoint/MainWindow.swift:25-30`, `Sources/Pinpoint/EditorModel.swift:136-147`, `:271-285` |
-| Background naming and tagging | `AppDelegate.swift:197-231` |
+| Hotkey registration and dispatch | `Sources/Pinpoint/AppDelegate.swift:27-32`, `Sources/Pinpoint/HotKeys.swift:11-17`, `:20-32` |
+| Re-entry guard, screen and window lists | `AppDelegate.swift:123-131` |
+| Screen and all-screens shortcut | `AppDelegate.swift:134-141` |
+| Freeze every display, build overlays | `AppDelegate.swift:142-157` |
+| Errors and permission help | `AppDelegate.swift:158-162`, `Sources/Pinpoint/CaptureService.swift:29-55` |
+| Selection handling | `AppDelegate.swift:166-188`, `Sources/Pinpoint/SelectionOverlay.swift:4-10` |
+| Save to library and notify | `AppDelegate.swift:205-210`, `Sources/PinpointCore/Library.swift:57-64`, `:78-86` |
+| Copy, open editor, auto-redact | `AppDelegate.swift:211-215`, `:221-225`, `:269-273`, `Sources/Pinpoint/MainWindow.swift:25-30`, `Sources/Pinpoint/EditorModel.swift:136-147`, `:271-285` |
+| Background naming and tagging | `AppDelegate.swift:228-262` |
 
-Who hears `.pinpointLibraryChanged`: `LibraryModel` reloads its list (`Sources/Pinpoint/LibraryView.swift:19-21`) and `Workspace` closes the editor if its capture was deleted (`MainWindow.swift:20-22`, `:47-49`). A failure in `create` shows an alert and nothing is saved (`AppDelegate.swift:187`). In the background task, an OCR failure is still absorbed with `try?` (empty analysis); a failed `makeClient`, AI naming call or final `writeMeta` is logged with `NSLog` (`AppDelegate.swift:201-203`, `:210-214`, `:227-228`). The capture keeps its offline or placeholder name when AI naming fails. `openImage` collects unreadable or uncreatable files and shows one error alert listing them (`AppDelegate.swift:261-278`).
+Who hears `.pinpointLibraryChanged`: `LibraryModel` reloads its list (`Sources/Pinpoint/LibraryView.swift:19-21`) and `Workspace` closes the editor if its capture was deleted (`MainWindow.swift:20-22`, `:47-49`). A failure in `create` shows an alert and nothing is saved (`AppDelegate.swift:218`). In the background task, an OCR failure is still absorbed with `try?` (empty analysis); a failed `makeClient`, AI naming call or final `writeMeta` is logged with `NSLog` (`AppDelegate.swift:233`, `:245`, `:258-259`). The capture keeps its offline or placeholder name when AI naming fails. `openImage` collects unreadable or uncreatable files and shows one error alert listing them (`AppDelegate.swift:292-309`).
 
-## 2. Agent edit: prompt to undoable markup
+## 2. Scrolling capture: pick an area, scroll, stitch
+
+This diagram follows **Control+Shift+5** (or the Scrolling Capture menu item, or S in the overlay). It reuses the frozen-screen picker from flow 1; only the pick's result differs. After that the screen is live: Pinpoint grabs the picked rectangle about every 80 ms while the user scrolls by hand, and `ScrollStitcher` joins the frames off the main thread. No Accessibility permission is involved, because Pinpoint never scrolls for the user.
+
+```mermaid
+sequenceDiagram
+    actor user as User
+    participant appDelegate as AppDelegate
+    participant overlay as SelectionOverlay
+    participant session as ScrollCaptureSession
+    participant scKit as SCScreenshotManager
+    participant stitcher as ScrollStitcher
+    participant frontApp as Previous front app
+
+    user->>appDelegate: Control+Shift+5, capture(.scrolling)
+    alt scrollSession already exists
+        appDelegate->>session: finish() (shortcut acts as Done)
+    end
+    appDelegate->>overlay: init(..., scrolling: true) on every frozen screen
+    user->>overlay: drag an area, click a panel or window, or full screen
+    overlay-->>appDelegate: completion(.scrolling(rect px))
+    appDelegate->>appDelegate: startScrolling(rect in points, screen, frontRunning)
+    appDelegate->>session: init(screen, rect, scale, previousApp), start()
+    session->>scKit: captureImage(display filter without Pinpoint, sourceRect)
+    alt capture throws
+        session-->>appDelegate: error, permission help or error alert, capturing = false
+    end
+    scKit-->>session: first frame
+    session->>stitcher: add(first), .started
+    session->>session: show outline window and Done/Cancel panel
+    session->>frontApp: activate()
+    loop while running, about every 80 ms
+        user->>frontApp: scroll the page
+        session->>scKit: captureImage(same filter and sourceRect)
+        scKit-->>session: frame
+        session->>stitcher: Task.detached, add(frame)
+        stitcher-->>session: Step (added, unchanged, lostTrack, full)
+        session->>session: update height and hint in panel
+    end
+    alt Done, or Control+Shift+5 again
+        user->>session: finish()
+        session->>session: await loop end
+        session->>stitcher: makeImage()
+        stitcher-->>session: stitched CGImage
+        session-->>appDelegate: completion(image)
+        appDelegate->>appDelegate: finishCapture(image, app), as in flow 1
+    else Cancel
+        user->>session: cancel()
+        session-->>appDelegate: completion(nil), capturing = false
+    end
+```
+
+Source ledger:
+
+| Step | Evidence |
+|---|---|
+| Shortcut, menu items, Done-by-shortcut guard | `Sources/Pinpoint/AppDelegate.swift:31`, `:67`, `:95`, `:115`, `:123-126` |
+| Overlay in scrolling mode, S key, toolbar button | `Sources/Pinpoint/SelectionOverlay.swift:8`, `:18`, `:70-76`, `:93-94`, `:311-325`, `:378` |
+| Pixel rect to points, session start and errors | `AppDelegate.swift:184-203` |
+| First frame, filter without Pinpoint, `sourceRect` | `Sources/Pinpoint/ScrollCaptureSession.swift:34-49` |
+| Outline, panel, re-activate previous app | `ScrollCaptureSession.swift:50-53`, `:112-142` |
+| Capture loop and detached stitching | `ScrollCaptureSession.swift:54-68` |
+| Step messages | `ScrollCaptureSession.swift:91-104` |
+| Finish and cancel | `ScrollCaptureSession.swift:72-89`, `AppDelegate.swift:191-195` |
+| Matching and committing rows | `Sources/PinpointCore/ScrollStitcher.swift:46-99`, `:109-118` |
+| Final image with sticky footer | `ScrollStitcher.swift:101-107` |
+
+While a session is running, `capture(_:)` ignores every other capture request, so the stills modes wait until it ends (`AppDelegate.swift:124-125`). A frame that fails to capture pauses with a warning in the panel and the loop keeps trying (`ScrollCaptureSession.swift:62-65`). `lostTrack` leaves the stitched result as it was; scrolling back up to content the stitcher has already seen lets it pick up again.
+
+## 3. Agent edit: prompt to undoable markup
 
 The edit agent works on a copy of the editor state (`AgentState`) and the editor applies the result only after the run returns. If annotations or crop changed, it records one checkpoint first, so a single undo reverts the whole agent run. A thrown error or cancellation leaves the editor's markup untouched.
 
@@ -181,7 +250,7 @@ Source ledger:
 
 Cancellation: the stop button calls `cancelAI()` (`EditorModel.swift:361`), which cancels `agentTask`; the loop's `Task.checkCancellation()` throws `CancellationError`, which `runAI` swallows without logging an error. Name and tag changes from the agent are not part of the undo snapshot, which stores only `(annotations, crop)` (`EditorModel.swift:132-133`).
 
-## 3. ChatGPT sign-in to first request
+## 4. ChatGPT sign-in to first request
 
 Sign-in is OAuth authorization code with PKCE against `auth.openai.com`, using dynamic app registration under the name "Pinpoint" (ADR-3) and a one-shot HTTP listener on `127.0.0.1` for the redirect. Tokens and the registration are stored in the Keychain. The first model request then goes to `https://api.openai.com/v1/responses` with the access token, refreshing it when it is within a minute of expiry.
 
@@ -243,7 +312,7 @@ sequenceDiagram
     account->>api: GET /v1/models with Bearer token
     api-->>settingsView: model list, status shows count
 
-    Note over user,api: First AI request, for example the agent run in flow 2
+    Note over user,api: First AI request, for example the agent run in flow 3
     planClient->>account: autoModel(fast, excluding, refresh) when model is auto
     account-->>planClient: ModelPicker.best(cached list)
     planClient->>account: accessToken()

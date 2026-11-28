@@ -30,7 +30,7 @@ Arrow meanings, using Mermaid class notation:
 
 ## Diagram 1: capture data, editor and app ownership
 
-The app delegate owns the single `LibraryStore` and the `Workspace`, which in turn owns the library list model and at most one open `EditorModel`. The editor copies a capture's annotations out of `CaptureMeta`, edits them with an undo stack, and writes them back on save. 20 classes, 25 relationships.
+The app delegate owns the single `LibraryStore` and the `Workspace`, which in turn owns the library list model and at most one open `EditorModel`. The editor copies a capture's annotations out of `CaptureMeta`, edits them with an undo stack, and writes them back on save. A scrolling capture is a short-lived `ScrollCaptureSession` the delegate holds while it runs, which feeds frames to a core `ScrollStitcher`. 23 classes, 30 relationships.
 
 ```mermaid
 classDiagram
@@ -40,7 +40,9 @@ classDiagram
         +workspace: Workspace
         -mainWindow: MainWindowController?
         -overlays: SelectionOverlay[]
+        -scrollSession: ScrollCaptureSession?
         +capture(mode)
+        -startScrolling(rect, screen, app, frontRunning)
         -finishCapture(image, app)
         -postProcess(meta, image)
     }
@@ -165,6 +167,7 @@ classDiagram
         region
         window
         allScreens
+        scrolling
         cancelled
     }
     class WindowInfo {
@@ -177,6 +180,31 @@ classDiagram
         +captureScreen(screen) CGImage
         +captureWindow(id, scale) CGImage
         +visibleWindows() WindowInfo[]
+        +displayID(screen) CGDirectDisplayID
+    }
+    class ScrollCaptureSession {
+        -rect: CGRect
+        -previousApp: NSRunningApplication?
+        -stitcher: ScrollStitcher
+        -loop: Task?
+        +start()
+        +finish()
+        +cancel()
+    }
+    class ScrollStitcher {
+        -options: Options
+        -canvas: UInt8[]
+        +height: Int
+        +add(image) Step
+        +makeImage() CGImage?
+    }
+    class Step {
+        <<enumeration>>
+        started
+        unchanged
+        added
+        lostTrack
+        full
     }
 
     AppDelegate *-- LibraryStore : library
@@ -204,11 +232,16 @@ classDiagram
     Tool ..> AnnotationKind : kind
     SelectionOverlay ..> SelectionResult : completion
     SelectionResult --> WindowInfo : window case
+    AppDelegate o-- ScrollCaptureSession : scrollSession
+    ScrollCaptureSession *-- ScrollStitcher : stitcher
+    ScrollCaptureSession ..> CaptureService : displayID()
+    ScrollCaptureSession ..> Step : show(step)
+    ScrollStitcher ..> Step : add()
 ```
 
-Sources: `AppDelegate` at `Sources/Pinpoint/AppDelegate.swift:9-18`; `Workspace` and `MainWindowController` at `Sources/Pinpoint/MainWindow.swift:7-13` and `:420-421`; `LibraryModel` at `Sources/Pinpoint/LibraryView.swift:6-8`; `EditorModel`, `Tool`, `LogEntry` at `Sources/Pinpoint/EditorModel.swift:6-70` and `:127-134`; `CanvasView` and `ZoomController` at `Sources/Pinpoint/CanvasView.swift:7-8` and `:293`; `QuickStyle` at `Sources/Pinpoint/QuickStyles.swift:5-7`; `SelectionResult` and `SelectionOverlay` at `Sources/Pinpoint/SelectionOverlay.swift:4-14`; `WindowInfo` and `CaptureService` at `Sources/Pinpoint/CaptureService.swift:5-25`; `CaptureMeta` and `LibraryStore` at `Sources/PinpointCore/Library.swift:6-31`; `RGBA`, `AnnotationKind`, `Annotation` at `Sources/PinpointCore/Annotation.swift:5-58`; `Analysis` at `Sources/PinpointCore/Analyzer.swift:11-13`.
+Sources: `AppDelegate` at `Sources/Pinpoint/AppDelegate.swift:9-19`; `Workspace` and `MainWindowController` at `Sources/Pinpoint/MainWindow.swift:7-13` and `:420-421`; `LibraryModel` at `Sources/Pinpoint/LibraryView.swift:6-8`; `EditorModel`, `Tool`, `LogEntry` at `Sources/Pinpoint/EditorModel.swift:6-70` and `:127-134`; `CanvasView` and `ZoomController` at `Sources/Pinpoint/CanvasView.swift:7-8` and `:293`; `QuickStyle` at `Sources/Pinpoint/QuickStyles.swift:5-7`; `SelectionResult` and `SelectionOverlay` at `Sources/Pinpoint/SelectionOverlay.swift:4-16`; `ScrollCaptureSession` at `Sources/Pinpoint/ScrollCaptureSession.swift:8-31`; `ScrollStitcher` and its nested `Step` and `Options` at `Sources/PinpointCore/ScrollStitcher.swift:6-46`; `WindowInfo` and `CaptureService` at `Sources/Pinpoint/CaptureService.swift:5-25`; `CaptureMeta` and `LibraryStore` at `Sources/PinpointCore/Library.swift:6-31`; `RGBA`, `AnnotationKind`, `Annotation` at `Sources/PinpointCore/Annotation.swift:5-58`; `Analysis` at `Sources/PinpointCore/Analyzer.swift:11-13`.
 
-`Tool` is an app-side editor tool, not part of the stored format. Its `kind` property maps to `AnnotationKind` by raw value (`EditorModel.swift:34`), so `select`, `crop` map to `nil` and every other tool maps to the kind with the same name. `CaptureMeta` is what `LibraryStore` encodes to `meta.json` (`Library.swift:78-81`); the editor's undo stack holds `([Annotation], CGRect?)` pairs (`EditorModel.swift:132-133`) and is never persisted.
+`Tool` is an app-side editor tool, not part of the stored format. Its `kind` property maps to `AnnotationKind` by raw value (`EditorModel.swift:34`), so `select`, `crop` map to `nil` and every other tool maps to the kind with the same name. `CaptureMeta` is what `LibraryStore` encodes to `meta.json` (`Library.swift:78-81`); the editor's undo stack holds `([Annotation], CGRect?)` pairs (`EditorModel.swift:132-133`) and is never persisted. `Step` is `ScrollStitcher.Step`, nested in the stitcher; `ScrollStitcher` is `@unchecked Sendable` so the session can call `add` from a detached task, and only one task calls it at a time (`ScrollCaptureSession.swift:55-60`).
 
 ## Diagram 2: AI providers, the edit agent and analysis
 

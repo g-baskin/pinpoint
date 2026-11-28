@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- **Scrolling capture.** Press ⌃⇧5 (or choose **Scrolling Capture** from the menu bar icon or the File menu, **Scrolling** from the Capture button's menu in the Pinpoint window, or press S or click **Scrolling (S)** in the capture overlay), pick the part that scrolls by clicking a panel such as a web page's sidebar or dragging an area, then scroll down through it from the top at your own pace. Pinpoint follows along and stitches it into one tall image, and headers and footers that stay put appear only once. Click **Done** (or press ⌃⇧5 again) to open it in the editor. No extra macOS permission is needed. If you scroll too fast, Pinpoint tells you; scroll back a little to carry on.
+
 ### Fixed
 
 - **Errors no longer fail silently.** Deleting captures, saving an API key, signing in with ChatGPT, opening image files, sharing, saving name and tag changes, Auto-name and Restart Pinpoint now say when something goes wrong instead of carrying on or reporting success. Background naming and OCR failures are written to the system log.
@@ -14,6 +18,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- **Text in tall images is read in strips.** Very tall images, such as scrolling captures, are now read for text in overlapping strips, so search, naming and auto-redact still find small text near the bottom.
 - The empty editor and the canvas now share one background colour constant, so their dark grey always matches.
 
 ### Removed
@@ -23,6 +28,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Tests
 
 - Added tests for provider network calls and HTTP error messages, deleting a capture, the agent's step limit and error exits, and safe guide HTML.
+- Added tests for stitching scrolled frames with a sticky header and footer, scrolling back, losing and regaining track, a single frame, the size limit and narrow regions, plus reading text in tall images without duplicates.
 
 ## [0.1.0] - 2026-11-27
 

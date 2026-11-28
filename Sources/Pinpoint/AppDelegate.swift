@@ -3,7 +3,7 @@ import Carbon
 import SwiftUI
 import PinpointCore
 
-enum CaptureMode { case area, window, screen, allScreens }
+enum CaptureMode { case area, window, screen, allScreens, scrolling }
 
 @MainActor
 final class AppDelegate: NSObject, NSApplicationDelegate {
@@ -16,6 +16,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     private var settingsWindow: NSWindow?
     private var overlays: [SelectionOverlay] = []
     private var capturing = false
+    private var scrollSession: ScrollCaptureSession?
 
     func applicationDidFinishLaunching(_ notification: Notification) {
         AppDelegate.shared = self
@@ -27,6 +28,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         HotKeyCenter.shared.register(keyCode: kVK_ANSI_2, modifiers: mods, id: 2) { [weak self] in self?.capture(.window) }
         HotKeyCenter.shared.register(keyCode: kVK_ANSI_3, modifiers: mods, id: 3) { [weak self] in self?.capture(.screen) }
         HotKeyCenter.shared.register(keyCode: kVK_ANSI_4, modifiers: mods, id: 5) { [weak self] in self?.capture(.allScreens) }
+        HotKeyCenter.shared.register(keyCode: kVK_ANSI_5, modifiers: mods, id: 6) { [weak self] in self?.capture(.scrolling) }
         HotKeyCenter.shared.register(keyCode: kVK_ANSI_L, modifiers: mods, id: 4) { [weak self] in self?.showLibrary() }
         // No nagging at launch: the preflight check can report false even when access works. We only ask if a capture fails.
         NSLog("Pinpoint: launched; screen capture preflight = \(CaptureService.hasPermission())")
@@ -62,6 +64,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         item("Capture Window", #selector(captureWindow), "2", [.control, .shift])
         item("Capture Full Screen", #selector(captureScreen), "3", [.control, .shift])
         item("Capture All Screens", #selector(captureAllScreens), "4", [.control, .shift])
+        item("Scrolling Capture", #selector(captureScrolling), "5", [.control, .shift])
         menu.addItem(.separator())
         item("Open Pinpoint", #selector(showMainAction))
         item("Open Image…", #selector(openImage))
@@ -89,6 +92,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
                         .separator(), mi("Settings…", #selector(showSettingsAction), ",", target: self),
                         .separator(), mi("Quit Pinpoint", #selector(quit), "q", target: self)])
         sub("File", [mi("Capture Area or Window", #selector(captureArea), "1", [.control, .shift], target: self),
+                     mi("Scrolling Capture", #selector(captureScrolling), "5", [.control, .shift], target: self),
                      mi("Open Image…", #selector(openImage), "o", target: self),
                      mi("Library", #selector(showLibraryAction), "l", [.control, .shift], target: self),
                      .separator(),
@@ -108,6 +112,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     @objc func captureWindow() { capture(.window) }
     @objc func captureScreen() { capture(.screen) }
     @objc func captureAllScreens() { capture(.allScreens) }
+    @objc func captureScrolling() { capture(.scrolling) }
     @objc func showLibraryAction() { showLibrary() }
     @objc func showMainAction() { showMain() }
     @objc func showSettingsAction() { showSettings() }
@@ -116,10 +121,13 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     // MARK: Capture flow
 
     func capture(_ mode: CaptureMode) {
+        // During a scrolling capture its shortcut means "Done"; other captures wait until it ends.
+        if let session = scrollSession { if mode == .scrolling { session.finish() }; return }
         guard !capturing else { return }
         capturing = true
         let mouseScreen = CaptureService.screenUnderMouse()
-        let frontApp = NSWorkspace.shared.frontmostApplication?.localizedName
+        let frontRunning = NSWorkspace.shared.frontmostApplication
+        let frontApp = frontRunning?.localizedName
         let windows = CaptureService.visibleWindows()
         Task {
             do {
@@ -135,11 +143,14 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
                 var frozenShots: [(NSScreen, CGImage)] = []
                 for s in NSScreen.screens { frozenShots.append((s, try await CaptureService.captureScreen(s))) }
                 overlays = frozenShots.map { screen, frozen in
-                    SelectionOverlay(screen: screen, frozen: frozen, windows: windows, preferWindow: mode == .window) { [weak self] result in
+                    SelectionOverlay(screen: screen, frozen: frozen, windows: windows, preferWindow: mode == .window,
+                                     scrolling: mode == .scrolling) { [weak self] result in
                         guard let self else { return }
                         self.overlays.forEach { $0.dismiss() }
                         self.overlays.removeAll()
-                        Task { @MainActor in await self.handleSelection(result, frozen: frozen, mode: mode, scale: screen.backingScaleFactor, app: frontApp) }
+                        Task { @MainActor in
+                            await self.handleSelection(result, frozen: frozen, mode: mode, screen: screen, app: frontApp, frontRunning: frontRunning)
+                        }
                     }
                 }
                 for o in overlays where o.targetScreen != mouseScreen { o.present(makeKey: false) }
@@ -152,7 +163,9 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         }
     }
 
-    private func handleSelection(_ result: SelectionResult, frozen: CGImage, mode: CaptureMode, scale: CGFloat, app: String?) async {
+    private func handleSelection(_ result: SelectionResult, frozen: CGImage, mode: CaptureMode, screen: NSScreen, app: String?,
+                                 frontRunning: NSRunningApplication?) async {
+        let scale = screen.backingScaleFactor
         switch result {
         case .cancelled:
             capturing = false
@@ -168,6 +181,26 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             } else if let img = frozen.cropping(to: r) {
                 finishCapture(img, app: w.owner)
             } else { capturing = false }
+        case .scrolling(let r):
+            await startScrolling(CGRect(x: r.minX / scale, y: r.minY / scale, width: r.width / scale, height: r.height / scale),
+                                 screen: screen, app: app, frontRunning: frontRunning)
+        }
+    }
+
+    private func startScrolling(_ rect: CGRect, screen: NSScreen, app: String?, frontRunning: NSRunningApplication?) async {
+        let session = ScrollCaptureSession(screen: screen, rect: rect, scale: screen.backingScaleFactor, previousApp: frontRunning) { [weak self] image in
+            guard let self else { return }
+            self.scrollSession = nil
+            if let image { self.finishCapture(image, app: app) } else { self.capturing = false }
+        }
+        scrollSession = session
+        do { try await session.start() } catch {
+            // A session finished during start() may already have been replaced by a newer one.
+            guard scrollSession === session else { return }
+            scrollSession = nil
+            capturing = false
+            NSLog("Pinpoint: scrolling capture failed: \(error)")
+            if CaptureService.isPermissionError(error) { CaptureService.showPermissionHelp() } else { showError(error) }
         }
     }
 

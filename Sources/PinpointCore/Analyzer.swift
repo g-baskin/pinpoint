@@ -18,6 +18,28 @@ public struct Analysis: Sendable {
 /// On-device analysis with Apple Vision: text recognition, sensitive-text boxes and faces. No network.
 public enum Analyzer {
     public static func analyze(_ image: CGImage, faces: Bool = true, customTerms: [String] = []) throws -> Analysis {
+        // Vision reads a very tall image (a scrolling capture) at reduced resolution and misses small text,
+        // so read it in overlapping strips; each strip keeps only what's centred in its own share of the overlap.
+        let w = image.width, h = image.height
+        let strip = max(1200, w * 3 / 2), overlap = 200
+        guard h > strip + overlap else { return try analyzeWhole(image, faces: faces, customTerms: customTerms) }
+        var lines: [OCRLine] = [], sensitive: [SensitiveRegion] = []
+        var top = 0
+        while top < h {
+            let bottom = min(h, top + strip)
+            guard let piece = image.cropping(to: CGRect(x: 0, y: top, width: w, height: bottom - top)) else { break }
+            let a = try analyzeWhole(piece, faces: faces, customTerms: customTerms)
+            let own = CGFloat(top == 0 ? 0 : top + overlap / 2)..<CGFloat(bottom == h ? h : bottom - overlap / 2)
+            func shifted(_ r: CGRect) -> CGRect { r.offsetBy(dx: 0, dy: CGFloat(top)) }
+            lines += a.lines.map { OCRLine(text: $0.text, rect: shifted($0.rect)) }.filter { own.contains($0.rect.midY) }
+            sensitive += a.sensitive.map { SensitiveRegion(kind: $0.kind, text: $0.text, rect: shifted($0.rect)) }.filter { own.contains($0.rect.midY) }
+            if bottom == h { break }
+            top = bottom - overlap
+        }
+        return Analysis(lines: lines, sensitive: sensitive)
+    }
+
+    private static func analyzeWhole(_ image: CGImage, faces: Bool, customTerms: [String]) throws -> Analysis {
         let W = CGFloat(image.width), H = CGFloat(image.height)
         func toPixels(_ b: CGRect) -> CGRect {
             CGRect(x: b.minX * W, y: (1 - b.maxY) * H, width: b.width * W, height: b.height * H)

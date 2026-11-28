@@ -91,6 +91,19 @@ final class AnalyzerTests: XCTestCase {
         XCTAssertGreaterThan(email.rect.minY, 180)
         XCTAssertGreaterThan(email.rect.minX, 100, "box should cover the address, not the 'Email:' label")
     }
+
+    func testTallImageIsReadInStripsWithoutDuplicates() throws {
+        // 600 wide → 1200 px strips overlapping 1000–1200; the middle line sits in that overlap.
+        let img = makeImage(width: 600, height: 5000, text: [("First line here", CGPoint(x: 40, y: 80)),
+                                                            ("Overlap line", CGPoint(x: 40, y: 1090)),
+                                                            ("Mail bottom@example.com", CGPoint(x: 40, y: 4850))])
+        let a = try Analyzer.analyze(img, faces: false)
+        XCTAssertEqual(Analyzer.find("overlap line", in: a.lines).count, 1, a.fullText)
+        XCTAssertLessThan(try XCTUnwrap(Analyzer.find("first line", in: a.lines).first).rect.minY, 200)
+        let email = try XCTUnwrap(a.sensitive.first { $0.kind == .email }, a.fullText)
+        XCTAssertGreaterThan(email.rect.minY, 4800)
+        XCTAssertEqual(a.sensitive.filter { $0.kind == .email }.count, 1)
+    }
 }
 
 final class LibraryTests: XCTestCase {

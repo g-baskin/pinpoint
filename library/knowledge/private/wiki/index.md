@@ -2,7 +2,7 @@
 type: meta
 title: "Pinpoint code-entity wiki index"
 status: developing
-last_commit_hash: "66349de"
+last_commit_hash: "d4cea7c"
 created: 2026-11-27
 updated: 2026-11-27
 tags:
@@ -48,6 +48,7 @@ One page per code entity, grouped by Swift target. Terms follow `library/knowled
 - [[ProviderSettings]]: per-provider settings and the LLMClient factory.
 - [[RGBA]]: the colour value used by markup items.
 - [[Renderer]]: draws markup items for the canvas and exported images.
+- [[ScrollStitcher]]: joins frames of a scrolling region into one tall image, keeping sticky headers and footers once.
 - [[SensitiveDetector]]: auto-redact text detection of secrets and personal data (and `TextMatch`).
 - [[SensitiveKind]]: the categories auto-redact detects.
 - [[SensitiveRegion]]: one detected sensitive area with its box.
@@ -56,7 +57,7 @@ One page per code entity, grouped by Swift target. Terms follow `library/knowled
 
 ## Pinpoint
 
-- [[AppDelegate]]: app entry point and coordinator: menus, hotkeys, the capture flow and windows (and `CaptureMode`, `main.swift`).
+- [[AppDelegate]]: app entry point and coordinator: menus, hotkeys, the capture flow and windows (and `CaptureMode`, `main.swift`); includes scrolling capture.
 - [[AppSettings]]: user preferences (UserDefaults) and API keys (Keychain).
 - [[AssistantPanel]]: the editor's Assistant tab: assistant actions, AI log and agent prompt (and `LogRow`).
 - [[CanvasView]]: the drawing surface for editing markup (and `CenteringClipView`, `CanvasScrollView`).
@@ -71,7 +72,8 @@ One page per code entity, grouped by Swift target. Terms follow `library/knowled
 - [[NotePromptView]]: the Add more context? popover for typed or spoken notes (and `LevelMeter`).
 - [[PropertiesPanel]]: the editor's Properties sidebar (and `ColorRow`, `NotesList`).
 - [[QuickStyle]]: one-click style presets with rendered previews.
-- [[SelectionOverlay]]: full-screen area and window picker (and `SelectionResult`, `SelectionView`).
+- [[ScrollCaptureSession]]: runs a scrolling capture: outline, controls and the frame loop while the user scrolls.
+- [[SelectionOverlay]]: full-screen area and window picker, also used to pick the scrolling capture region (and `SelectionResult`, `SelectionView`).
 - [[SettingsView]]: the Settings window (and `DisplaysList`).
 - [[SpeechDictation]]: built-in on-device speech-to-text for voice notes.
 - [[Tool]]: the editor **tool** the user picks.
