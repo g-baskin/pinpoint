@@ -76,6 +76,23 @@ Contributions are welcome. Work happens on the `dev` branch, so open pull reques
 - **Adding an agent tool:** add a `ToolSpec` to `AgentToolbox.tools`, handle it in `execute`, and add a test in `Tests/PinpointCoreTests`.
 - **Adding a markup kind:** add a case to `AnnotationKind`, draw it in `Renderer.draw`, and add a `Tool` case in `EditorModel.swift`.
 
+## Releasing
+
+For maintainers cutting a new version:
+
+1. On `dev`, bump `CFBundleShortVersionString` (for example `0.1.0` to `0.2.0`) and increase `CFBundleVersion` (an integer) in `Resources/Info.plist`. `scripts/release.sh` reads the version from there for the zip name.
+2. In `CHANGELOG.md`, move the `## [Unreleased]` entries under a new `## [x.y.z] - YYYY-MM-DD` heading, leaving an empty Unreleased section.
+3. Run `scripts/check.sh`, commit, and push `dev`. Then fast-forward merge `dev` into `main` and push `main`.
+4. On `main`, run `scripts/release.sh`. It builds a universal (Apple silicon and Intel) app, ad-hoc signs it, and writes `dist/Pinpoint-x.y.z.zip` and `dist/Pinpoint-x.y.z.zip.sha256`.
+5. Tag and publish, using that version's CHANGELOG section as the notes:
+
+   ```sh
+   gh release create vx.y.z dist/Pinpoint-x.y.z.zip dist/Pinpoint-x.y.z.zip.sha256 \
+     --target main --title "Pinpoint x.y.z" --notes "<the version's CHANGELOG section>"
+   ```
+
+Don't change the bundle id or switch `scripts/release.sh` to per-build signing: the fixed designated requirement is what keeps users' Screen Recording permission across updates. Downloads are not notarized yet.
+
 ## License
 
 Copyright 2026 AutomationGod. Licensed under the [Apache License 2.0](LICENSE).

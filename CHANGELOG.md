@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.2.0] - 2026-11-27
+
+Adds scrolling capture: grab a whole sidebar or long page in one image by scrolling through it. Errors that used to fail silently now tell you what went wrong. Requires macOS 14 or later; download `Pinpoint-0.2.0.zip` from the release page (Apple silicon and Intel). It is still not notarized, so the first launch needs **Open Anyway** in System Settings → Privacy & Security; installing over 0.1.0 keeps your Screen Recording permission, settings, keys and captures.
+
 ### Added
 
 - **Scrolling capture.** Press ⌃⇧5 (or choose **Scrolling Capture** from the menu bar icon or the File menu, **Scrolling** from the Capture button's menu in the Pinpoint window, or press S or click **Scrolling (S)** in the capture overlay), pick the part that scrolls by clicking a panel such as a web page's sidebar or dragging an area, then scroll down through it from the top at your own pace. Pinpoint follows along and stitches it into one tall image, and headers and footers that stay put appear only once. Click **Done** (or press ⌃⇧5 again) to open it in the editor. No extra macOS permission is needed. If you scroll too fast, Pinpoint tells you; scroll back a little to carry on.
@@ -65,5 +69,6 @@ The first public release of Pinpoint: a native macOS screenshot and markup app w
 - ChatGPT sign-in no longer shares state unsafely between threads while it waits for the browser callback or refreshes a token.
 - Reading microphone names for built-in dictation no longer passes an unsafe pointer to CoreAudio.
 
-[Unreleased]: https://github.com/g-baskin/pinpoint/compare/v0.1.0...dev
+[Unreleased]: https://github.com/g-baskin/pinpoint/compare/v0.2.0...dev
+[0.2.0]: https://github.com/g-baskin/pinpoint/compare/v0.1.0...v0.2.0
 [0.1.0]: https://github.com/g-baskin/pinpoint/releases/tag/v0.1.0
