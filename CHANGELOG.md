@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.2.1] - 2026-11-27
+
+Adds **Copy File Path**, so a terminal coding agent such as the GG Coder CLI can open a capture. Download `Pinpoint-0.2.1.zip` from the release page and install it over 0.2.0; your permission, settings, keys and captures carry over.
+
 ### Added
 
 - **Copy File Path.** Right-click a capture in the Library or the recent-captures strip, or open the editor's **Handoff** menu, and choose **Copy File Path** to copy where the image is saved as text. Paste it into a terminal coding agent, such as the GG Coder CLI, so it can open the image. The editor saves your markup first, so the path points at the marked-up version.
@@ -77,6 +81,7 @@ The first public release of Pinpoint: a native macOS screenshot and markup app w
 - ChatGPT sign-in no longer shares state unsafely between threads while it waits for the browser callback or refreshes a token.
 - Reading microphone names for built-in dictation no longer passes an unsafe pointer to CoreAudio.
 
-[Unreleased]: https://github.com/g-baskin/pinpoint/compare/v0.2.0...dev
+[Unreleased]: https://github.com/g-baskin/pinpoint/compare/v0.2.1...dev
+[0.2.1]: https://github.com/g-baskin/pinpoint/compare/v0.2.0...v0.2.1
 [0.2.0]: https://github.com/g-baskin/pinpoint/compare/v0.1.0...v0.2.0
 [0.1.0]: https://github.com/g-baskin/pinpoint/releases/tag/v0.1.0
