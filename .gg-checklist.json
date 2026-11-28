@@ -17,6 +17,21 @@
         "Not checked: whether future recurring work (e.g. notarised releases) will need a dedicated skill"
       ]
     },
+    "build-release": {
+      "checkedAt": "2026-11-28T00:07:29.630Z",
+      "commit": "d4cea7c",
+      "uncommittedChanges": true,
+      "result": "pass",
+      "summary": "Re-check of the 1 earlier finding: README now has a Releasing section covering version bump, changelog, dev→main merge, release.sh and gh release upload.",
+      "findings": [],
+      "evidence": [
+        "git diff README.md — new '## Releasing' section (17 lines) between Contributing and License; 5 numbered steps plus signing note",
+        "Steps match scripts/release.sh (reads CFBundleShortVersionString, writes dist/Pinpoint-x.y.z.zip + .sha256) and the v0.1.0 release assets/title format",
+        "swift test --filter NameGuardTests — 1 test passed (former name absent)",
+        "Scope: re-check of the 1 finding recorded earlier today only, not a new review",
+        "Not checked: following the steps end to end (no release cut); README change uncommitted"
+      ]
+    },
     "code-health": {
       "checkedAt": "2026-11-27T23:48:07.091Z",
       "commit": "1ad9c17",
@@ -124,6 +139,22 @@
         "Not checked: a real force-push attempt against the ruleset (would be blocked, not tried)"
       ]
     },
+    "monitoring": {
+      "checkedAt": "2026-11-28T02:15:26.621Z",
+      "commit": "7ba9337",
+      "uncommittedChanges": true,
+      "result": "pass",
+      "summary": "Re-check of the 3 earlier findings: README now explains how to report a problem with logs and crash reports, logs are tagged with the bundle id, and a bug-report template exists (uncommitted on dev).",
+      "findings": [],
+      "evidence": [
+        "Added Sources/PinpointCore/Log.swift (PinpointLog, subsystem app.pinpoint.Pinpoint, 5 categories); replaced all 9 NSLog calls; grep NSLog in Sources and library: no matches",
+        "README 'Reporting a problem' section with log show/log stream commands and Console crash-report steps; .github/ISSUE_TEMPLATE/bug_report.md added",
+        "New LogTests checks subsystem == CFBundleIdentifier in Info.plist; CHANGELOG Unreleased entry and wiki pages updated, new wiki/PinpointLog.md",
+        "scripts/check.sh: build with warnings as errors OK, 61 tests passed, shellcheck clean, All checks passed",
+        "Scope: re-check of the 3 findings recorded earlier today only, not a new review",
+        "Not checked: log output from a running app bundle; no automatic crash collection (by design, README says none is sent); changes uncommitted"
+      ]
+    },
     "naming": {
       "checkedAt": "2026-11-27T21:07:53.370Z",
       "commit": "730fc34",
@@ -161,6 +192,23 @@
         ".swift-format config and scripts/check.sh committed with AGENTS.md pointing to check.sh",
         "Scope: re-check of the 5 findings recorded earlier today",
         "Not checked: ChatGPT sign-in and dictation exercised in the running app"
+      ]
+    },
+    "styling-consistency": {
+      "checkedAt": "2026-11-28T01:14:43.292Z",
+      "commit": "59d8598",
+      "uncommittedChanges": false,
+      "result": "pass",
+      "summary": "In the app UI, the one shared token (NSColor.canvasBackground) is used wherever it applies and never re-hard-coded; other colours are system/semantic; remaining literals have no token to use.",
+      "findings": [],
+      "evidence": [
+        "Profile: Pinpoint, macOS 14+ SwiftUI/AppKit app, local UI, captures in ~/Pictures/Pinpoint; 3,459 lines in Sources/Pinpoint",
+        "grep tokens (extension Color/NSColor, Theme, Style): only canvasBackground (CanvasView.swift:7), used at CanvasView.swift:342, MainWindow.swift:219",
+        "grep colour literals: no copy of grey 0.16; one-offs MainWindow.swift:466 badge, QuickStyles.swift:52 preview bg, no token for them",
+        "grep named colours: UI uses accentColor, .secondary, system colours; both capture overlays use NSColor.systemBlue consistently",
+        "Read every cornerRadius/xRadius and .font(.system(size:)) use: values 5-12, no shared radius/size constant or component bypassed",
+        "Scope: Sources/Pinpoint UI target, literals that bypass existing shared tokens or components",
+        "Not checked: Renderer.swift export-image colours; runtime look in light/dark mode; swift-format report (separate code-style item)"
       ]
     }
   }

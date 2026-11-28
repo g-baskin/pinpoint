@@ -7,6 +7,18 @@ and versions go up by the size of the release: small changes add 1 to the last n
 
 ## [Unreleased]
 
+### Added
+
+- **Reporting a problem.** The README explains how to report a bug, copy Pinpoint's log and attach a crash report, and new GitHub issues get a bug-report form asking for those.
+
+### Changed
+
+- Pinpoint's log messages are now tagged `app.pinpoint.Pinpoint` with a category (app, capture, ai, storage, account), so you can filter for them in Console or with `log show`.
+
+### Tests
+
+- A test checks that the log tag matches the app's bundle id, so the README's log command keeps working.
+
 ## [0.2.2] - 2026-11-27
 
 Small wording update: Pinpoint's messages use broad terms such as "your coding CLI" instead of naming other apps. Download `Pinpoint-0.2.2.zip` from the release page and install it over 0.2.1; your permission, settings, keys and captures carry over.

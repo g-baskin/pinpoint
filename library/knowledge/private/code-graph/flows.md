@@ -106,7 +106,7 @@ Source ledger:
 | Copy, open editor, auto-redact | `AppDelegate.swift:211-215`, `:221-225`, `:269-273`, `Sources/Pinpoint/MainWindow.swift:25-30`, `Sources/Pinpoint/EditorModel.swift:136-147`, `:271-285` |
 | Background naming and tagging | `AppDelegate.swift:228-262` |
 
-Who hears `.pinpointLibraryChanged`: `LibraryModel` reloads its list (`Sources/Pinpoint/LibraryView.swift:19-21`) and `Workspace` closes the editor if its capture was deleted (`MainWindow.swift:20-22`, `:47-49`). A failure in `create` shows an alert and nothing is saved (`AppDelegate.swift:218`). In the background task, an OCR failure is still absorbed with `try?` (empty analysis); a failed `makeClient`, AI naming call or final `writeMeta` is logged with `NSLog` (`AppDelegate.swift:233`, `:245`, `:258-259`). The capture keeps its offline or placeholder name when AI naming fails. `openImage` collects unreadable or uncreatable files and shows one error alert listing them (`AppDelegate.swift:292-309`).
+Who hears `.pinpointLibraryChanged`: `LibraryModel` reloads its list (`Sources/Pinpoint/LibraryView.swift:19-21`) and `Workspace` closes the editor if its capture was deleted (`MainWindow.swift:20-22`, `:47-49`). A failure in `create` shows an alert and nothing is saved (`AppDelegate.swift:218`). In the background task, an OCR failure is still absorbed with `try?` (empty analysis); a failed `makeClient`, AI naming call or final `writeMeta` is logged with `PinpointLog` (`AppDelegate.swift:233`, `:245`, `:258-259`). The capture keeps its offline or placeholder name when AI naming fails. `openImage` collects unreadable or uncreatable files and shows one error alert listing them (`AppDelegate.swift:292-309`).
 
 ## 2. Scrolling capture: pick an area, scroll, stitch
 
@@ -319,7 +319,7 @@ sequenceDiagram
     opt expires within 60 s
         account->>oauth: postForm(tokenURL, refresh_token)
         oauth->>authServer: POST token
-        account->>keychain: save refreshed credentials (failure logged with NSLog, token still used)
+        account->>keychain: save refreshed credentials (failure logged with PinpointLog, token still used)
     end
     account-->>planClient: access token
     planClient->>api: POST /v1/responses, stream true, tools in the "pinpoint" namespace

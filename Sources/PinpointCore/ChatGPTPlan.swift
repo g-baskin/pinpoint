@@ -220,7 +220,7 @@ public final class ChatGPTAccount: @unchecked Sendable {
             n.expiresAt = Date().addingTimeInterval(tok["expires_in"]?.doubleValue ?? 3600)
             if let id = tok["id_token"]?.stringValue { n.idToken = id }
             // The refreshed token still works for this session; only the next launch would need a new sign-in.
-            if !save(n) { NSLog("Pinpoint: couldn't save refreshed ChatGPT sign-in to Keychain") }
+            if !save(n) { PinpointLog.account.error("couldn't save refreshed ChatGPT sign-in to Keychain") }
             return n
         } catch {
             throw LLMError("Your ChatGPT sign-in expired. Sign in again in Settings. (\(error.localizedDescription))")

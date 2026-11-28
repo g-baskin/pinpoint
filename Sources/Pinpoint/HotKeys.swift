@@ -1,5 +1,6 @@
 import Carbon
 import Foundation
+import PinpointCore
 
 /// System-wide shortcuts via Carbon's RegisterEventHotKey (no Accessibility permission needed).
 final class HotKeyCenter {
@@ -14,7 +15,7 @@ final class HotKeyCenter {
         var ref: EventHotKeyRef?
         let hkID = EventHotKeyID(signature: OSType(0x504E5054) /* 'PNPT' */, id: id)
         let status = RegisterEventHotKey(UInt32(keyCode), UInt32(modifiers), hkID, GetApplicationEventTarget(), 0, &ref)
-        if status == noErr { refs.append(ref) } else { NSLog("Pinpoint: hotkey \(id) unavailable (\(status))") }
+        if status == noErr { refs.append(ref) } else { PinpointLog.app.error("hotkey \(id, privacy: .public) unavailable (\(status, privacy: .public))") }
     }
 
     private func installIfNeeded() {

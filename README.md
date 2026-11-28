@@ -67,6 +67,19 @@ Choose one in **Settings → AI provider**: ChatGPT (sign in with your plan, no 
 
 Keys are stored in the macOS Keychain. Use **Fetch models** to pick a model and **Test connection** to check it. For agent edits, pick a model that supports both images and tool calling.
 
+## Reporting a problem
+
+Pinpoint doesn't send crash reports or usage data anywhere, so please tell us when something breaks: [open an issue](https://github.com/g-baskin/pinpoint/issues/new?template=bug_report.md) and include:
+
+- **Logs.** Right after the problem, run this in Terminal and paste the output, after checking it for anything private:
+
+  ```
+  log show --last 15m --info --predicate 'subsystem == "app.pinpoint.Pinpoint"'
+  ```
+
+  To watch the log as it happens, run `log stream --info --predicate 'subsystem == "app.pinpoint.Pinpoint"'`, or open Console and search for `subsystem:app.pinpoint.Pinpoint`.
+- **Crash report**, if Pinpoint quit unexpectedly: open Console, choose **Crash Reports** and attach the newest `Pinpoint` entry.
+
 ## Contributing
 
 Contributions are welcome. Work happens on the `dev` branch, so open pull requests against `dev`.

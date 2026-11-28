@@ -31,7 +31,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         HotKeyCenter.shared.register(keyCode: kVK_ANSI_5, modifiers: mods, id: 6) { [weak self] in self?.capture(.scrolling) }
         HotKeyCenter.shared.register(keyCode: kVK_ANSI_L, modifiers: mods, id: 4) { [weak self] in self?.showLibrary() }
         // No nagging at launch: the preflight check can report false even when access works. We only ask if a capture fails.
-        NSLog("Pinpoint: launched; screen capture preflight = \(CaptureService.hasPermission())")
+        PinpointLog.app.notice("launched; screen capture preflight = \(CaptureService.hasPermission(), privacy: .public)")
         // Opening Pinpoint shows its editor/library window, like any normal app; it keeps running in the menu bar after you close it.
         DispatchQueue.main.async { self.showMain() }
     }
@@ -157,7 +157,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
                 overlays.first { $0.targetScreen == mouseScreen }?.present(makeKey: true)
             } catch {
                 capturing = false
-                NSLog("Pinpoint: capture failed: \(error) preflight=\(CaptureService.hasPermission())")
+                PinpointLog.capture.error("capture failed: \(String(describing: error), privacy: .public) preflight=\(CaptureService.hasPermission(), privacy: .public)")
                 if CaptureService.isPermissionError(error) { CaptureService.showPermissionHelp() } else { showError(error) }
             }
         }
@@ -199,7 +199,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             guard scrollSession === session else { return }
             scrollSession = nil
             capturing = false
-            NSLog("Pinpoint: scrolling capture failed: \(error)")
+            PinpointLog.capture.error("scrolling capture failed: \(String(describing: error), privacy: .public)")
             if CaptureService.isPermissionError(error) { CaptureService.showPermissionHelp() } else { showError(error) }
         }
     }
@@ -232,7 +232,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         let useAI = AppSettings.shared.autoNameWithAI && AppSettings.shared.isAIConfigured
         var aiClient: LLMClient?
         if useAI {
-            do { aiClient = try AppSettings.shared.makeClient(fast: true) } catch { NSLog("Pinpoint: AI naming unavailable: \(error.localizedDescription)") }
+            do { aiClient = try AppSettings.shared.makeClient(fast: true) } catch { PinpointLog.ai.error("AI naming unavailable: \(error.localizedDescription, privacy: .public)") }
         }
         let client = aiClient
         Task.detached(priority: .utility) {
@@ -244,7 +244,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
                 do {
                     let r = try await Assistants(client: client).nameAndTags(image: image, ocrText: m.ocrText, app: m.sourceApp)
                     m.name = r.name; m.tags = r.tags; m.aiNamed = true
-                } catch { NSLog("Pinpoint: AI naming failed: \(error.localizedDescription)") }
+                } catch { PinpointLog.ai.error("AI naming failed: \(error.localizedDescription, privacy: .public)") }
             }
             let final = m
             await MainActor.run {
@@ -258,7 +258,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
                     toWrite = ed.meta
                 }
                 do { try store.writeMeta(toWrite) }
-                catch { NSLog("Pinpoint: couldn't save capture info: \(error.localizedDescription)") }
+                catch { PinpointLog.storage.error("couldn't save capture info: \(error.localizedDescription, privacy: .public)") }
                 NotificationCenter.default.post(name: .pinpointLibraryChanged, object: nil)
             }
         }
