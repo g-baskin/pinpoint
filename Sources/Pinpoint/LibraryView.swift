@@ -49,7 +49,7 @@ final class LibraryModel: ObservableObject {
         status = "Copied."
     }
 
-    /// Copies the image's file path as text, for pasting into a terminal agent such as the GG Coder CLI.
+    /// Copies the image's file path as text, for pasting into a coding CLI in the terminal.
     func copyPath(_ id: UUID) {
         NSPasteboard.general.clearContents()
         NSPasteboard.general.setString(store.bestURL(id).path, forType: .string)

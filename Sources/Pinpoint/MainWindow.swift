@@ -143,7 +143,7 @@ struct EditorActions: View {
                 .help("Copy the image with all markup and a notes panel (⌘C) — paste it anywhere")
             Menu {
                 Button("Copy for AI agent (notes + image path)") { model.copyHandoff() }
-                Button("Copy file path (for terminal agents)") { model.copyFilePath() }
+                Button("Copy file path (for a coding CLI)") { model.copyFilePath() }
                 Button("Copy image with notes panel  (⌘C)") { model.copyImage(includeNotesPanel: true) }
                 Button("Copy image without notes panel") { model.copyImage(includeNotesPanel: false) }
                 Button("Export handoff folder…") { model.exportHandoff() }

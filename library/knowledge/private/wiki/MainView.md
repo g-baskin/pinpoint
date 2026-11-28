@@ -93,7 +93,7 @@ Every struct here except `ShareButton` also declares `var body: some View` (`Sou
 
 - `MainView` switches on `ws.mode`; the editor body is keyed by capture id so each capture gets fresh view state (`MainWindow.swift:56-72`).
 - `TopBar`: Capture menu (area, window, full screen, all screens, scrolling, Open Image) calling `AppDelegate.shared`, an Editor/Library segmented picker, and for the editor the [[Tool]] strip and actions (`MainWindow.swift:79-115`).
-- `EditorActions`: undo, redo, Reset Crop, Copy, the Handoff menu (copy for AI agent, copy file path for terminal agents, copy image with or without notes panel, export handoff folder), Share, Export and Save (`MainWindow.swift:136-156`).
+- `EditorActions`: undo, redo, Reset Crop, Copy, the Handoff menu (copy for AI agent, copy file path for a coding CLI, copy image with or without notes panel, export handoff folder), Share, Export and Save (`MainWindow.swift:136-156`).
 - `ShareButton` writes the flattened image to a temp PNG and shows the macOS share picker; if the write fails it reports "Share failed: <reason>" through `model.fail` and does not show the picker (`MainWindow.swift:160-180`, `:176`).
 - `EditorBody`: [[CanvasView]] (via `CanvasScrollView`) beside a Properties or Assistant sidebar, with [[TrayView]] below (`MainWindow.swift:186-205`).
 

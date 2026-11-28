@@ -7,13 +7,17 @@ and versions go up by the size of the release: small changes add 1 to the last n
 
 ## [Unreleased]
 
+### Changed
+
+- Pinpoint's messages no longer name other apps. Copy File Path now says "Paste it into your coding CLI", its Handoff menu item reads **Copy file path (for a coding CLI)**, and the "port 1455 is busy" sign-in error says another app may have a sign-in open.
+
 ## [0.2.1] - 2026-11-27
 
-Adds **Copy File Path**, so a terminal coding agent such as the GG Coder CLI can open a capture. Download `Pinpoint-0.2.1.zip` from the release page and install it over 0.2.0; your permission, settings, keys and captures carry over.
+Adds **Copy File Path**, so a coding CLI in the terminal can open a capture. Download `Pinpoint-0.2.1.zip` from the release page and install it over 0.2.0; your permission, settings, keys and captures carry over.
 
 ### Added
 
-- **Copy File Path.** Right-click a capture in the Library or the recent-captures strip, or open the editor's **Handoff** menu, and choose **Copy File Path** to copy where the image is saved as text. Paste it into a terminal coding agent, such as the GG Coder CLI, so it can open the image. The editor saves your markup first, so the path points at the marked-up version.
+- **Copy File Path.** Right-click a capture in the Library or the recent-captures strip, or open the editor's **Handoff** menu, and choose **Copy File Path** to copy where the image is saved as text. Paste it into your coding CLI so it can open the image. The editor saves your markup first, so the path points at the marked-up version.
 
 ### Tests
 

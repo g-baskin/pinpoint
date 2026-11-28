@@ -4,6 +4,8 @@
 
 The app is called Pinpoint. Its former name is retired: don't use it anywhere, including code, identifiers, file and folder names, docs, commit messages, PR titles and replies. `NameGuardTests` fails `swift test` if it shows up in a tracked file.
 
+Don't name other apps in user-facing text (UI strings, messages, CHANGELOG, release notes, README). Use broad terms such as "your coding CLI" or "another app". Apps Pinpoint integrates with as a setting, such as AI providers and the Codex CLI provider, keep their names because users have to pick them.
+
 ## Branches: only `main` and `dev`
 
 This overrides the feature-branch workflow in parent AGENTS.md files for this repository.

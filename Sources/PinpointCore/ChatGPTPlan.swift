@@ -266,7 +266,7 @@ final class LoopbackListener: @unchecked Sendable {
         for p in allowAnyPort ? [ChatGPTOAuth.preferredPort, 0] : [ChatGPTOAuth.preferredPort] {
             do { return try await make(port: p, expectedState: expectedState) } catch { lastError = error }
         }
-        throw LLMError("Port 1455 is busy (another sign-in may be open, e.g. in GG Coder or Codex). Close it and try again. \(lastError.localizedDescription)")
+        throw LLMError("Port 1455 is busy (another app may have a sign-in open). Close it and try again. \(lastError.localizedDescription)")
     }
 
     /// Startup state for `make`; only touched from the listener's serial queue.
