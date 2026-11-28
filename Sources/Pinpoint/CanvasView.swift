@@ -3,6 +3,10 @@ import Combine
 import SwiftUI
 import PinpointCore
 
+extension NSColor {
+    static let canvasBackground = NSColor(white: 0.16, alpha: 1)
+}
+
 /// The drawing surface. Shows the capture fitted to the view and handles all mouse/keyboard editing.
 final class CanvasView: NSView {
     let model: EditorModel
@@ -335,7 +339,7 @@ struct CanvasScrollView: NSViewRepresentable {
         sv.allowsMagnification = true
         sv.minMagnification = 0.03
         sv.maxMagnification = 8
-        sv.backgroundColor = NSColor(white: 0.16, alpha: 1)
+        sv.backgroundColor = .canvasBackground
         sv.drawsBackground = true
         let canvas = CanvasView(model: model)
         canvas.wantsLayer = true

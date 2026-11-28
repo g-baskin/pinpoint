@@ -17,6 +17,63 @@
         "Not checked: whether future recurring work (e.g. notarised releases) will need a dedicated skill"
       ]
     },
+    "code-health": {
+      "checkedAt": "2026-11-27T23:48:07.091Z",
+      "commit": "1ad9c17",
+      "uncommittedChanges": true,
+      "result": "pass",
+      "summary": "Re-check of the 4 earlier findings: the 2 unused properties are deleted; the long Renderer.draw and the large ChatGPTPlan.swift were accepted by the owner.",
+      "findings": [],
+      "accepted": [
+        "Sources/PinpointCore/Renderer.swift:73 — draw is 124 lines (one switch over 11 kinds); accepted as is by owner",
+        "Sources/PinpointCore/ChatGPTPlan.swift — 569 lines with 6 types; accepted as is by owner"
+      ],
+      "evidence": [
+        "Deleted JSONValue.objectValue (JSONValue.swift) and SpeechDictation.isAuthorized; updated wiki pages JSONValue.md, SpeechDictation.md and CHANGELOG Unreleased",
+        "grep objectValue|isAuthorized in Sources Tests library — no matches",
+        "scripts/check.sh — build with warnings-as-errors OK, 55 tests passed, shellcheck clean, All checks passed",
+        "Scope: re-check of the 4 findings recorded earlier today only, not a new review",
+        "Not checked: no new dead-code or duplication scan; changes are uncommitted"
+      ]
+    },
+    "dependencies": {
+      "checkedAt": "2026-11-27T23:43:01.375Z",
+      "commit": "1ad9c17",
+      "uncommittedChanges": false,
+      "result": "pass",
+      "summary": "Pinpoint uses no third-party Swift packages, only Apple system frameworks, so it needs no lockfile, has nothing for an audit to report, and has no unused or abandoned packages.",
+      "findings": [],
+      "evidence": [
+        "Read Package.swift: 3 local targets (PinpointCore, Pinpoint, PinpointCoreTests), no external package dependencies",
+        "`swift package show-dependencies` (Swift 6.3.2) — 'No external dependencies found' (RUNTIME)",
+        "No Package.resolved; SwiftPM only writes one when external packages exist, so absence is expected",
+        "grep of imports in Sources/Tests — only Apple frameworks, PinpointCore and XCTest",
+        "Read scripts/*.sh incl. check.sh: no curl/brew/npm/pip/git-clone downloads; no .github workflows",
+        "Skill loaded: bulletproof (supply-chain, report-only)",
+        "Scope: package manifest, source imports, tracked scripts and repo files for third-party code or fetched tools",
+        "Not checked: versions of system dev tools (shellcheck, swift-format), not pinned by repo; Apple frameworks (OS-managed)"
+      ]
+    },
+    "design-system": {
+      "checkedAt": "2026-11-27T23:55:49.010Z",
+      "commit": "1ad9c17",
+      "uncommittedChanges": true,
+      "result": "pass",
+      "summary": "Re-check of the 3 earlier findings: the canvas grey is now one shared constant; loose radii/spacing and the twice-built thumbnail tile were accepted by the owner.",
+      "findings": [],
+      "accepted": [
+        "Sources/Pinpoint views — radii 5/6/8/10 and paddings are literal, no Metrics enum; accepted as is by owner",
+        "LibraryView.swift:166-184 + MainWindow.swift:376-383 — thumbnail tile built twice; accepted as is by owner"
+      ],
+      "evidence": [
+        "Added NSColor.canvasBackground (CanvasView.swift:6-8); CanvasScrollView and EmptyEditor (MainWindow.swift) both use it",
+        "grep 'white: 0.16' in Sources — only the constant definition remains",
+        "scripts/check.sh — build with warnings-as-errors OK, 55 tests passed, All checks passed",
+        "Updated wiki CanvasView.md API block and CHANGELOG Unreleased > Changed",
+        "Scope: re-check of the 3 findings recorded earlier today only, not a new review",
+        "Not checked: app not run to compare the grey visually; changes uncommitted"
+      ]
+    },
     "docs": {
       "checkedAt": "2026-11-27T20:53:20.067Z",
       "commit": "b0f82f0",

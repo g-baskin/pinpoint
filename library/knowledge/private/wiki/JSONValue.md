@@ -60,7 +60,6 @@ public enum JSONValue: Codable, Equatable, Sendable {
     public var doubleValue: Double?
     public var boolValue: Bool?
     public var arrayValue: [JSONValue]?
-    public var objectValue: [String: JSONValue]?
     public static func parse(_ data: Data) throws -> JSONValue
     public static func parse(_ string: String) throws -> JSONValue
     public func data() -> Data

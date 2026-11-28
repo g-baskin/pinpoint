@@ -215,7 +215,7 @@ struct EmptyEditor: View {
                 Button("Capture Now") { AppDelegate.shared?.capture(.area) }.controlSize(.large)
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
-            .background(Color(white: 0.16))
+            .background(Color(nsColor: .canvasBackground))
             Divider()
             TrayView(ws: ws, library: ws.library, model: nil)
         }

@@ -23,10 +23,6 @@ final class SpeechDictation: ObservableObject {
     private var startedAt = Date()
     private var heardSomething = false
 
-    var isAuthorized: Bool {
-        SFSpeechRecognizer.authorizationStatus() == .authorized && AVCaptureDevice.authorizationStatus(for: .audio) == .authorized
-    }
-
     /// Asks for microphone + speech recognition access (macOS shows each prompt once).
     func authorize() async -> Bool {
         let speech: Bool = await withCheckedContinuation { cont in

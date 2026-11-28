@@ -66,7 +66,6 @@ public enum JSONValue: Codable, Equatable, Sendable {
         }
     }
     public var arrayValue: [JSONValue]? { if case .array(let a) = self { return a }; return nil }
-    public var objectValue: [String: JSONValue]? { if case .object(let o) = self { return o }; return nil }
 
     public static func parse(_ data: Data) throws -> JSONValue {
         try JSONDecoder().decode(JSONValue.self, from: data)

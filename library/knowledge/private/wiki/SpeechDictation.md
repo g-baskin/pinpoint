@@ -46,7 +46,6 @@ final class SpeechDictation: ObservableObject {
     @Published private(set) var level: Float = 0
     @Published var lastError: String?
 
-    var isAuthorized: Bool
     func authorize() async -> Bool
     func start(stopAfterSilence: TimeInterval? = nil, onUpdate: @escaping (String, Bool) -> Void) async
     func stop()

@@ -45,6 +45,10 @@ The drawing surface: shows the capture and handles all mouse and keyboard editin
 ## API (internal)
 
 ```swift
+extension NSColor {
+    static let canvasBackground: NSColor  // dark grey behind the image, shared with EmptyEditor
+}
+
 final class CanvasView: NSView {
     let model: EditorModel
     init(model: EditorModel)
